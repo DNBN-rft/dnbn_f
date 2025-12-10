@@ -1,0 +1,187 @@
+/* 모달 배경 */
+.categorymodal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 225px;
+    width: calc(100% - 225px);
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 모달 컨테이너 */
+.categorymodal-wrap {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: modalSlideDown 0.3s ease-out;
+}
+
+@keyframes modalSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 모달 헤더 */
+.categorymodal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+.categorymodal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.categorymodal-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+}
+
+.categorymodal-close-btn:hover {
+    color: #333;
+}
+
+/* 모달 컨텐츠 */
+.categorymodal-content {
+    padding: 30px 25px;
+}
+
+.categorymodal-row {
+    margin-bottom: 25px;
+}
+
+.categorymodal-row:last-child {
+    margin-bottom: 0;
+}
+
+.categorymodal-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.categorymodal-required {
+    color: #f44336;
+    margin-left: 4px;
+}
+
+.categorymodal-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.categorymodal-input:focus {
+    border-color: #2196F3;
+}
+
+.categorymodal-input::placeholder {
+    color: #999;
+}
+
+.categorymodal-input:disabled {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* 모달 푸터 */
+.categorymodal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 25px;
+    border-top: 2px solid #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+.categorymodal-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.categorymodal-btn-save {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.categorymodal-btn-save:hover {
+    background-color: #45a049;
+}
+
+.categorymodal-btn-cancel {
+    background-color: #757575;
+    color: white;
+}
+
+.categorymodal-btn-cancel:hover {
+    background-color: #616161;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .categorymodal-wrap {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .categorymodal-header,
+    .categorymodal-content,
+    .categorymodal-footer {
+        padding: 20px;
+    }
+
+    .categorymodal-title {
+        font-size: 18px;
+    }
+
+    .categorymodal-footer {
+        flex-direction: column;
+    }
+
+    .categorymodal-btn {
+        width: 100%;
+    }
+}

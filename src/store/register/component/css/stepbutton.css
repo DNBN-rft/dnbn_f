@@ -1,0 +1,25 @@
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.step-prev-btn,
+.step-next-btn {
+  width: 45%;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.step-prev-btn:hover,
+.step-next-btn:hover {
+  background-color: rgba(241, 129, 30, 1);
+  color: white;
+  border-color: rgba(241, 129, 30, 1);
+}

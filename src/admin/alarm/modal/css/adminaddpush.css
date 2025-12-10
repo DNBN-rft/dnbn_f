@@ -1,0 +1,265 @@
+/* Modal Backdrop */
+.adminaddpush-backdrop {
+  position: fixed;
+  top: 0;
+  left: 225px;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Container */
+.adminaddpush-modal {
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: adminaddpush-slideIn 0.3s ease-out;
+}
+
+@keyframes adminaddpush-slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Header */
+.adminaddpush-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.adminaddpush-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+.adminaddpush-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.adminaddpush-close-btn:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* Modal Content */
+.adminaddpush-content {
+  padding: 28px;
+}
+
+/* Form Group */
+.adminaddpush-form-group {
+  margin-bottom: 24px;
+}
+
+.adminaddpush-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.adminaddpush-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.adminaddpush-required {
+  color: #dc3545;
+  margin-left: 2px;
+}
+
+/* Form Inputs */
+.adminaddpush-select,
+.adminaddpush-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #495057;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.adminaddpush-select:hover,
+.adminaddpush-input:hover {
+  border-color: #adb5bd;
+}
+
+.adminaddpush-select:focus,
+.adminaddpush-input:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.adminaddpush-select {
+  cursor: pointer;
+}
+
+.adminaddpush-input::placeholder {
+  color: #adb5bd;
+}
+
+.adminaddpush-input:disabled {
+  background-color: #f8f9fa;
+  color: #adb5bd;
+  cursor: not-allowed;
+  border-color: #e9ecef;
+}
+
+.adminaddpush-input:disabled:hover {
+  border-color: #e9ecef;
+}
+
+/* Textarea */
+.adminaddpush-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #495057;
+  background-color: white;
+  resize: none;
+  font-family: inherit;
+  transition: all 0.2s;
+  min-height: 120px;
+}
+
+.adminaddpush-textarea:hover {
+  border-color: #adb5bd;
+}
+
+.adminaddpush-textarea:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.adminaddpush-textarea::placeholder {
+  color: #adb5bd;
+}
+
+/* Radio Group */
+.adminaddpush-radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.adminaddpush-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #495057;
+}
+
+.adminaddpush-radio {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  cursor: pointer;
+  accent-color: #4285f4;
+}
+
+.adminaddpush-radio-label:hover {
+  color: #212529;
+}
+
+/* Modal Footer */
+.adminaddpush-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 28px;
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Buttons */
+.adminaddpush-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adminaddpush-btn-cancel {
+  background-color: white;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.adminaddpush-btn-cancel:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+  color: #495057;
+}
+
+.adminaddpush-btn-submit {
+  background-color: #4285f4;
+  color: white;
+}
+
+.adminaddpush-btn-submit:hover {
+  background-color: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .adminaddpush-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .adminaddpush-header,
+  .adminaddpush-content,
+  .adminaddpush-footer {
+    padding: 20px;
+  }
+
+  .adminaddpush-title {
+    font-size: 18px;
+  }
+
+  .adminaddpush-radio-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

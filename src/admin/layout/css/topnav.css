@@ -1,0 +1,80 @@
+﻿
+.admin-sb-topnav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 56px;
+    z-index: 1041;
+}
+
+.admin-topnav-custom {
+    background-color: #1e293b;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 큰 화면에서 TopNav가 사이드바 옆으로 이동 */
+@media (min-width: 992px) {
+    .admin-sb-topnav {
+        left: 225px;
+        width: calc(100% - 225px);
+    }
+}
+
+.admin-topnav-i {
+    color: white;
+}
+
+.admin-topnav-left-section {
+    display: flex;
+    align-items: center;
+    width: 225px;
+    position: relative;
+}
+
+.admin-topnav-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.admin-hamburger-btn {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.admin-hamburger-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-hamburger-btn:active {
+    transform: scale(0.95);
+}
+
+.admin-hamburger-btn i {
+    color: white;
+    display: block;
+}
+
+.admin-topnav-logo img {
+    height: 32px;
+    width: auto;
+}
+
+/* 큰 화면에서는 좌측 섹션 전체 숨김 */
+@media (min-width: 992px) {
+    .admin-topnav-left-section {
+        display: none;
+    }
+}

@@ -1,0 +1,136 @@
+.storeinfo-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.storeinfo-wrap {
+  width: 25%;
+  max-height: 90%;
+  min-height: 750px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 50px auto;
+  padding: 40px;
+}
+
+/*상단 영역*/
+.storeinfo-header {
+  text-align: center;
+}
+
+.storeinfo-header-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.storeinfo-header-text {
+  font-size: 14px;
+}
+
+/*중간 입력 폼 영역*/
+.storeinfo-middle-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.storeinfo-middle-subtitle {
+  font-size: 14px;
+  color: gray;
+  margin-top: 20px;
+}
+
+.storeinfo-middle-nm-input,
+.storeinfo-middle-tel-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.storeinfo-middle-addr-div {
+  display: flex;
+  align-items: center;
+}
+
+.storeinfo-middle-addr-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.storeinfo-middle-zipcode-input {
+  width: 70%;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px 0 0 5px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.storeinfo-middle-addr-search {
+  width: 30%;
+  height: 40px;
+  background-color: rgb(241, 129, 25);
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.storeinfo-middle-check-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.storeinfo-middle-check-div > div > input {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.storeinfo-middle-workhour-div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.storeinfo-middle-work {
+  width: 100%;
+}
+
+.storeinfo-middle-work-wave {
+    width: 10%;
+    text-align: center;
+}
+
+.storeinfo-middle-workhour-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  font-size: 12px;
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.storeinfo-middle-workhour-input::-webkit-outer-spin-button,
+.storeinfo-middle-workhour-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

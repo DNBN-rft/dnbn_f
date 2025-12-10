@@ -1,0 +1,168 @@
+.withdrawal-confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.withdrawal-confirm-modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.withdrawal-confirm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.withdrawal-confirm-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.withdrawal-confirm-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.withdrawal-confirm-modal-close-btn:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.withdrawal-confirm-modal-body {
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.withdrawal-confirm-modal-warning {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.withdrawal-confirm-modal-warning-icon {
+  width: 64px;
+  height: 64px;
+  color: #ef4444;
+}
+
+.withdrawal-confirm-modal-title {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.withdrawal-confirm-modal-description {
+  text-align: left;
+  margin: 0;
+}
+
+.withdrawal-confirm-modal-description p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.withdrawal-confirm-modal-description ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.withdrawal-confirm-modal-description li {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.withdrawal-confirm-modal-description li:last-child {
+  margin-bottom: 0;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.withdrawal-confirm-modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.withdrawal-confirm-modal-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.withdrawal-confirm-modal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.withdrawal-confirm-modal-cancel-btn {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.withdrawal-confirm-modal-cancel-btn:hover:not(:disabled) {
+  background-color: rgba(241, 129, 30, 1);
+  color: white;
+  border-color: rgba(241, 129, 30, 1);
+}
+
+.withdrawal-confirm-modal-withdrawal-btn {
+  background-color: #ef4444;
+  color: white;
+  border: 1px solid #ef4444;
+}
+
+.withdrawal-confirm-modal-withdrawal-btn:hover:not(:disabled) {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}

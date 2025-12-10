@@ -1,0 +1,168 @@
+/* Fixed 패널 */
+.adminalarmmodal-panel {
+    position: fixed;
+    padding-bottom: 20px;
+    top: 56px;
+    right: 80px;
+    width: 450px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 탭 영역 */
+.adminalarmmodal-tabs {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+.adminalarmmodal-tab-button {
+    flex: 1;
+    padding: 16px 12px;
+    border: none;
+    background-color: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.adminalarmmodal-tab-button:hover {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.adminalarmmodal-tab-active {
+    color: #007bff;
+    font-weight: 700;
+}
+
+.adminalarmmodal-tab-active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #007bff;
+}
+
+/* 알람 리스트 컨테이너 */
+.adminalarmmodal-list-container {
+    height: 500px;
+    overflow-y: auto;
+    padding: 16px;
+    
+    /* 스크롤바 숨김 - 모든 브라우저 지원 */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.adminalarmmodal-list-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* 알람 아이템 박스 */
+.adminalarmmodal-item {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.adminalarmmodal-item:hover {
+    background-color: #e9ecef;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.adminalarmmodal-item:last-child {
+    margin-bottom: 0;
+}
+
+/* 알람 헤더 (카테고리 + 시간) */
+.adminalarmmodal-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.adminalarmmodal-item-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+.adminalarmmodal-item-time {
+    color: #6c757d;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* 알람 내용 */
+.adminalarmmodal-item-content {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* 빈 알람 메시지 */
+.adminalarmmodal-empty {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 60px 20px;
+    font-weight: 400;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .adminalarmmodal-panel {
+        width: 320px;
+        right: 10px;
+    }
+
+    .adminalarmmodal-tab-button {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+
+    .adminalarmmodal-list-container {
+        height: 400px;
+        padding: 12px;
+    }
+
+    .adminalarmmodal-item {
+        padding: 12px;
+    }
+
+    .adminalarmmodal-item-category {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+
+    .adminalarmmodal-item-time {
+        font-size: 12px;
+    }
+
+    .adminalarmmodal-item-content {
+        font-size: 13px;
+    }
+}

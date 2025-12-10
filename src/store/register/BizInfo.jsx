@@ -1,0 +1,306 @@
+import "./css/bizinfo.css";
+import StepButton from "../register/component/StepButton";
+import { useState, useEffect } from "react";
+import { validateBizInfo } from "../../utils/registerValidation";
+
+const BizInfo = ({ formData, setFormData, next, prev }) => {
+  const [banks, setBanks] = useState([]);
+  const [bizNoDuplicate, setBizNoDuplicate] = useState(null);
+  const [bizNoCheckMessage, setBizNoCheckMessage] = useState("");
+
+  useEffect(() => {
+    // 은행 목록 API 호출
+    fetchBanks();
+    // bankId, storeZipCode, storeAddr 기본값 설정
+    if (!formData.bankId || !formData.storeZipCode || !formData.storeAddr) {
+      setFormData((prev) => ({
+        ...prev,
+        storeZipCode: "16915",
+        storeAddr: "경기도 용인시 기흥구 구성로 184",
+        storeType: "가맹점",
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchBanks = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/bank", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setBanks(data);
+      }
+    } catch (error) {
+      console.error("은행 목록 조회 실패:", error);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+
+    // 사업자번호 입력 시 중복 확인 초기화
+    if (field === "bizNo") {
+      setBizNoDuplicate(null);
+      setBizNoCheckMessage("");
+    }
+  };
+
+  const handleBizTypeChange = (type) => {
+    setFormData({
+      ...formData,
+      bizType: type,
+    });
+  };
+
+  const handleBizNoCheck = async () => {
+    if (!formData.bizNo.trim()) {
+      setBizNoCheckMessage("사업자번호를 입력해주세요.");
+      setBizNoDuplicate(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/store/check-bizNo/${formData.bizNo}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.text();
+        if (data.includes("사용가능")) {
+          setBizNoCheckMessage("사용 가능한 사업자번호입니다.");
+          setBizNoDuplicate(false);
+        } else {
+          setBizNoCheckMessage("이미 등록된 사업자번호입니다.");
+          setBizNoDuplicate(true);
+        }
+      }
+    } catch (error) {
+      console.error("사업자번호 중복 체크 실패:", error);
+      setBizNoCheckMessage("중복 체크 실패. 다시 시도해주세요.");
+      setBizNoDuplicate(true);
+    }
+  };
+
+  const handleNext = async () => {
+    if (!formData.bizType) {
+      alert("사업자구분을 선택해주세요.");
+      return;
+    }
+
+    if (bizNoDuplicate !== false) {
+      alert("사업자번호 중복 확인을 해주세요.");
+      return;
+    }
+
+    // 사업자 정보 검증
+    const validation = validateBizInfo(formData);
+    if (!validation.isValid) {
+      alert(validation.message);
+      return;
+    }
+
+    // 사업자 등록번호 검증 API 호출
+    try {
+      const validationRequest = {
+        businesses: [
+          {
+            b_no: formData.bizNo,
+            start_dt: formData.bizRegDate.replace(/-/g, ""), // YYYYMMDD 형식으로 변환
+            p_nm: formData.ownerNm,
+          },
+        ],
+      };
+
+      const response = await fetch("http://localhost:8080/api/store/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validationRequest),
+      });
+
+      if (response.ok) {
+        await response.text();
+        next();
+      } else {
+        alert("유효하지 않은 사업자 등록번호입니다.");
+        return;
+      }
+    } catch (error) {
+      console.error("사업자 등록번호 검증 실패:", error);
+      alert("사업자 등록번호 검증 중 오류가 발생했습니다.");
+      return;
+    }
+  };
+  return (
+    <div className="bizinfo-container">
+      <div className="bizinfo-wrap">
+        <div className="bizinfo-header">
+          <div className="bizinfo-header-title">회원가입</div>
+          <div className="bizinfo-header-text">3/4</div>
+          <progress value="3" max="4">
+            75%
+          </progress>
+        </div>
+
+        <div className="bizinfo-middle-title">사업자 정보 입력</div>
+        <div className="bizinfo-middle-content">
+          <div className="bizinfo-middle-subtitle">사업자구분</div>
+          <div className="bizinfo-middle-radio-div">
+            <label>
+              <input
+                type="radio"
+                className="bizinfo-radio"
+                name="bizType"
+                value="개인"
+                checked={formData.bizType === "개인"}
+                onChange={() => handleBizTypeChange("개인")}
+              />
+              개인사업자
+            </label>
+            <label>
+              <input
+                type="radio"
+                className="bizinfo-radio"
+                name="bizType"
+                value="법인"
+                checked={formData.bizType === "법인"}
+                onChange={() => handleBizTypeChange("법인")}
+              />
+              법인사업자
+            </label>
+          </div>
+
+          <div className="bizinfo-middle-subtitle">사업자명</div>
+          <div>
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              value={formData.bizNm}
+              onChange={(e) => handleInputChange("bizNm", e.target.value)}
+            />
+          </div>
+
+          <div className="bizinfo-middle-subtitle">사업자번호</div>
+          <div className="bizinfo-middle-bizno-check-div">
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              placeholder="숫자만 입력 가능"
+              value={formData.bizNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                handleInputChange("bizNo", value);
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleBizNoCheck}
+              className="bizinfo-middle-bizno-check"
+            >
+              중복체크
+            </button>
+          </div>
+          {bizNoCheckMessage && (
+            <div
+              style={{
+                color: bizNoDuplicate ? "red" : "green",
+                fontSize: "12px",
+                marginTop: "5px",
+              }}
+            >
+              {bizNoCheckMessage}
+            </div>
+          )}
+
+          <div className="bizinfo-middle-subtitle">사업주 이름</div>
+          <div>
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              value={formData.ownerNm}
+              onChange={(e) => handleInputChange("ownerNm", e.target.value)}
+            />
+          </div>
+
+          <div className="bizinfo-middle-subtitle">대표번호</div>
+          <div>
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              placeholder="숫자만 입력 가능"
+              value={formData.ownerTelNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                handleInputChange("ownerTelNo", value);
+              }}
+            />
+          </div>
+
+          <div className="bizinfo-middle-subtitle">은행</div>
+          <div>
+            <select
+              className="bizinfo-middle-input"
+              value={formData.bankId || ""}
+              onChange={(e) => handleInputChange("bankId", e.target.value)}
+            >
+              <option value="">은행 선택</option>
+              {banks && banks.length > 0 ? (
+                banks.map((bank) => (
+                  <option key={bank.bankIdx} value={bank.bankIdx}>
+                    {bank.bankNm}
+                  </option>
+                ))
+              ) : (
+                <option disabled>은행 정보를 불러오는 중...</option>
+              )}
+            </select>
+          </div>
+
+          <div className="bizinfo-middle-subtitle">계좌번호</div>
+          <div>
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              placeholder="숫자만 입력 가능"
+              value={formData.storeAccNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                handleInputChange("storeAccNo", value);
+              }}
+            />
+          </div>
+
+          <div className="bizinfo-middle-subtitle">개업일</div>
+          <div>
+            <input
+              type="date"
+              className="bizinfo-middle-input"
+              value={formData.bizRegDate || ""}
+              onChange={(e) => handleInputChange("bizRegDate", e.target.value)}
+            />
+          </div>
+        </div>
+
+        <StepButton prev={prev} next={handleNext} />
+      </div>
+    </div>
+  );
+};
+
+export default BizInfo;

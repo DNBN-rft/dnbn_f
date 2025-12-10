@@ -1,0 +1,306 @@
+.orderlist-wrap {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+/*헤더영역*/
+.orderlist-header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.orderlist-header-title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+}
+
+.orderstatic-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.orderstatic-search-btn {
+    width: 100px;
+    height: 45px;
+    background-color: #f1811e;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 10px;
+    border: none;
+}
+
+.orderstatic-search-btn:hover {
+    background-color: #d46c17;
+    cursor: pointer;
+}
+
+.orderlist-header-excel {
+    width: 120px;
+    height: 45px;
+    background-color: #1BB052;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.orderlist-header-excel:hover {
+    background-color: #16a04a;
+}
+
+
+/*필터영역*/
+.orderlist-filter {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+    padding-top: 40px;
+    padding-left: 200px;
+    padding-bottom: 20px;
+}
+
+.orderlist-date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 60%;
+    margin-bottom: 20px;
+}
+
+.orderlist-date-input {
+    width: 250px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.orderlist-date-sep {
+    margin: 0 6px;
+}
+
+.orderlist-recent-btn-group {
+    margin-left: 20px;
+}
+
+.orderlist-recent-btn {
+    width: 120px;
+    margin-right: 10px;
+    padding: 6px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.orderlist-recent-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.orderlist-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.orderlist-search-select {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.orderlist-search-input {
+    padding: 6px 8px;
+    width: 415px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.orderlist-search-btn {
+    margin-left: 15px;
+}
+
+.orderlist-btn {
+    padding: 6px 12px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.orderlist-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+
+/*정보영역*/
+.orderlist-info {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 20px 40px;
+}
+
+.orderlist-info1, .orderlist-info2, .orderlist-info3, .orderlist-info4 {
+    width: 100%;
+    min-width: 250px;
+    height: 100px;
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.orderlist-info-title {
+    font-size: 15px;
+    color: black;
+    text-align: left;
+    width: 100%;
+    height: 50%;
+}
+
+.orderlist-info-value {
+    font-size: 25px;
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+    height: 50%;
+    margin-top: 10px;
+    color: black;
+}
+
+/*랭킹영역*/
+.orderlist-info-detail {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.orderlist-info-detail-left, .orderlist-info-detail-right {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 45%;
+    height: 100%;
+    padding: 10px;
+}
+
+.orderlist-info-detail-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.orderlist-info-detail-rank {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.orderlist-rank-detail {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.orderlist-product-detail {
+    margin-left: 15px;
+}
+
+.product-price {
+    font-weight: bold;
+    text-align: right;
+    height: 100%;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.product-sale {
+    font-size: 13px;
+    color: gray;
+}
+
+.rank {
+    width: 50px;
+    height: 50px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #eab308;
+    border-radius: 50px;
+    line-height: 50px;
+    color: white;
+}
+
+.orderlist-info-detail-right-bar {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.orderlist-info-detail-right-bg {
+    width: 100%;
+    height: 15px;
+    background-color: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.orderlist-info-detail-right-color {
+    height: 100%;
+    background-color: #2d6eef;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+
+/*통계영역*/
+.orderlist-graph {
+    width: 100%;
+    height: 500px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.orderlist-graph-detail {
+    width: 100%;
+    height: 90%;
+    background-color: #edf3fe;
+    text-align: center;
+    line-height: 350px;
+}

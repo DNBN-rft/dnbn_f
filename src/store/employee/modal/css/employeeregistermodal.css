@@ -1,0 +1,204 @@
+.emp-reg-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.emp-reg-wrap {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    max-width: 90%;
+    height: auto;
+    max-height: 80vh;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+/* 상단 제목 */
+.emp-reg-header {
+    width: 100%;
+    height: 70px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 70px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 내용 전체 감싸는 부분 */
+.emp-reg-contents {
+    padding: 30px 40px;
+}
+
+/* 폼 전체 */
+.emp-reg-form {
+    gap: 25px;
+}
+
+.emp-reg-up {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.emp-reg-left,
+.emp-reg-right {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.emp-reg-left label,
+.emp-reg-right label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.emp-reg-left input,
+.emp-reg-right input,
+.emp-reg-right select {
+    margin-bottom: 15px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.emp-reg-left input:focus,
+.emp-reg-right input:focus,
+.emp-reg-status:focus{
+    border-color: rgba(255, 122, 0, 0.6);
+    outline: none;
+}
+
+/*권한설정*/
+.emp-reg-auth-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.emp-reg-auth-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 15px;
+}
+
+/* 전체 선택 버튼 */
+.emp-reg-auth-select {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+
+.emp-reg-auth-select:hover {
+    text-decoration: underline;
+}
+
+/* 전체 해제 버튼 */
+.emp-reg-auth-clear {
+    background: none;
+    border: none;
+    color: black;
+    cursor: pointer;
+    padding: 0;
+}
+
+.emp-reg-auth-clear:hover {
+    text-decoration: underline;
+}
+
+/* 구분선 */
+.emp-reg-auth-divider {
+    color: #ccc;
+    font-weight: normal;
+}
+
+.emp-reg-checkbox {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.emp-reg-checkbox label {
+    width: 300px;
+    padding: 15px;
+    margin-bottom: 5px;
+}
+
+/*button*/
+.emp-reg-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.emp-reg-cancel-button {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: black;
+}
+
+.emp-reg-cancel-button:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.emp-reg-submit-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.emp-reg-submit-button:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.emp-reg-submit-button-not {
+    background-color: rgba(238, 238, 238, 0.8);
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 15px;
+    cursor: not-allowed;
+    transition: all 0.3s;
+}
+
+.emp-reg-submit-button-not:hover {
+    background-color: rgba(220, 220, 220, 1);
+}

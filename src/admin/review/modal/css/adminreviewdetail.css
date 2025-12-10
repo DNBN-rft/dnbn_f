@@ -1,0 +1,335 @@
+.adminreviewdetail-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1050;
+}
+
+.adminreviewdetail-img {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 25%;
+  height: 500px;
+  max-height: 90vh;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #9ca3af;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+@media (min-width: 992px) {
+  .adminreviewdetail-backdrop {
+    left: 225px;
+    width: calc(100% - 225px);
+  }
+}
+
+.adminreviewdetail-wrap {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 700px;
+  max-width: 700px;
+  max-height: 90vh;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 헤더 */
+.adminreviewdetail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.adminreviewdetail-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.adminreviewdetail-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.adminreviewdetail-close-btn:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* 컨텐츠 */
+.adminreviewdetail-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+}
+
+.adminreviewdetail-section {
+  margin-bottom: 40px;
+}
+
+.adminreviewdetail-section:last-child {
+  margin-bottom: 0;
+}
+
+.adminreviewdetail-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.adminreviewdetail-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.adminreviewdetail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.adminreviewdetail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adminreviewdetail-field-full {
+  grid-column: 1 / -1;
+}
+
+.adminreviewdetail-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.adminreviewdetail-value {
+  font-size: 15px;
+  color: #111827;
+  word-break: break-word;
+}
+
+.adminreviewdetail-status {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  width: fit-content;
+}
+
+.adminreviewdetail-status.normal {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.adminreviewdetail-status.hidden {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.adminreviewdetail-expiry-edit {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.adminreviewdetail-input {
+  font-size: 15px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1;
+}
+
+.adminreviewdetail-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 푸터 */
+.adminreviewdetail-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 32px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.adminreviewdetail-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adminreviewdetail-close-footer-btn {
+  background-color: #6b7280;
+  color: white;
+}
+
+.adminreviewdetail-close-footer-btn:hover {
+  background-color: #4b5563;
+}
+
+.adminreviewdetail-edit-btn {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.adminreviewdetail-edit-btn:hover {
+  background-color: #2563eb;
+}
+
+.adminreviewdetail-save-btn {
+  background-color: #10b981;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.adminreviewdetail-save-btn:hover {
+  background-color: #059669;
+}
+
+.adminreviewdetail-cancel-btn {
+  background-color: #ef4444;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.adminreviewdetail-cancel-btn:hover {
+  background-color: #dc2626;
+}
+
+/* 이미지 확대 라이트박스 */
+.adminreviewdetail-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.adminreviewdetail-lightbox-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminreviewdetail-lightbox-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.adminreviewdetail-lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.adminreviewdetail-lightbox-close:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .adminreviewdetail-img {
+    width: 30%;
+  }
+
+  .adminreviewdetail-wrap {
+    width: 90%;
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 768px) {
+  .adminreviewdetail-backdrop {
+    padding: 10px;
+  }
+
+  .adminreviewdetail-img {
+    width: 95%;
+    height: 300px;
+  }
+
+  .adminreviewdetail-wrap {
+    width: 95%;
+    max-height: 70vh;
+  }
+
+  .adminreviewdetail-header,
+  .adminreviewdetail-content,
+  .adminreviewdetail-footer {
+    padding: 16px;
+  }
+
+  .adminreviewdetail-grid {
+    grid-template-columns: 1fr;
+  }
+}

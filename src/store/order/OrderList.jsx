@@ -1,0 +1,217 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import "./css/orderlist.css";
+import OrderInfo from "./modal/OrderInfo";
+import { apiGet } from "../../utils/apiClient";
+
+const OrderList = () => {
+  const location = useLocation();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [searchField, setSearchField] = useState("판매번호");
+  const [searchText, setSearchText] = useState("");
+  const [isOrderInfoModalOpen, setIsOrderInfoModalOpen] = useState(false);
+  const [selectedOrderCode, setSelectedOrderCode] = useState(null);
+  const [list, setList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const handleReset = () => {
+    setSearchField("판매번호");
+    setSearchText("");
+    setStartDate("");
+    setEndDate("");
+  };
+
+  // 페이지네이션 계산
+  const totalItems = list.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  const currentItems = list.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+useEffect(() => {
+    const fetchOrderList = async () => {
+      try {
+        let userData = localStorage.getItem("user");
+        const storeCode = JSON.parse(userData).storeCode;
+       
+        const response = await apiGet(`/order/statistics/list/${storeCode}`);
+        const data = await response.json();
+        if (response.ok) {
+          const orderList = data.map(p => ({
+            orderCode: p.orderCode || p.orderId || p.saleCode,
+            productNm: p.productsNm,
+            buyer: p.buyer,
+            totalPrice: p.price,
+            payType: p.payType,
+            payDate: p.paymentDateTime
+          }));
+          setList(orderList);
+        }
+    } catch (error) {
+      console.error("주문 목록 조회 중 오류 발생:", error);
+    }
+    };
+    fetchOrderList();
+  }, []);
+
+  // 알람에서 전달받은 state 처리
+  useEffect(() => {
+    if (location.state?.openModal && location.state?.orderCode) {
+      setSelectedOrderCode(location.state.orderCode);
+      setIsOrderInfoModalOpen(true);
+      
+      // state 초기화 (뒤로가기 시 모달이 다시 열리는 것 방지)
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
+  return (
+    <div>
+      <div className="orderlist-header">
+        <div className="orderlist-header-title">매출목록</div>
+        <div className="orderlist-header-excel">엑셀 다운로드</div>
+      </div>
+
+      <div className="orderlist-filter">
+        <div className="orderlist-date-range">
+          <div className="orderlist-date-range-inner">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="orderlist-date-input"
+            />
+            <span className="orderlist-date-sep">~</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="orderlist-date-input"
+            />
+          </div>
+          <div className="orderlist-recent-btn-group">
+            <button type="button" className="orderlist-recent-btn">
+              최근 1개월
+            </button>
+            <button type="button" className="orderlist-recent-btn">
+              최근 3개월
+            </button>
+            <button type="button" className="orderlist-recent-btn">
+              최근 6개월
+            </button>
+            <button type="button" className="orderlist-recent-btn">
+              최근 12개월
+            </button>
+          </div>
+        </div>
+        <div className="orderlist-search">
+          <select
+            value={searchField}
+            onChange={(e) => setSearchField(e.target.value)}
+            className="orderlist-search-select"
+          >
+            <option>판매번호</option>
+            <option>상품명</option>
+            <option>상품코드</option>
+          </select>
+          <input
+            type="text"
+            placeholder="검색어를 입력해주세요."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            className="orderlist-search-input"
+          />
+          <div className="orderlist-search-btn">
+            <button className="orderlist-btn">검색</button>
+            <button className="orderlist-btn" onClick={handleReset}>
+              초기화
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="orderlist-count">
+        전체 {totalItems}개 상품 중 {totalItems > 0 ? `${startIndex + 1}-${endIndex}개` : '0개'} 표시
+      </div>
+
+      <div className="product-table-wrap">
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>상품정보</th>
+              <th>구매자</th>
+              <th>결제금액</th>
+              <th>결제방법</th>
+              <th>결제일시</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((p, idx) => (
+              <tr key={p.orderCode || idx} onClick={() => {
+                setSelectedOrderCode(p.orderCode);
+                setIsOrderInfoModalOpen(true);
+              }} className="product-table-row">
+                <td>{startIndex + idx + 1}</td>
+                <td className="product-product-info">
+                  {p.productNm}
+                </td>
+                <td>{p.buyer}</td>
+                <td>{p.totalPrice.toLocaleString()}원</td>
+                <td>{p.payType}</td>
+                <td>{p.payDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="product-footer">
+          <div className="product-pagination">
+            <button 
+              className="product-page" 
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i + 1}
+                className={`product-page ${currentPage === i + 1 ? 'active' : ''}`}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button 
+              className="product-page" 
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              다음
+            </button>
+          </div>
+        </div>
+      </div>
+      {isOrderInfoModalOpen && (
+        <OrderInfo 
+          orderCode={selectedOrderCode}
+          onClose={() => {
+            setIsOrderInfoModalOpen(false);
+            setSelectedOrderCode(null);
+          }} 
+        />
+      )}
+    </div>
+  );
+};
+
+export default OrderList;

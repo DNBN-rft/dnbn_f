@@ -1,0 +1,240 @@
+/*헤더 영역*/
+.orderinfo-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid black;
+}
+
+.orderinfo-modal {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    min-width: 60%;
+    height: 95%;
+    max-height: 95%;
+    overflow-y: auto;
+}
+
+.orderinfo-header {
+    width: 100%;
+    height: 70px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 70px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/*모달 최상단 영역*/
+.orderinfo-top-content {
+    padding-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.orderinfo-top-content-img {
+    border: 1px solid black;
+    width: 25%;
+    height: 250px;
+}
+
+.orderinfo-top-content-info1 {
+    display: flex;
+    flex-direction: row;
+}
+
+.orderinfo-top-content-tag {
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(241, 129, 30, 0.8);
+    color: white;
+    font-size: 10px;
+    display: flex;
+    padding: 3px;
+    align-items: flex-start;
+    margin-left: 10px;
+}
+
+/*모달 중간 영역*/
+.orderinfo-subtitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.orderinfo-cust-tab {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.orderinfo-cust-wrap {
+    width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.orderinfo-cust-table {
+    border-collapse: collapse;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.orderinfo-cust-table th, .orderinfo-cust-table td {
+    font-size: 14px;
+    padding: 8px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+}
+
+.orderinfo-cust-table td:last-child, .orderinfo-cust-table th:last-child {
+    border-right: none;
+}
+
+.orderinfo-cust-table th {
+    background-color: #f2f2f2;
+}
+
+.orderinfo-credit-wrap {
+    width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.orderinfo-credit-table {
+    border-collapse: collapse;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.orderinfo-credit-table th, .orderinfo-credit-table td {
+    font-size: 14px;
+    padding: 8px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+}
+
+.orderinfo-credit-table td:last-child, .orderinfo-credit-table th:last-child {
+    border-right: none;
+}
+
+.orderinfo-credit-table th {
+    background-color: #f2f2f2;
+}
+
+.orderinfo-sale-wrap {
+    width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.orderinfo-sale-table {
+    border-collapse: collapse;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.orderinfo-sale-table th, .orderinfo-sale-table td {
+    font-size: 14px;
+    padding: 8px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+}
+
+.orderinfo-sale-table td:last-child, .orderinfo-sale-table th:last-child {
+    border-right: none;
+}
+
+.orderinfo-sale-table th {
+    background-color: #f2f2f2;
+}
+
+/*사용 처리 버튼*/
+.orderinfo-process-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.orderinfo-process-btn-group button {
+    width: 100px;
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.orderinfo-process-btn-group button:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+/*창닫기 버튼*/
+.orderinfo-close-btn-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.orderinfo-close-btn {
+    width: 80px;
+    height: 40px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.orderinfo-close-btn:hover {
+    background-color: rgba(241, 129, 30, 0.8);
+    border: none;
+    color: white;
+}
+
+.orderinfo-bill-btn {
+    width: 50px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: white;
+
+}
+
+.orderinfo-bill-btn:hover {
+    background-color: rgba(241, 129, 30, 0.8);
+    color: white;
+}
+
+.orderinfo-cancel-btn {
+    width: 70px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.orderinfo-cancel-btn:hover {
+    background-color: rgba(241, 129, 30, 0.8);
+    color: white;
+}

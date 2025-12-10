@@ -1,0 +1,243 @@
+/*헤더영역*/
+.mypage-header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.mypage-header-title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+}
+
+/*최상단 콘텐츠 영역*/
+.mypage-top-content-wrap {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.mypage-top-content-name-wrap {
+display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mypage-top-content-name-contain {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mypage-top-content-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.mypage-top-content-confirmtag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    width: 60px;
+    height: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(0, 128, 0, 1);
+    margin-left: 5px;
+}
+
+.mypage-top-content {
+    width: 100%;
+    border-bottom: 2px solid black;
+    margin: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.mypage-top-content-tab-group {
+    display: flex;
+}
+
+.mypage-top-content-tab {
+    font-size: 18px;
+    padding: 5px 10px 2px 10px;
+    cursor: pointer;
+}
+
+.mypage-top-content-tab-active {
+    font-weight: bold;
+    box-shadow: 0 2px 0 rgba(241, 129, 30, 1);
+    color: rgba(241, 129, 30, 1);
+}
+
+.mypage-top-content-btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.mypage-top-content-btn {
+    width: 100px;
+    padding: 5px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.mypage-top-content-edit-btn {
+    color: black;
+}
+
+.mypage-top-content-edit-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+    font-weight: bold;
+}
+
+.mypage-top-content-signout-btn {
+    color: white;
+    font-weight: bold;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.mypage-top-content-signout-btn:hover {
+    background-color: rgba(255, 0, 0, 0.7);
+    border: 1px solid rgba(255, 0, 0, 0.7);
+}
+
+/*중간 컨텐츠 영역*/
+.mypage-middle-content-wrap {
+    width: 100%;
+    padding-top: 40px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.mypage-middle-content-left, .mypage-middle-content-right {
+ border-radius: 10px;
+ box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+ width: 45%;
+ height: 600px;
+ padding: 20px;
+}
+
+.mypage-middle-content-title {
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 30px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 1;
+}
+
+.mypage-middle-content-info {
+    margin-bottom: 10px;
+    width: 50%;
+}
+
+.mypage-middle-content-subtitle {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.mypage-middle-content-subcontent {
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.mypage-middle-content-owner-wrap {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.mypage-middle-content-align {
+    height: 50%;
+}
+
+/*멤버쉽 정보 구역*/
+.mypage-middle-content-wrap-m {
+    width: 100%;
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mypage-middle-content-align-m {
+ border-radius: 10px;
+ box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+ width: 100%;
+ height: 200px;
+ min-height: 150px;
+ padding: 20px;
+ }
+
+.mypage-middle-content-align-m2 {
+ border-radius: 10px;
+ box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+ width: 100%;
+ min-height: 300px;
+ height: 50%;
+ padding: 20px;
+}
+
+.mypage-middle-content-up-align {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.mypage-middle-content-title-m {
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 1;
+}
+
+/*플랜 결제 히스토리*/
+.mypage-credit-history {
+  width: 100%;
+  min-height: 300px;
+  margin: auto;
+  padding: 20px;
+}
+
+.mypage-credit-table {
+  border-collapse: collapse;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.mypage-credit-table th,
+.mypage-credit-table td {
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.mypage-credit-table th {
+  background-color: #eee;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 15px;
+}
+
+.mypage-credit-table td {
+  font-size: 15px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.6);
+}

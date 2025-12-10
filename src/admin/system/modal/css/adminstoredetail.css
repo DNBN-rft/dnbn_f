@@ -1,0 +1,226 @@
+/* 모달 배경 */
+.adminstoredetail-backdrop {
+  position: fixed;
+  top: 0;
+  left: 225px;
+  width: calc(100% - 225px);
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 컨테이너 */
+.adminstoredetail-wrap {
+  width: 90%;
+  max-width: 700px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 모달 헤더 */
+.adminstoredetail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 30px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.adminstoredetail-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+.adminstoredetail-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.adminstoredetail-close-btn:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* 모달 컨텐츠 */
+.adminstoredetail-content {
+  padding: 30px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.adminstoredetail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.adminstoredetail-row:last-child {
+  margin-bottom: 0;
+}
+
+.adminstoredetail-label {
+  min-width: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.adminstoredetail-label-inline {
+  min-width: 90px;
+}
+
+.adminstoredetail-value {
+  flex: 1;
+  font-size: 14px;
+  color: #212529;
+  padding: 10px 14px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  line-height: 1.6;
+}
+
+.adminstoredetail-value-inline {
+  flex: 1;
+  min-width: 150px;
+}
+
+.adminstoredetail-value-type {
+    text-align: center;
+}
+
+/* 가맹타입 배지 */
+.adminstoredetail-type-normal {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #e7f3ff;
+  color: #0066cc;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.adminstoredetail-type-adult {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #fff3e0;
+  color: #e65100;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 모달 푸터 */
+.adminstoredetail-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 30px;
+  border-top: 2px solid #e9ecef;
+  background-color: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.adminstoredetail-btn {
+  padding: 10px 24px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.adminstoredetail-btn-approve {
+  color: white;
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.adminstoredetail-btn-approve:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+.adminstoredetail-btn-reject {
+  color: white;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.adminstoredetail-btn-reject:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.adminstoredetail-btn-close {
+  color: #495057;
+  background-color: white;
+  border-color: #dee2e6;
+}
+
+.adminstoredetail-btn-close:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .adminstoredetail-wrap {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .adminstoredetail-header,
+  .adminstoredetail-content,
+  .adminstoredetail-footer {
+    padding: 20px;
+  }
+
+  .adminstoredetail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .adminstoredetail-label {
+    min-width: auto;
+  }
+
+  .adminstoredetail-value {
+    width: 100%;
+  }
+
+  .adminstoredetail-footer {
+    flex-direction: column;
+  }
+
+  .adminstoredetail-btn {
+    width: 100%;
+  }
+}

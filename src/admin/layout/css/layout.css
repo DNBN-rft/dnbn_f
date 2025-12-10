@@ -1,0 +1,182 @@
+/* styles.css */
+.admin-sb-nav-fixed {
+    margin-left: 0;
+}
+
+#admin-layoutSidenav {
+    display: flex;
+}
+
+.admin-side-logo {
+    display: none; /* 기본적으로 숨김 (작은 화면) */
+    justify-content: center;
+}
+
+i {
+    color: white;
+}
+
+.admin-logo {
+    width: 140px;
+}
+
+/* 사이드바 오버레이 */
+.admin-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1039;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.admin-sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#admin-layoutSidenav #admin-layoutSidenav_nav {
+    position: fixed;
+    top: 56px; /* TopNav 높이 */
+    left: -225px;
+    width: 225px;
+    height: calc(100% - 56px);
+    z-index: 1040;
+    transition: left 0.3s ease;
+}
+
+#admin-layoutSidenav #admin-layoutSidenav_nav.admin-sidebar-visible {
+    left: 0;
+}
+
+#admin-layoutSidenav #admin-layoutSidenav_content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex-grow: 1;
+    margin-left: 0;
+    min-height: 100vh;
+    width: 100%;
+}
+
+#admin-layoutSidenav_content main {
+    flex: 1 0 auto;
+    background-color: #f5f7fa;
+    padding-top: 56px; /* TopNav height */
+}
+
+#admin-layoutSidenav_content footer {
+    flex-shrink: 0;
+}
+
+.admin-sb-sidenav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #1e293b;
+    padding-top: 20px;
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu {
+    flex-grow: 1;
+    padding-bottom: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 스크롤바 숨기기 - 모든 브라우저 지원 */
+.admin-sb-sidenav .admin-sb-sidenav-menu::-webkit-scrollbar {
+    display: none;
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .admin-sb-sidenav-menu-heading {
+    padding: 1rem 1rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255);
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: rgba(255, 255, 255);
+    position: relative;
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .nav-link.active {
+    font-weight: 600;
+    color: #fff;
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .nav-link .admin-sb-nav-link-icon {
+    font-size: 0.9rem;
+    padding-right: 0.5rem;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .nav-link .admin-sb-sidenav-collapse-arrow {
+    display: inline-block;
+    margin-left: auto;
+    transition: transform .15s ease;
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .nav-link.collapsed .admin-sb-sidenav-collapse-arrow {
+    transform: rotate(-90deg);
+}
+
+.admin-sb-sidenav .admin-sb-sidenav-menu .nav .admin-sb-sidenav-menu-nested {
+    margin-left: 1.5rem;
+    padding-left: 0;
+}
+
+.admin-sb-sidenav .collapse {
+    padding-left: 0;
+}
+
+.admin-sb-sidenav .collapse.show {
+    display: block;
+}
+
+/* 반응형: 큰 화면에서 사이드바 항상 표시 */
+@media (min-width: 992px) {
+    .admin-side-logo {
+        display: flex; /* 큰 화면에서는 로고 표시 */
+    }
+
+    #admin-layoutSidenav #admin-layoutSidenav_nav {
+        top: 0; /* 큰 화면에서는 맨 위에서 시작 */
+        height: 100%;
+        left: 0;
+    }
+
+    #admin-layoutSidenav #admin-layoutSidenav_content {
+        margin-left: 225px;
+    }
+
+    /* 큰 화면에서는 오버레이 숨김 */
+    .admin-sidebar-overlay {
+        display: none;
+    }
+}

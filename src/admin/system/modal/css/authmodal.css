@@ -1,0 +1,284 @@
+/* 모달 백드롭 */
+.authmodal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 225px;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 모달 래퍼 */
+.authmodal-wrap {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 모달 헤더 */
+.authmodal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.authmodal-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+}
+
+.authmodal-close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.authmodal-close-btn:hover {
+    color: #333;
+}
+
+/* 모달 콘텐츠 */
+.authmodal-content {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.authmodal-form-group {
+    margin-bottom: 24px;
+}
+
+.authmodal-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.authmodal-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.authmodal-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.authmodal-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.authmodal-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    resize: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.authmodal-textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* 라디오 그룹 */
+.authmodal-radio-group {
+    display: flex;
+    gap: 20px;
+}
+
+.authmodal-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+}
+
+.authmodal-radio-label input[type="radio"] {
+    cursor: pointer;
+}
+
+/* 메뉴 선택 섹션 */
+.authmodal-menu-section {
+    margin-bottom: 20px;
+}
+
+.authmodal-menu-section:last-child {
+    margin-bottom: 0;
+}
+
+.authmodal-menu-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.authmodal-menu-category-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.authmodal-menu-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.authmodal-select-all-btn {
+    padding: 6px 14px;
+    background-color: #4f46e5;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+}
+
+.authmodal-select-all-btn:hover {
+    background-color: #4338ca;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.authmodal-reset-btn {
+    padding: 6px 14px;
+    background-color: #6c757d;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+}
+
+.authmodal-reset-btn:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.authmodal-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 4px;
+}
+
+.authmodal-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.authmodal-checkbox-label:hover {
+    background-color: #f9f9f9;
+}
+
+.authmodal-checkbox-label input[type="checkbox"] {
+    cursor: pointer;
+}
+
+/* 모달 푸터 */
+.authmodal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.authmodal-cancel-btn,
+.authmodal-submit-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.authmodal-cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.authmodal-cancel-btn:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.authmodal-submit-btn {
+    background-color: #4f46e5;
+    color: white;
+}
+
+.authmodal-submit-btn:hover {
+    background-color: #4338ca;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* 스크롤바 스타일 */
+.authmodal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.authmodal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.authmodal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.authmodal-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

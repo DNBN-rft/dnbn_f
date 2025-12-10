@@ -1,0 +1,201 @@
+/*modal backdrop*/
+.productadd-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid black;
+}
+
+
+/*modal 기본 css*/
+.productadd-modal {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 18px;
+    border-radius: 8px;
+    width: 50%;
+    min-width: 50%;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.productadd-header {
+    width: 100%;
+    height: 70px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 70px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/*정보 입력 title*/
+.productadd-title {
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 10px;
+    padding-bottom: 5px;
+}
+
+.productadd-info, .productadd-expose, .productadd-stock-info, .productadd-detail-info {
+    width: 90%;
+    margin: 5px auto 20px auto;
+}
+
+.productadd-content-title {
+    width: 20%;
+    background-color: rgba(0, 0, 0, 0.04);
+    height: 50px;
+    font-size: 14px;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.productadd-content-body {
+    width: 80%;
+    padding: 10px 15px;
+}
+
+.productadd-content-title-text {
+    width: 20%;
+    background-color: rgba(0, 0, 0, 0.04);
+    height: 200px;
+    font-size: 14px;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.productadd-content-body-text{
+    width: 80%;
+    padding: 10px 15px;
+}
+
+.productadd-info-content, .productadd-expose-content, .productadd-stock-info-content, .productadd-detail-info-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.productadd-info-content-head, .productadd-info-content-body, .productadd-info-content-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.productadd-expose-content-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.productadd-stock-info-content-head, .productadd-stock-info-content-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.productadd-detail-info-content-head, .productadd-detail-info-content-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.productadd-detail-info-content-head > div > textarea {
+    resize: none;
+    width: 100%;
+    height: 150px;
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 15px;
+}
+
+.productadd-detail-info-content-head > div > textarea:focus {
+    border-color: #ff7a00;
+    outline: none;
+}
+
+.productadd-input {
+    width: 40%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+
+.productadd-input:focus {
+    outline: none;
+    border-color: #ff7a00;
+}
+
+.productadd-input-category {
+    width: 40%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+
+.productadd-input-category:focus {
+    outline: none;
+    border-color: #ff7a00;
+    border-radius: 5px 5px 0 0;
+}
+
+.productadd-radio {
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.productadd-btn-group {
+    width: 95%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.productadd-reg-btn, .productadd-close-btn {
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.productadd-reg-btn:hover, .productadd-close-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.productadd-reg-btn:focus, .productadd-close-btn:focus {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+    outline: none;
+}

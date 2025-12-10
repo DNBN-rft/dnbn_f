@@ -1,0 +1,231 @@
+/*wrap*/
+.sale-wrap {
+    padding-bottom: 50px;
+}
+
+/*헤더 영역*/
+.sale-header {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sale-header-title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+}
+
+/*contents 영역*/
+.sale-contents {
+    width: 90%;
+    margin: auto;
+}
+
+.sale-dashboard {
+    display: flex;
+    padding: 10px;
+    gap: 30px;
+}
+
+.sale-sent {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    ;
+    border-radius: 10px;
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sale-sent-box {
+    width: 50px;
+    height: 50px;
+    background-color: rgb(193, 255, 209);
+    border-radius: 10px;
+}
+
+.sale-sent-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.sale-sent-number {
+    margin-top: 3px;
+}
+
+.sale-left {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sale-left-box {
+    width: 50px;
+    height: 50px;
+    background-color: rgb(255, 231, 182);
+    border-radius: 10px;
+}
+
+.sale-left-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.sale-left-number {
+    margin-top: 3px;
+}
+
+/*검색창*/
+.sale-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px;
+}
+
+.sale-search-input {
+    flex: 0.8;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.sale-search-select {
+    flex: 0.2;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.sale-search-btn {
+    padding: 8px 16px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.sale-search-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+/*table*/
+.sale-table{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.sale-table th:nth-child(2),
+.sale-table td:nth-child(2) {
+    width: 35%; /* 원래보다 넓게 설정 */
+}
+
+.sale-table th, .sale-table td{
+    border-bottom: 1px solid #ddd;
+    padding: 12px 10px;
+}
+
+.sale-product-info-wrap{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sale-product-img{
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+.sale-product-text{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.sale-product-name {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.sale-product-discount {
+  color: #ff7a00;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.sale-status{
+    width: 20%;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+}
+
+.sale-status-text {
+    display: inline-block;
+    background-color: #ff7a00;
+    color: white;
+    padding: 8px 11px; 
+    border-radius: 12px;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 !important;
+}
+
+.sale-cancel-btn {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sale-cancel-btn:hover {
+  background-color: rgba(241, 129, 30, 1);
+  color: white;
+  border-color: rgba(241, 129, 30, 1);
+  border-color: #ff7a00;
+}
+
+/*pagination*/
+.sale-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+.sale-pagination {
+  display: flex;
+  gap: 6px;
+}
+.sale-page {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.sale-page.active {
+  background: var(--product-accent);
+  color: #fff;
+  border-color: var(--product-accent);
+}

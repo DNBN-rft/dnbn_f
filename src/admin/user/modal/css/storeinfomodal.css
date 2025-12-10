@@ -1,0 +1,523 @@
+.storeinfomodal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+@media (min-width: 992px) {
+  .storeinfomodal-backdrop {
+    left: 225px;
+    width: calc(100% - 225px);
+  }
+}
+
+.storeinfomodal-wrap {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 85%;
+  max-width: 1200px;
+  max-height: 90vh;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 헤더 */
+.storeinfomodal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.storeinfomodal-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.storeinfomodal-download-btn{
+  background-color: #3b82f6;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.storeinfomodal-download-btn:hover {
+  background-color: #2563eb;
+}
+
+.storeinfomodal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.storeinfomodal-close-btn:hover {
+  color: #111827;
+}
+
+/* 컨텐츠 */
+.storeinfomodal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+}
+
+.storeinfomodal-section {
+  margin-bottom: 40px;
+}
+
+.storeinfomodal-section:last-child {
+  margin-bottom: 0;
+}
+
+.storeinfomodal-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.storeinfomodal-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.storeinfomodal-section-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.storeinfomodal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.storeinfomodal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.storeinfomodal-field-full {
+  grid-column: 1 / -1;
+}
+
+.storeinfomodal-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #374151;
+}
+
+.storeinfomodal-value {
+  font-size: 15px;
+  color: #1f2937;
+  padding: 5px 12px;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.storeinfomodal-input,
+.storeinfomodal-select {
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.storeinfomodal-input:focus,
+.storeinfomodal-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 체크박스 그룹 */
+.storeinfomodal-checkbox-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.storeinfomodal-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.storeinfomodal-checkbox-label:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.storeinfomodal-checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #3b82f6;
+}
+
+.storeinfomodal-checkbox-label span {
+  font-size: 14px;
+  color: #374151;
+  flex: 1;
+}
+
+.storeinfomodal-checkbox-label input[type="checkbox"]:checked + span {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* 승인 상태 */
+.storeinfomodal-approval-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.storeinfomodal-approval-status {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.storeinfomodal-approval-approved {
+  color: #065f46;
+}
+
+.storeinfomodal-approval-rejected {
+  color: #991b1b;
+}
+
+.storeinfomodal-approval-pending {
+  color: #92400e;
+}
+
+.storeinfomodal-approval-btn {
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  height: fit-content;
+}
+
+.storeinfomodal-approve-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+.storeinfomodal-approve-btn:hover {
+  background-color: #059669;
+}
+
+.storeinfomodal-cancel-approval-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.storeinfomodal-cancel-approval-btn:hover {
+  background-color: #dc2626;
+}
+
+/* 푸터 */
+.storeinfomodal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 32px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.storeinfomodal-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.storeinfomodal-close-footer-btn {
+  background-color: #6b7280;
+  color: white;
+}
+
+.storeinfomodal-close-footer-btn:hover {
+  background-color: #4b5563;
+}
+
+.storeinfomodal-edit-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.storeinfomodal-edit-btn:hover {
+  background-color: #2563eb;
+}
+
+.storeinfomodal-cancel-btn {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.storeinfomodal-cancel-btn:hover {
+  background-color: #d1d5db;
+}
+
+.storeinfomodal-save-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.storeinfomodal-save-btn:hover {
+  background-color: #4338ca;
+}
+
+/* 스크롤바 스타일 */
+.storeinfomodal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.storeinfomodal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.storeinfomodal-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.storeinfomodal-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 결합된 입력 필드 스타일 */
+.storeinfomodal-combined-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-input {
+  flex: 1;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-select {
+  flex: 1;
+}
+
+.storeinfomodal-combined-input span {
+  color: #6b7280;
+  font-weight: normal;
+}
+
+/* 특정 너비를 가진 입력 필드 */
+.storeinfomodal-combined-input .storeinfomodal-input-30 {
+  width: 30%;
+  flex: none;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-input-35 {
+  width: 35%;
+  flex: none;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-input-48 {
+  width: 48%;
+  flex: none;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-input-60 {
+  width: 60%;
+  flex: none;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-input-65 {
+  width: 65%;
+  flex: none;
+}
+
+.storeinfomodal-combined-input .storeinfomodal-select-30 {
+  width: 30%;
+  flex: none;
+}
+
+/* 권한 정보 섹션 */
+.storeinfomodal-auth-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.storeinfomodal-auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.storeinfomodal-auth-description {
+  color: #6b7280 !important;
+  font-size: 14px;
+}
+
+.storeinfomodal-menu-section {
+  margin-top: 20px;
+}
+
+.storeinfomodal-menu-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #374151;
+  margin: 0 0 12px 0;
+}
+
+.storeinfomodal-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: monospace;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.storeinfomodal-textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.storeinfomodal-menu-display {
+  padding: 12px;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 14px;
+  min-height: 120px;
+}
+
+.storeinfomodal-menu-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.storeinfomodal-permission-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  min-height: auto;
+  align-items: center;
+}
+
+.storeinfomodal-permission-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 14px;
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.storeinfomodal-no-permission {
+  color: #9ca3af;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.storeinfomodal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .storeinfomodal-wrap {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .storeinfomodal-header,
+  .storeinfomodal-content,
+  .storeinfomodal-footer {
+    padding: 16px;
+  }
+
+  .storeinfomodal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .storeinfomodal-combined-input {
+    flex-wrap: wrap;
+  }
+
+  .storeinfomodal-combined-input .storeinfomodal-input,
+  .storeinfomodal-combined-input .storeinfomodal-select {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+
+  .storeinfomodal-menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .storeinfomodal-auth-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,601 @@
+.adminmain-container {
+  width: 100%;
+  min-height: 100%;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  padding: 30px;
+}
+
+/* 헤더 */
+.adminmain-header {
+  margin-bottom: 30px;
+}
+
+.adminmain-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.adminmain-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.adminmain-wrap {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+/* 통계 카드 그리드 */
+.adminmain-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.adminmain-stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid;
+}
+
+.adminmain-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.adminmain-card-primary {
+  border-left-color: #3b82f6;
+}
+
+.adminmain-card-success {
+  border-left-color: #10b981;
+}
+
+.adminmain-card-warning {
+  border-left-color: #f59e0b;
+}
+
+.adminmain-card-info {
+  border-left-color: #6366f1;
+}
+
+.adminmain-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.adminmain-card-primary .adminmain-card-icon {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.adminmain-card-success .adminmain-card-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.adminmain-card-warning .adminmain-card-icon {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.adminmain-card-info .adminmain-card-icon {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+}
+
+.adminmain-card-content {
+  flex: 1;
+}
+
+.adminmain-card-title {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.adminmain-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1;
+}
+
+.adminmain-card-unit {
+  font-size: 16px;
+  font-weight: 500;
+  color: #64748b;
+  margin-left: 4px;
+}
+
+.adminmain-card-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin: 8px 0 0 0;
+}
+
+.adminmain-highlight {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.adminmain-highlight-warning {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* 섹션 카드 공통 스타일 */
+.adminmain-section-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.adminmain-section-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.adminmain-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminmain-section-title i {
+  color: #3b82f6;
+}
+
+/* 정산 섹션 */
+.adminmain-settlement-section {
+  margin-bottom: 30px;
+}
+
+.adminmain-settlement-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.adminmain-settlement-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminmain-settlement-label {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.adminmain-settlement-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.adminmain-amount-large {
+  font-size: 32px;
+  color: #3b82f6;
+}
+
+.adminmain-settlement-divider {
+  width: 1px;
+  height: 60px;
+  background: #e2e8f0;
+}
+
+.adminmain-settlement-graph {
+  margin-top: 20px;
+}
+
+.adminmain-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 150px;
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.adminmain-bar {
+  flex: 1;
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  min-height: 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.adminmain-bar:hover {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.adminmain-bar-label {
+  font-size: 12px;
+  color: white;
+  font-weight: 500;
+}
+
+.adminmain-bar-tooltip {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.adminmain-bar-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #1e293b;
+}
+
+.adminmain-bar:hover .adminmain-bar-tooltip {
+  opacity: 1;
+}
+
+/* 2열 레이아웃 */
+.adminmain-two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* 순위 카드 */
+.adminmain-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adminmain-ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.adminmain-ranking-item:hover {
+  background: #f1f5f9;
+  transform: translateX(4px);
+}
+
+.adminmain-rank-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  color: #475569;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 14px;
+  margin-right: 16px;
+}
+
+.adminmain-rank-1 .adminmain-rank-number {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: white;
+}
+
+.adminmain-rank-2 .adminmain-rank-number {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+  color: white;
+}
+
+.adminmain-rank-3 .adminmain-rank-number {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  color: white;
+}
+
+.adminmain-rank-store {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.adminmain-rank-sales {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* 이탈률 카드 */
+.adminmain-churn-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.adminmain-churn-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adminmain-churn-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminmain-churn-label i {
+  color: #3b82f6;
+}
+
+.adminmain-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adminmain-progress-bar {
+  flex: 1;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.adminmain-progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.adminmain-progress-store {
+  background: linear-gradient(90deg, rgba(241, 129, 30, 1) 0%, rgba(241, 129, 30, 1) 100%);
+}
+
+.adminmain-progress-user {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.adminmain-progress-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  min-width: 45px;
+  text-align: right;
+}
+
+.adminmain-churn-chart {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.adminmain-donut-chart {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: conic-gradient(
+    rgba(241, 129, 30, 1) 0deg 339deg,
+    #e2e8f0 339deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminmain-donut-center {
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminmain-donut-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(241, 129, 30, 1);
+}
+
+.adminmain-donut-label {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* 수익 섹션 */
+.adminmain-profit-section {
+  margin-bottom: 30px;
+}
+
+.adminmain-profit-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.adminmain-profit-chart {
+  width: 75%;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 8px;
+  height: 320px;
+}
+
+.adminmain-profit-summary {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 8px;
+  height: 320px;
+  justify-content: center;
+}
+
+.adminmain-profit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adminmain-profit-total {
+  padding-bottom: 16px;
+}
+
+.adminmain-profit-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 8px 0;
+}
+
+.adminmain-profit-plan-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminmain-profit-plan-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.adminmain-dot-basic {
+  background: #3b82f6;
+}
+
+.adminmain-dot-pro {
+  background: #8b5cf6;
+}
+
+.adminmain-dot-premium {
+  background: #ec4899;
+}
+
+.adminmain-profit-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.adminmain-profit-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.adminmain-profit-value-large {
+  font-size: 28px;
+  color: #3b82f6;
+}
+
+.adminmain-profit-basic {
+  color: #3b82f6;
+}
+
+.adminmain-profit-pro {
+  color: #8b5cf6;
+}
+
+.adminmain-profit-premium {
+  color: #ec4899;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .adminmain-container {
+    padding: 20px;
+  }
+
+  .adminmain-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adminmain-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .adminmain-settlement-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .adminmain-settlement-divider {
+    width: 80%;
+    height: 1px;
+  }
+
+  .adminmain-profit-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .adminmain-profit-container {
+    grid-template-columns: 1fr;
+  }
+
+  .adminmain-profit-chart {
+    height: 250px;
+  }
+}

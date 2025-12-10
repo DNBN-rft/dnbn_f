@@ -1,0 +1,231 @@
+/* 모달 배경 */
+.adminemppw-backdrop {
+  position: fixed;
+  top: 0;
+  left: 225px;
+  width: calc(100% - 225px);
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 모달 컨테이너 */
+.adminemppw-wrap {
+  position: relative;
+  width: 480px;
+  max-width: 90%;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* 모달 헤더 */
+.adminemppw-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.adminemppw-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #495057;
+}
+
+.adminemppw-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.adminemppw-close-btn:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+/* 모달 내용 */
+.adminemppw-contents {
+  padding: 30px;
+}
+
+/* 직원 정보 */
+.adminemppw-info {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border: 1px solid #e9ecef;
+}
+
+.adminemppw-info-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.adminemppw-info-row:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.adminemppw-info-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  min-width: 80px;
+}
+
+.adminemppw-info-value {
+  font-size: 14px;
+  color: #212529;
+  font-weight: 500;
+}
+
+/* 입력 필드 */
+.adminemppw-field {
+  margin-bottom: 20px;
+}
+
+.adminemppw-field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.adminemppw-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #495057;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.adminemppw-field input:focus {
+  border-color: #4285f4;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.adminemppw-field input::placeholder {
+  color: #adb5bd;
+}
+
+/* 안내 메시지 */
+.adminemppw-notice {
+  font-size: 13px;
+  color: #6c757d;
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+/* 필드별 에러 메시지 */
+.adminemppw-field-error {
+  font-size: 12px;
+  color: #dc3545;
+  margin-top: 6px;
+  padding-left: 4px;
+}
+
+/* 에러 메시지 */
+.adminemppw-error {
+  font-size: 13px;
+  color: #dc3545;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background-color: rgba(220, 53, 69, 0.05);
+  border-radius: 6px;
+  border-left: 3px solid #dc3545;
+}
+
+/* 버튼 그룹 */
+.adminemppw-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.adminemppw-submit-btn,
+.adminemppw-cancel-btn {
+  flex: 1;
+  max-width: 160px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.adminemppw-submit-btn {
+  background-color: #4285f4;
+  color: white;
+}
+
+.adminemppw-submit-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+}
+
+.adminemppw-cancel-btn {
+  background-color: #fff;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.adminemppw-cancel-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+/* 반응형 */
+@media (max-width: 576px) {
+  .adminemppw-wrap {
+    width: 95%;
+    margin: 0 10px;
+  }
+
+  .adminemppw-header {
+    padding: 16px 20px;
+  }
+
+  .adminemppw-title {
+    font-size: 16px;
+  }
+
+  .adminemppw-contents {
+    padding: 24px 20px;
+  }
+
+  .adminemppw-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .adminemppw-submit-btn,
+  .adminemppw-cancel-btn {
+    max-width: 100%;
+  }
+}

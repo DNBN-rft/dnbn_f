@@ -1,0 +1,146 @@
+/* Wrap */
+.notices-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+}
+
+/* Header */
+.notices-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #333;
+}
+
+.notices-header-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Contents */
+.notices-contents {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.notices-loading,
+.notices-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* Table */
+.notices-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.notices-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.notices-table th {
+    padding: 16px 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+    text-align: center;
+}
+
+.notices-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s;
+}
+
+.notices-table tbody tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.notices-table td {
+    padding: 16px 12px;
+    font-size: 14px;
+    color: #212529;
+    text-align: center;
+}
+
+/* Columns */
+.notices-col-num {
+    width: 80px;
+}
+
+.notices-col-title {
+    text-align: left;
+    width: auto;
+}
+
+.notices-col-author {
+    width: 120px;
+}
+
+.notices-col-date {
+    width: 120px;
+}
+
+/* Badge */
+.notices-badge-important {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #ff6b6b;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+/* Title */
+.notices-title-text {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Footer */
+.notices-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.notices-pagination {
+    display: flex;
+    gap: 8px;
+}
+
+.notices-page {
+    min-width: 36px;
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    background: #fff;
+    color: #495057;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.notices-page:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.notices-page.active {
+    background: var(--product-accent, #ff8142);
+    color: #fff;
+    border-color: var(--product-accent, #ff8142);
+    font-weight: 600;
+}

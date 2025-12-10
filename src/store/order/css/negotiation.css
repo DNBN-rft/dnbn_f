@@ -1,0 +1,241 @@
+:root {
+  --nego-accent: rgb(241, 129, 25);
+  --nego-accent-dark: rgba(241, 129, 25, 0.9);
+  --nego-muted: #f8f8f8;
+  --nego-border: #e9e9e9;
+}
+
+.nego-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+/*헤더영역*/
+.nego-header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.nego-header-title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+}
+
+.nego-header-excel {
+    width: 120px;
+    height: 45px;
+    background-color: #1BB052;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.nego-header-excel:hover {
+    background-color: #16a04a;
+}
+
+/*필터영역*/
+.nego-filter {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+    padding-top: 40px;
+    padding-left: 200px;
+    padding-bottom: 20px;
+}
+
+.nego-date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 60%;
+    margin-bottom: 20px;
+}
+
+.nego-date-input {
+    width: 250px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.nego-date-sep {
+    margin: 0 6px;
+}
+
+.nego-recent-btn-group {
+    margin-left: 20px;
+}
+
+.nego-recent-btn {
+    width: 120px;
+    margin-right: 10px;
+    padding: 6px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.nego-recent-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.nego-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.nego-search-select {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.nego-search-input {
+    padding: 6px 8px;
+    width: 415px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.nego-search-btn {
+    margin-left: 15px;
+}
+
+.nego-btn {
+    padding: 6px 12px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.nego-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+/*테이블 영역*/
+.nego-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border-radius: 10px;
+}
+
+.nego-th1,
+.nego-th2,
+.nego-th3,
+.nego-th4,
+.nego-th5,
+.nego-th6,
+.nego-th7,
+.nego-th8,
+.nego-th9,
+.nego-th10 {
+    border-bottom: 1px solid #eee;
+    padding: 12px;
+    text-align: center;
+    background-color: #fafafa;
+}
+
+.nego-td1,
+.nego-td2,
+.nego-td3,
+.nego-td4,
+.nego-td5,
+.nego-td6,
+.nego-td7,
+.nego-td8,
+.nego-td9,
+.nego-td10 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.nego-td10 {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.nego-confirm-btn,
+.nego-reject-btn {
+    width: 60px;
+    padding: 6px 0;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.nego-confirm-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.nego-confirm-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.nego-reject-btn {
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+}
+
+/*페이지네이션*/
+.nego-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.nego-footer-left {
+  color: #666;
+}
+
+.nego-pagination {
+  display: flex;
+  gap: 6px;
+}
+
+.nego-page {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nego-page.active {
+  background: var(--nego-accent);
+  color: #fff;
+  border-color: var(--nego-accent);
+}
