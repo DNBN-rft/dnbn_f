@@ -1,64 +1,185 @@
+/* 페이지 타이틀 */
+.subscriptionplans-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
 
-.pricing-card {
+/* Free Plan 스타일 - 넓고 낮은 박스 */
+.subscriptionplans-free-card {
+    background: linear-gradient(135deg, rgba(241, 129, 30, 0.05) 0%, rgba(241, 129, 30, 0.1) 100%);
+    border: 2px solid rgba(241, 129, 30, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.subscriptionplans-free-card:hover {
+    box-shadow: 0 4px 16px rgba(241, 129, 30, 0.2);
+}
+
+.subscriptionplans-free-body {
+    padding: 1.5rem 2rem;
+}
+
+.subscriptionplans-free-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.subscriptionplans-free-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 250px;
+}
+
+.subscriptionplans-free-badge {
+    background-color: rgba(241, 129, 30, 0.2);
+    color: rgba(241, 129, 30, 1);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.subscriptionplans-free-title {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.subscriptionplans-free-price {
+    font-size: 1rem;
+    color: rgba(241, 129, 30, 1);
+    font-weight: 600;
+}
+
+.subscriptionplans-free-divider {
+    width: 2px;
+    height: 60px;
+    background: linear-gradient(180deg, transparent, rgba(241, 129, 30, 0.3), transparent);
+}
+
+.subscriptionplans-free-features {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.subscriptionplans-free-feature {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.subscriptionplans-change-btn {
+    margin-left: auto;
+    padding: 0.6rem 1.5rem;
+    background-color: rgba(241, 129, 30, 1);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.subscriptionplans-change-btn:hover {
+    background-color: rgba(221, 109, 10, 1);
+    box-shadow: 0 4px 12px rgba(241, 129, 30, 0.3);
+}
+
+.subscriptionplans-free-feature-label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.subscriptionplans-free-feature-value {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Paid Plans 스타일 - 기존 카드 스타일 */
+.subscriptionplans-card {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     height: 100%;
-    border-color: rgba(241, 129, 30, 0.2);
+    border: 1px solid rgba(241, 129, 30, 0.2);
     max-width: 450px;
     margin: 0 auto;
 }
 
-.pricing-card:hover {
+.subscriptionplans-card:hover {
     transform: translateY(-5px);
 }
 
-.avatar {
+.subscriptionplans-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.subscriptionplans-icon-wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-}
-
-.avatar-md {
     width: 56px;
     height: 56px;
-}
-
-.avatar-xs {
-    width: 24px;
-    height: 24px;
-}
-
-.bg-info-transparent {
+    border-radius: 50%;
     background-color: rgba(241, 129, 30, 0.2);
-}
-
-.svg-primary svg {
-    fill: rgba(241, 129, 30, 1);
-}
-
-.pricing-body {
-    padding: 0;
-    margin: 0;
-}
-
-.pricing-body li {
     margin-bottom: 1rem;
 }
 
-.pricing-body .avatar-xs {
-    background-color: rgba(241, 129, 30, 0.2);
+.subscriptionplans-icon-wrapper svg {
+    fill: rgba(241, 129, 30, 1);
 }
 
-.plan-text {
+.subscriptionplans-plan-name {
     color: rgba(241, 129, 30, 1);
+    font-size: 1rem;
+    margin-bottom: 0;
+    font-weight: 600;
 }
 
-.badge.bg-info-transparent {
+.subscriptionplans-price-description-box {
+    background-color: rgba(241, 129, 30, 0.2);
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.subscriptionplans-price {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    opacity: 0.5;
+    font-weight: 600;
+}
+
+.subscriptionplans-price-unit {
+    font-size: 1rem;
+    margin-left: 0.25rem;
+}
+
+.subscriptionplans-description {
+    color: #333;
+    opacity: 0.75;
+    display: block;
+    font-size: 0.85rem;
+}
+
+.subscriptionplans-badge {
     color: rgba(241, 129, 30, 0.8);
     background-color: rgba(241, 129, 30, 0.2);
     padding: 0.35rem 0.75rem;
@@ -68,57 +189,70 @@
     margin: 0.75rem auto;
     width: 100%;
     display: block;
+    border-radius: 4px;
 }
 
-.op-5 {
-    opacity: 0.5;
-}
-
-.pricing-card .card-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.pricing-body {
+.subscriptionplans-features-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
     width: 100%;
 }
 
-.pricing-body li {
+.subscriptionplans-feature-item {
     margin-bottom: 0.5rem;
 }
 
-.pricing-body li .d-flex {
+.subscriptionplans-feature-content {
+    display: flex;
+    align-items: center;
     text-align: left;
 }
 
-.pricing-body li .d-flex span {
+.subscriptionplans-check-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(241, 129, 30, 0.2);
+}
+
+.subscriptionplans-check-icon i {
+    color: rgba(241, 129, 30, 1);
     font-size: 0.875rem;
 }
 
-.pricing-card .h2 {
-    font-size: 1.75rem;
-    margin: 0.5rem 0;
-    text-align: center;
+.subscriptionplans-feature-text {
+    margin-left: 0.5rem;
+    flex: 1;
+    font-size: 0.875rem;
 }
 
-.pricing-card .text-info {
+.subscriptionplans-feature-limit {
     font-size: 1rem;
-}
-
-.pricing-card .text-dark {
-    font-size: 0.805rem;
-}
-
-.pricing-card .badge {
-    margin: 0.75rem 0;
-    display: block;
-    text-align: left;
-    width: 100%;
+    font-weight: 600;
 }
 
 .ri-check-double-line::before {
     content: "✓";
     color: rgba(241, 129, 30, 1);
+}
+
+/* 반응형 */
+@media (max-width: 992px) {
+    .subscriptionplans-free-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .subscriptionplans-free-divider {
+        width: 100%;
+        height: 2px;
+    }
+    
+    .subscriptionplans-free-features {
+        justify-content: center;
+    }
 }

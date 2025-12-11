@@ -49,16 +49,16 @@ export const fetchUnreadAlarmCount = async (memberId) => {
 };
 
 /**
- * 알림을 읽음 처리합니다
- * @param {number} alarmId - 알림 ID
+ * 알림을 읽음 처리합니다 (alarmIdx 사용)
+ * @param {number} alarmIdx - 알림 인덱스
  * @returns {Promise<void>}
  */
-export const markAlarmAsRead = async (alarmId) => {
-  if (!alarmId) {
-    throw new Error("alarmId가 필요합니다.");
+export const markAlarmAsRead = async (alarmIdx) => {
+  if (!alarmIdx) {
+    throw new Error("alarmIdx가 필요합니다.");
   }
 
-  const response = await apiCall(`/store/alarm/${alarmId}/read`, {
+  const response = await apiCall(`/store/alarm/read?storeAlarmIdx=${alarmIdx}`, {
     method: "PUT",
   });
 

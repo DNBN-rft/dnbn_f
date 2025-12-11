@@ -1,9 +1,11 @@
 import { useState } from "react";
 import "./css/faqpage.css";
+import { useNavigate } from "react-router-dom";
 
 const FaqPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [openIndex, setOpenIndex] = useState(null);
+  const navigate = useNavigate();
 
   const categories = [
     { id: 0, name: "계정 및 가입" },
@@ -109,7 +111,7 @@ const FaqPage = () => {
 
         <div className="faqpage-question">
             <div className="faqpage-question-title">아직 궁금증이 해결되지 않으셨나요?</div>
-            <div className="faqpage-question-btnbox"><button className="faqpage-question-btn">1:1 문의하기</button></div>
+            <div className="faqpage-question-btnbox"><button className="faqpage-question-btn" onClick={() => navigate("/store/questions")}>1:1 문의하기</button></div>
         </div>
       </div>
     </div>

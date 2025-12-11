@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../../context/AuthContext";
 import { useAlarmList } from "../../../hooks/useAlarm";
+import { markAlarmAsRead } from "../../../utils/alarmService";
 import "./css/storealarmmodal.css";
 
 const StoreAlarmModal = ({ onClose }) => {
@@ -50,6 +51,7 @@ const StoreAlarmModal = ({ onClose }) => {
 
     const transformedAlarms = alarmData.map((alarm, index) => ({
         id: index + 1,
+        alarmIdx: alarm.alarmIdx, // 백엔드에서 받은 alarmIdx
         category: getCategoryFromAlarmType(alarm.alarmType),
         content: alarm.content || "알림 내용이 없습니다.",
         time: formatDateTime(alarm.sendDateTime),
@@ -71,10 +73,17 @@ const StoreAlarmModal = ({ onClose }) => {
         .filter(alarm => !alarm.isUnread)
         .sort((a, b) => new Date(b.sendDateTime) - new Date(a.sendDateTime));
 
-    const handleAlarmClick = (alarm) => {
-        console.log("알람 클릭:", alarm);
+    const handleAlarmClick = async (alarm) => {
+        // 알림 읽음 처리 API 호출
+        try {
+            if (alarm.alarmIdx && alarm.isUnread) {
+                await markAlarmAsRead(alarm.alarmIdx);
+                console.log(`알림 ${alarm.alarmIdx} 읽음 처리 완료`);
+            }
+        } catch (error) {
+            console.error("알림 읽음 처리 실패:", error);
+        }
         
-        // 알람 모달 닫기
         onClose();
         
         // 알람 타입에 따라 페이지 이동 및 상태 전달
@@ -138,6 +147,7 @@ const StoreAlarmModal = ({ onClose }) => {
                         openModal: true, 
                         negoId: alarm.alarmLink 
                     } 
+
                 });
                 break;
                 

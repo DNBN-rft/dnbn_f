@@ -141,7 +141,7 @@ const Sidebar = () => {
                 <Link className="nav-link" to="/store/notices">
                   공지사항
                 </Link>
-                <Link className="nav-link" to="/store/questions">
+                <Link className="nav-link" to="/store/faq">
                   문의
                 </Link>
               </nav>

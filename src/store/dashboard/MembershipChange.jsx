@@ -162,7 +162,7 @@ const MembershipChange = () => {
                     <span className="membership-change-plan-box-name">
                       {plan.memberShipPlanNm}
                     </span>
-                    {currentPlan?.name === plan. memberShipPlanNm&& (
+                    {currentPlan?.name === plan.memberShipPlanNm&& (
                       <span className="membership-change-plan-box-current-badge">현재 플랜</span>
                     )}
                   </div>
