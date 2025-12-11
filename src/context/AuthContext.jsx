@@ -14,38 +14,50 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 앱 시작 시 토큰 유효성 확인 및 localStorage에서 사용자 정보 불러오기
+  // 앱 시작 시 localStorage에서 사용자 정보 복원
   useEffect(() => {
-    checkAuthStatus();
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("사용자 정보 복원 실패:", error);
+        localStorage.removeItem("user");
+      }
+    }
+    setIsLoading(false);
   }, []);
 
-  // 인증 상태 확인
+  // 인증 상태 확인 (필요시 토큰 갱신용)
   const checkAuthStatus = useCallback(async () => {
     try {
-      // localStorage에서 사용자 정보 확인
-      const storedUser = getUserFromStorage();
-      
-      if (storedUser) {
-        setIsAuthenticated(true);
-        setUser(storedUser);
+      const response = await fetch("http://localhost:8080/api/auth/refresh", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        return true;
       } else {
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem("user");
+        return false;
       }
     } catch (error) {
       console.error("인증 상태 확인 실패:", error);
       setIsAuthenticated(false);
       setUser(null);
-      clearUserFromStorage();
-    } finally {
-      setIsLoading(false);
+      localStorage.removeItem("user");
+      return false;
     }
   }, []);
 
   // 로그아웃
   const logout = useCallback(async () => {
     try {
-      // 백엔드: DB의 Refresh Token 삭제
       await fetch("http://localhost:8080/api/auth/logout", {
         method: "POST",
         credentials: "include",
@@ -55,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsAuthenticated(false);
       setUser(null);
-      clearUserFromStorage(); // localStorage 정리
+      localStorage.removeItem("user");
     }
   }, []);
 
@@ -86,6 +98,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(true);
     setUser(userData);
     setIsLoading(false);
+    localStorage.setItem("user", JSON.stringify(userData));
   }, []);
 
   const value = {

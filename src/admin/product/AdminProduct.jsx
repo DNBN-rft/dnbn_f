@@ -161,12 +161,9 @@ const AdminProduct = () => {
           return p.productNm.includes(filters.searchKeyword);
         } else if (filters.searchType === "productCode") {
           return p.productCode.includes(filters.searchKeyword);
-        } else if(filters.searchType === "storeNm"){
-          return p.storeNm.includes(filters.searchKeyword);
         } else {
           return p.productNm.includes(filters.searchKeyword) || 
-                 p.productCode.includes(filters.searchKeyword) || 
-                 p.storeNm.includes(filters.searchKeyword);
+                 p.productCode.includes(filters.searchKeyword);
         }
       });
     }
@@ -185,6 +182,19 @@ const AdminProduct = () => {
       searchKeyword: "",
     });
     setFilteredProducts(products);
+  };
+
+  // 날짜 범위 설정
+  const setDateRange = (months) => {
+    const end = new Date();
+    const start = new Date();
+    start.setMonth(start.getMonth() - months);
+    
+    setFilters(prev => ({
+      ...prev,
+      startDate: start.toISOString().split('T')[0],
+      endDate: end.toISOString().split('T')[0],
+    }));
   };
 
   // 판매상태 한글 변환
@@ -225,6 +235,12 @@ const AdminProduct = () => {
                 onChange={(e) => setFilters({...filters, endDate: e.target.value})}
               />
             </div>
+            <div className="adminproduct-filter-btn-group">
+              <button className="adminproduct-filter-date-btn" onClick={() => setDateRange(1)}>1개월</button>
+              <button className="adminproduct-filter-date-btn" onClick={() => setDateRange(3)}>3개월</button>
+              <button className="adminproduct-filter-date-btn" onClick={() => setDateRange(6)}>6개월</button>
+              <button className="adminproduct-filter-date-btn" onClick={() => setDateRange(12)}>12개월</button>
+            </div>
           </div>
 
           <div className="adminproduct-filter-row">
@@ -245,20 +261,31 @@ const AdminProduct = () => {
                 ))}
               </select>
             </div>
-            <div className="adminproduct-filter-group">
-              <label>판매상태</label>
-              <select
-                name="saleStatus"
-                id="saleStatus"
-                className="adminproduct-select"
-                value={filters.saleStatus}
-                onChange={(e) => setFilters({...filters, saleStatus: e.target.value})}
+            <div className="adminproduct-filter-status-btn-group">
+              <button 
+                className={`adminproduct-filter-status-btn ${filters.saleStatus === 'all' ? 'active' : ''}`}
+                onClick={() => setFilters({...filters, saleStatus: 'all'})}
               >
-                <option value="all">전체</option>
-                <option value="판매중">판매중</option>
-                <option value="품절">품절</option>
-                <option value="제재">제재</option>
-              </select>
+                전체
+              </button>
+              <button 
+                className={`adminproduct-filter-status-btn ${filters.saleStatus === '판매중' ? 'active' : ''}`}
+                onClick={() => setFilters({...filters, saleStatus: '판매중'})}
+              >
+                판매중
+              </button>
+              <button 
+                className={`adminproduct-filter-status-btn ${filters.saleStatus === '품절' ? 'active' : ''}`}
+                onClick={() => setFilters({...filters, saleStatus: '품절'})}
+              >
+                품절
+              </button>
+              <button 
+                className={`adminproduct-filter-status-btn ${filters.saleStatus === '제재' ? 'active' : ''}`}
+                onClick={() => setFilters({...filters, saleStatus: '제재'})}
+              >
+                제재
+              </button>
             </div>
           </div>
 
@@ -274,7 +301,6 @@ const AdminProduct = () => {
                 <option value="all-option">전체</option>
                 <option value="productNm">상품명</option>
                 <option value="productCode">상품코드</option>
-                <option value="storeNm">가맹점명</option>
               </select>
               <input
                 type="text"

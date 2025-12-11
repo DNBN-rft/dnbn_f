@@ -51,9 +51,16 @@ const EmployeeManage = () => {
 
   // 등록 모달 열기
   const handleRegister = () => {
+    if (memberData.length >= 3) {
+      alert("직원은 점주 포함 최대 3명까지 등록 가능합니다.");
+      return;
+    }
     setSelectedMember(null);
     setIsRegisterModalOpen(true);
   };
+
+  // 직원 등록 가능 여부 확인
+  const isRegisterDisabled = memberData.length >= 3;
 
   // 수정 모달 열기
   const handleEdit = (member) => {
@@ -131,67 +138,44 @@ const EmployeeManage = () => {
   const ownerCount = memberData.filter(m => m.memberType === "OWNER").length;
   const managerCount = memberData.filter(m => m.memberType === "MANAGER").length;
 
-  // 최대 3명까지 카드 배열 생성 (기존 직원 + 빈 슬롯)
-  const maxEmployees = 3;
-  const emptySlots = maxEmployees - memberData.length;
-  const allCards = [...memberData];
-  
-  // 빈 슬롯 추가
-  for (let i = 0; i < emptySlots; i++) {
-    allCards.push({ isEmpty: true, slotIndex: i });
-  }
-
   return (
     <div className="empmanage-wrap">
       <div className="empmanage-header">
         <div className="empmanage-header-title">직원관리</div>
+        <div 
+          className={`empmanage-head-btn ${isRegisterDisabled ? 'empmanage-head-btn-disabled' : ''}`}
+          onClick={handleRegister}
+        >
+          직원등록
+        </div>
       </div>
 
       <div className="empmanage-card-container">
-        {allCards.map((p, idx) => {
-          // 빈 슬롯인 경우
-          if (p.isEmpty) {
-            return (
-              <div 
-                key={`empty-${p.slotIndex}`} 
-                className="empmanage-card empmanage-card-empty"
-                onClick={handleRegister}
-              >
-                <div className="empmanage-card-empty-content">
-                  <div className="empmanage-card-empty-icon">+</div>
-                  <div className="empmanage-card-empty-text">직원 등록</div>
-                </div>
-              </div>
-            );
-          }
-          
-          // 기존 직원 카드
-          return (
-            <div key={p.memberIdx} className="empmanage-card">
-              <div className="empmanage-card-header">
-                <div className="empmanage-card-name">{p.memberNm}</div>
-                <div className="empmanage-card-type">{formatMemberType(p.memberType)}</div>
-              </div>
-              <div className="empmanage-card-body">
-                <div className="empmanage-card-info">{p.memberTelNo}</div>
-                <div className="empmanage-card-info">{p.memberId}</div>
-                <div className="empmanage-card-auth">{formatAuthInfo(p.memberAuth)}</div>
-              </div>
-              {p.memberType !== "OWNER" && (
-                <div className="empmanage-card-footer">
-                  <button
-                    className="empmanage-card-btn"
-                    onClick={() => handleEdit(p)}
-                  >정보수정</button>
-                  <button 
-                    className="empmanage-card-btn"
-                    onClick={() => handleDelete(p)}
-                  >삭제</button>
-                </div>
-              )}
+        {memberData.map((p, idx) => (
+          <div key={p.memberIdx} className="empmanage-card">
+            <div className="empmanage-card-header">
+              <div className="empmanage-card-name">{p.memberNm}</div>
+              <div className="empmanage-card-type">{formatMemberType(p.memberType)}</div>
             </div>
-          );
-        })}
+            <div className="empmanage-card-body">
+              <div className="empmanage-card-info">{p.memberTelNo}</div>
+              <div className="empmanage-card-info">{p.memberId}</div>
+              <div className="empmanage-card-auth">{formatAuthInfo(p.memberAuth)}</div>
+            </div>
+            {p.memberType !== "OWNER" && (
+              <div className="empmanage-card-footer">
+                <button
+                  className="empmanage-card-btn"
+                  onClick={() => handleEdit(p)}
+                >정보수정</button>
+                <button 
+                  className="empmanage-card-btn"
+                  onClick={() => handleDelete(p)}
+                >삭제</button>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       <div className="empmanage-summary-section">

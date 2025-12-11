@@ -93,6 +93,14 @@ const Sale = () => {
 
                 {/* 검색 영역 */}
                 <div className="sale-search">
+                    <input
+                        type="text"
+                        className="sale-search-input"
+                        placeholder="상품명을 입력하세요."
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                    />
+
                     <select 
                         className="sale-search-select"
                         value={statusFilter}
@@ -104,13 +112,7 @@ const Sale = () => {
                         <option value="할인 완료">할인 완료</option>
                         <option value="할인 취소">할인 취소</option>
                     </select>
-                    <input
-                        type="text"
-                        className="sale-search-input"
-                        placeholder="상품명을 입력하세요."
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                    />
+
                     <button className="sale-search-btn" onClick={loadSales}>새로고침</button>
                 </div>
 

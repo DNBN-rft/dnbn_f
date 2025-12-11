@@ -31,8 +31,8 @@ const RegisterStep = () => {
         ownerTelNo: "",
         bizNm: "",
         bizType: "",
-        bizRegDate: "",
         bizNo: "",
+        bizRegDate: "",
         storeAccNo: "",
         storeType: "",
         // 파일

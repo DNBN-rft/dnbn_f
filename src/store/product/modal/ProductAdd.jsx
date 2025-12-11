@@ -87,7 +87,7 @@ const ProductAdd = ({ onClose }) => {
       formDataObj.append("isStock", formData.isStock);
       formDataObj.append("productAmount", formData.isStock ? parseInt(formData.productAmount) : 0);
       formDataObj.append("productDetailDescription", formData.productDetailDescription);
-      
+
       formData.productImgs.forEach(file => {
         formDataObj.append("productImgs", file);
       });
@@ -117,48 +117,50 @@ const ProductAdd = ({ onClose }) => {
         <form onSubmit={handleSubmit}>
           <div className="productadd-info">
             <div className="productadd-title">기본 정보</div>
-            <div className="productadd-info-content-head">
-              <div className="productadd-content-title">카테고리</div>
-              <div className="productadd-content-body">
-                <select
-                  name="categoryIdx"
-                  value={formData.categoryIdx}
-                  onChange={handleChange}
-                  className="productadd-input-category"
-                >
-                  <option value="">카테고리 선택</option>
-                  {categories.map(cat => (
-                    <option key={cat.categoryIdx} value={cat.categoryIdx}>
-                      {cat.categoryNm}
-                    </option>
-                  ))}
-                </select>
+            <div className="productadd-info-content">
+              <div className="productadd-info-content-head">
+                <div className="productadd-content-title">카테고리</div>
+                <div className="productadd-content-body">
+                  <select
+                    name="categoryIdx"
+                    value={formData.categoryIdx}
+                    onChange={handleChange}
+                    className="productadd-input-category"
+                  >
+                    <option value="">카테고리 선택</option>
+                    {categories.map(cat => (
+                      <option key={cat.categoryIdx} value={cat.categoryIdx}>
+                        {cat.categoryNm}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
-            <div className="productadd-info-content-body">
-              <div className="productadd-content-title">상품명</div>
-              <div className="productadd-content-body">
-                <input
-                  type="text"
-                  name="productName"
-                  value={formData.productName}
-                  onChange={handleChange}
-                  className="productadd-input"
-                  placeholder="상품명 입력"
-                />
+              <div className="productadd-info-content-body">
+                <div className="productadd-content-title">상품명</div>
+                <div className="productadd-content-body">
+                  <input
+                    type="text"
+                    name="productName"
+                    value={formData.productName}
+                    onChange={handleChange}
+                    className="productadd-input"
+                    placeholder="상품명 입력"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="productadd-info-content-footer">
-              <div className="productadd-content-title">상품가격</div>
-              <div className="productadd-content-body">
-                <input
-                  type="number"
-                  name="productPrice"
-                  value={formData.productPrice}
-                  onChange={handleChange}
-                  className="productadd-input"
-                  placeholder="상품가격 입력"
-                />
+              <div className="productadd-info-content-footer">
+                <div className="productadd-content-title">상품가격</div>
+                <div className="productadd-content-body">
+                  <input
+                    type="number"
+                    name="productPrice"
+                    value={formData.productPrice}
+                    onChange={handleChange}
+                    className="productadd-input"
+                    placeholder="상품가격 입력"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -241,8 +243,8 @@ const ProductAdd = ({ onClose }) => {
               <div className="productadd-detail-info-content-head">
                 <div className="productadd-content-title-text">상품 설명</div>
                 <div className="productadd-content-body-text">
-                  <textarea 
-                    name="productDetailDescription" 
+                  <textarea
+                    name="productDetailDescription"
                     value={formData.productDetailDescription}
                     onChange={handleChange}
                     placeholder="상품 설명 입력"

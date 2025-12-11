@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { apiCall } from "../../../utils/apiClient";
 import "./css/reasoninputmodal.css";
 
-const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingReason }) => {
+const ReasonInputModal = ({ type, onClose, onSubmit }) => {
   const [selectedReason, setSelectedReason] = useState("");
   const [customReason, setCustomReason] = useState("");
 
@@ -30,7 +29,7 @@ const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingRea
 
   const reasons = type === "cancel" ? cancelReasons : refundReasons;
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (selectedReason === "") {
       alert("사유를 선택해주세요.");
       return;
@@ -41,28 +40,11 @@ const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingRea
     }
     
     const finalReason = selectedReason === "기타" ? customReason : selectedReason;
-    
-    try {
-      const response = await apiCall("/order/reason", {
-        method: "PUT",
-        body: JSON.stringify({
-          orderDetailIdx: orderDetailIdx,
-          reason: finalReason
-        })
-      });
+    onSubmit(finalReason);
+  };
 
-      if (response.ok) {
-        onSubmit(finalReason);
-        alert("사유가 성공적으로 등록되었습니다.");
-      } else {
-        const errorData = await response.text();
-        alert(errorData || "처리 중 오류가 발생했습니다.");
-      }
-    } catch (error) {
-      alert("서버와의 연결에 실패했습니다.");
-    }
-
-  };  const handleWrapClick = (e) => {
+  const handleWrapClick = (e) => {
+    // 배경 클릭 시에만 닫기 (이벤트 전파 중단)
     if (e.target === e.currentTarget) {
       e.stopPropagation();
       onClose();
@@ -126,7 +108,7 @@ const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingRea
 
         <div className="reason-modal-btn-group">
           <button className="reason-submit-btn" onClick={handleSubmit}>
-            제출
+            다음
           </button>
         </div>
       </div>

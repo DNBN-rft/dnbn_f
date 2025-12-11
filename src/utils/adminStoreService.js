@@ -2,15 +2,16 @@
  * 관리자 가맹점 관리 API 서비스
  */
 
-import { apiCall } from "./apiClient";
+const BASE_URL = "http://localhost:8080/api/admin/store";
 
 /**
  * 승인 대기 가맹점 목록 조회
  */
 export const getReadyStores = async () => {
   try {
-    const response = await apiCall("/admin/store", {
+    const response = await fetch(`${BASE_URL}`, {
       method: "GET",
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -42,8 +43,9 @@ export const getReadyStores = async () => {
  */
 export const getAllStores = async () => {
   try {
-    const response = await apiCall("/admin/store/all", {
+    const response = await fetch(`${BASE_URL}/all`, {
       method: "GET",
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -71,46 +73,13 @@ export const getAllStores = async () => {
 };
 
 /**
- * 가맹점 승인 대기 상세 조회
- */
-export const getPendingStoreDetail = async (storeCode) => {
-  try {
-    const response = await apiCall(`/admin/store/pending/${storeCode}`, {
-      method: "GET",
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      return {
-        success: true,
-        data: data,
-        error: null,
-      };
-    } else {
-      return {
-        success: false,
-        data: null,
-        error: "가맹점 정보를 불러오는데 실패했습니다.",
-      };
-    }
-  } catch (error) {
-    console.error("가맹점 상세 조회 중 오류:", error);
-    return {
-      success: false,
-      data: null,
-      error: "네트워크 오류가 발생했습니다.",
-    };
-  }
-};
-
-
-/**
  * 가맹점 상세 조회
  */
-export const viewStoreDetail = async (storeCode) => {
+export const getStoreDetail = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/${storeCode}`, {
       method: "GET",
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -142,8 +111,9 @@ export const viewStoreDetail = async (storeCode) => {
  */
 export const approveStore = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/approve/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/${storeCode}`, {
       method: "PUT",
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -169,47 +139,14 @@ export const approveStore = async (storeCode) => {
   }
 };
 
-
-/**
- * 가맹점 거절 처리
- */
-export const rejectStore = async (storeCode) => {
-  try {
-    const response = await apiCall(`/admin/store/reject/${storeCode}`, {
-      method: "PUT",
-    });
-
-    if (response.ok) {
-      return {
-        success: true,
-        data: await response.text(),
-        error: null,
-      };
-    } else {
-      return {
-        success: false,
-        data: null,
-        error: "가맹점 거절에 실패했습니다.",
-      };
-    }
-  } catch (error) {
-    console.error("가맹점 거절 중 오류:", error);
-    return {
-      success: false,
-      data: null,
-      error: "네트워크 오류가 발생했습니다.",
-    };
-  }
-};
-
 /**
  * 가맹점 정보 수정
  */
-export const modStoreInfo = async (storeCode, formData) => {
+export const updateStoreInfo = async (storeCode, formData) => {
   try {
-    const response = await apiCall(`/admin/store/modStoreInfo/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/modStoreInfo/${storeCode}`, {
       method: "PUT",
-      headers: {},
+      credentials: "include",
       body: formData, // FormData 객체
     });
 
@@ -239,11 +176,15 @@ export const modStoreInfo = async (storeCode, formData) => {
 /**
  * 구독 정보 수정
  */
-export const modSubsInfo = async (storeCode, subsInfo) => {
+export const updateSubsInfo = async (storeCode, data) => {
   try {
-    const response = await apiCall(`/admin/store/modSubsInfo/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/modSubsInfo/${storeCode}`, {
       method: "PUT",
-      body: JSON.stringify(subsInfo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
     });
 
     if (response.ok) {
@@ -272,11 +213,15 @@ export const modSubsInfo = async (storeCode, subsInfo) => {
 /**
  * 사용자 정보 수정
  */
-export const modMemberInfo = async (storeCode, memberInfo) => {
+export const updateMemberInfo = async (storeCode, data) => {
   try {
-    const response = await apiCall(`/admin/store/modMemberInfo/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/modMemberInfo/${storeCode}`, {
       method: "PUT",
-      body: JSON.stringify(memberInfo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
     });
 
     if (response.ok) {
@@ -305,11 +250,15 @@ export const modMemberInfo = async (storeCode, memberInfo) => {
 /**
  * 사업자 정보 수정
  */
-export const modBizInfo = async (storeCode, bizInfo) => {
+export const updateBizInfo = async (storeCode, data) => {
   try {
-    const response = await apiCall(`/admin/store/modBizInfo/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/modBizInfo/${storeCode}`, {
       method: "PUT",
-      body: JSON.stringify(bizInfo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
     });
 
     if (response.ok) {
@@ -338,11 +287,15 @@ export const modBizInfo = async (storeCode, bizInfo) => {
 /**
  * 권한 정보 수정
  */
-export const modAuthInfo = async (storeCode, authInfo) => {
+export const updateAuthInfo = async (storeCode, data) => {
   try {
-    const response = await apiCall(`/admin/store/modAuthInfo/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/modAuthInfo/${storeCode}`, {
       method: "PUT",
-      body: JSON.stringify(authInfo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
     });
 
     if (response.ok) {
@@ -371,10 +324,14 @@ export const modAuthInfo = async (storeCode, authInfo) => {
 /**
  * 비밀번호 변경
  */
-export const modMemberPassword = async (storeCode, data) => {
+export const updateMemberPassword = async (storeCode, data) => {
   try {
-    const response = await apiCall(`/admin/store/modPw/${storeCode}`, {
+    const response = await fetch(`${BASE_URL}/modPw/${storeCode}`, {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify(data),
     });
 

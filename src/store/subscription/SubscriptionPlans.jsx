@@ -223,7 +223,7 @@ const SubscriptionPlans = () => {
         <div className="col-xl-12">
           <div className="row d-flex align-items-stretch justify-content-center">
             {subscriptionPlanList.map((plan, index) => (
-              <div key={index} className="col-lg-6 col-xl-4 col-md-6 col-sm-12 mb-4">
+              <div key={index} className="col-lg-8 col-xl-4 col-xxl-2 col-md-8 col-sm-12 mb-4">
                 <Card className="custom-card pricing-card h-100">
                   <Card.Body className="p-4">
                     <span className="avatar avatar-md bg-info-transparent avatar-rounded mb-3 svg-primary">

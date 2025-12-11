@@ -30,7 +30,6 @@ export const login = async (username, password) => {
         memberNm: data.memberNm,
         storeCode: data.storeCode,
         planNm: data.subscriptionNm,
-        memberId: data.memberId
       };
       localStorage.setItem("user", JSON.stringify(user));
 

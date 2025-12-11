@@ -1,102 +1,66 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./css/orderinfo.css";
 import ReasonInputModal from "./ReasonInputModal";
-import { apiGet, apiPut } from "../../../utils/apiClient";
 
-const OrderInfo = ({ onClose, orderCode }) => {
+const OrderInfo = ({ onClose }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [reasonType, setReasonType] = useState(null); // 'cancel' or 'refund'
-  const [selectedOrderDetailIdx, setSelectedOrderDetailIdx] = useState(null);
-  const [orderData, setOrderData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [reason, setReason] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
-  useEffect(() => {
-    const fetchOrderDetail = async () => {
-      if (!orderCode) {
-        setLoading(false);
-        return;
-      }
+  const sampleProducts = [
+    { id: 1, name: "프리미엄 원두 커피", quantity: 2, price: 15000, status: "결제대기" },
+    { id: 2, name: "카페라떼", quantity: 1, price: 5000, status: "취소" },
+    { id: 3, name: "아메리카노", quantity: 3, price: 4000, status: "환불" },
+    { id: 4, name: "카푸치노", quantity: 1, price: 5500, status: "결제완료" },
+    { id: 5, name: "바닐라라떼", quantity: 2, price: 6000, status: "환불" }
+  ];
 
-      try {
-        setLoading(true);
-        const response = await apiGet(`/order/statistics/detail/${orderCode}`);
-        const data = await response.json();
-        
-        if (response.ok) {
-          setOrderData(data);
-        }
-      } catch (error) {
-        console.error("주문 상세 정보 조회 중 오류 발생:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderDetail();
-  }, [orderCode]);
-
-  const handleReasonClick = (status, orderDetailIdx, reason) => {
-    setSelectedOrderDetailIdx(orderDetailIdx);
+  const handleReasonClick = (status, productId) => {
+    setSelectedProductId(productId);
     if (status === "취소") {
       setReasonType("cancel");
-      setReason(reason);
     } else if (status === "환불") {
       setReasonType("refund");
-      setReason(reason);
     }
     setShowReasonModal(true);
   };
 
-  const handleReasonSubmit = async (reason) => {
+  const handleReasonSubmit = (reason) => {
+    console.log("사유 제출:", {
+      productId: selectedProductId,
+      type: reasonType,
+      reason: reason
+    });
+    // 여기에 백엔드 API 호출 코드를 추가하세요
+    // 예: axios.post('/api/order/reason', { productId: selectedProductId, reason: reason })
     setShowReasonModal(false);
     setReasonType(null);
-    setSelectedOrderDetailIdx(null);
-    setReason("");
-    
-    // 데이터 재조회하여 버튼 상태 업데이트
-    try {
-      const response = await apiGet(`/order/statistics/detail/${orderCode}`);
-      const data = await response.json();
-      if (response.ok) {
-        setOrderData(data);
-      }
-    } catch (error) {
-      console.error("데이터 재조회 실패:", error);
-    }
+    setSelectedProductId(null);
   };
 
   const handleReasonModalClose = () => {
     setShowReasonModal(false);
     setReasonType(null);
-    setSelectedOrderDetailIdx(null);
-    setReason("");
+    setSelectedProductId(null);
   };
 
-  const renderActionButton = (product) => {
-    if (product.cancelDate) {
-      const hasReason = product.reason && product.reason.trim() !== "";
+  const renderActionButton = (status, productId) => {
+    if (status === "취소") {
       return (
         <button 
           className="orderinfo-cancel-btn"
-          onClick={() => handleReasonClick("취소", product.orderDetailIdx, product.reason)}
-          disabled={hasReason}
-          style={{ opacity: hasReason ? 0.5 : 1, cursor: hasReason ? 'not-allowed' : 'pointer' }}
+          onClick={() => handleReasonClick(status, productId)}
         >
           취소사유
         </button>
       );
-    } 
-    else if (product.refundDate) {
-      const hasReason = product.reason && product.reason.trim() !== "";
+    } else if (status === "환불") {
       return (
         <button 
           className="orderinfo-cancel-btn"
-          onClick={() => handleReasonClick("환불", product.orderDetailIdx, product.reason)}
-          disabled={hasReason}
-          style={{ opacity: hasReason ? 0.5 : 1, cursor: hasReason ? 'not-allowed' : 'pointer' }}
+          onClick={() => handleReasonClick(status, productId)}
         >
           환불사유
         </button>
@@ -108,114 +72,28 @@ const OrderInfo = ({ onClose, orderCode }) => {
   const handleSelectAll = (e) => {
     const checked = e.target.checked;
     setSelectAll(checked);
-    if (checked && orderData?.products) {
-      setSelectedItems(orderData.products.map(p => p.orderDetailIdx));
+    if (checked) {
+      setSelectedItems(sampleProducts.map(p => p.id));
     } else {
       setSelectedItems([]);
     }
   };
 
-  const handleSelectItem = (orderDetailIdx) => {
+  const handleSelectItem = (id) => {
     setSelectedItems(prev => {
-      if (prev.includes(orderDetailIdx)) {
-        const newSelected = prev.filter(id => id !== orderDetailIdx);
+      if (prev.includes(id)) {
+        const newSelected = prev.filter(itemId => itemId !== id);
         setSelectAll(false);
         return newSelected;
       } else {
-        const newSelected = [...prev, orderDetailIdx];
-        if (orderData?.products && newSelected.length === orderData.products.length) {
+        const newSelected = [...prev, id];
+        if (newSelected.length === sampleProducts.length) {
           setSelectAll(true);
         }
         return newSelected;
       }
     });
   };
-
-  const handleSubmitSelectedItems = async () => {
-    if (selectedItems.length === 0) {
-      alert('선택된 상품이 없습니다.');
-      return;
-    }
-
-    const requestBody = {
-      orderDetailIdxList: selectedItems
-    };
-
-    try {
-      const response = await apiPut('/order/qr/use', requestBody);
-      if (response.ok) {
-        alert('사용 처리 되었습니다.');
-        const detailResponse = await apiGet(`/order/statistics/detail/${orderCode}`);
-        const data = await detailResponse.json();
-        if (detailResponse.ok) {
-          setOrderData(data);
-          setSelectedItems([]);
-          setSelectAll(false);
-        }
-      } else {
-        const result = await response.json();
-        alert('처리 실패: ' + (result.message || '알 수 없는 오류'));
-      }
-    } catch (error) {
-      alert('처리 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleCancelSelectedItems = async () => {
-    if (selectedItems.length === 0) {
-      alert('선택된 상품이 없습니다.');
-      return;
-    }
-
-    if (!window.confirm('선택한 상품을 취소하시겠습니까?')) {
-      return;
-    }
-
-    const requestBody = {
-      orderDetailIdxList: selectedItems
-    };
-
-    try {
-      const response = await apiPut('/order/status', requestBody);
-      if (response.ok) {
-        alert('취소/환불 처리 되었습니다.');
-        const detailResponse = await apiGet(`/order/statistics/detail/${orderCode}`);
-        const data = await detailResponse.json();
-        if (detailResponse.ok) {
-          setOrderData(data);
-          setSelectedItems([]);
-          setSelectAll(false);
-        }
-      } else {
-        const result = await response.json();
-        alert('취소/환불 처리 실패: ' + (result.message || '알 수 없는 오류'));
-      }
-    } catch (error) {
-      alert('취소/환불 처리 중 오류가 발생했습니다.');
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="orderinfo-wrap" onClick={onClose}>
-        <div className="orderinfo-modal" onClick={(e) => e.stopPropagation()}>
-          <div className="orderinfo-header">판매상세</div>
-          <div style={{ padding: '40px', textAlign: 'center' }}>로딩 중...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!orderData) {
-    return (
-      <div className="orderinfo-wrap" onClick={onClose}>
-        <div className="orderinfo-modal" onClick={(e) => e.stopPropagation()}>
-          <div className="orderinfo-header">판매상세</div>
-          <div style={{ padding: '40px', textAlign: 'center' }}>주문 정보를 불러올 수 없습니다.</div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="orderinfo-wrap" onClick={onClose}>
@@ -236,9 +114,9 @@ const OrderInfo = ({ onClose, orderCode }) => {
 
                 <tbody>
                     <tr>
-                        <td>{orderData.custId || '-'}</td>
-                        <td>{orderData.custNm || '-'}</td>
-                        <td>{orderData.custTelNo || '-'}</td>
+                        <td>asdf1234</td>
+                        <td>홍길동</td>
+                        <td>010-1234-5678</td>
                     </tr>
                 </tbody>
             </table>
@@ -262,11 +140,11 @@ const OrderInfo = ({ onClose, orderCode }) => {
 
               <tbody>
                 <tr>
-                  <td>{orderData.payCode || '-'}</td>
-                  <td>{orderData.orderCode || '-'}</td>
-                  <td>{orderData.totalPrice ? `${orderData.totalPrice.toLocaleString()}원` : '-'}</td>
-                  <td>{orderData.payType || '-'}</td>
-                  <td>{orderData.payDate || '-'}</td>
+                  <td>T_TEST_4ea8f28d</td>
+                  <td>SPRD_7b9f9208_00001</td>
+                  <td>30,000원</td>
+                  <td>신용카드</td>
+                  <td>2025-06-01 12:13</td>
                   <td>
                     <button className="orderinfo-bill-btn">조회</button>
                   </td>
@@ -293,47 +171,36 @@ const OrderInfo = ({ onClose, orderCode }) => {
                   <th>수량</th>
                   <th>상품단가</th>
                   <th>상태</th>
-                  <th>QR사용여부</th>
                   <th>관리</th>
                 </tr>
               </thead>
 
               <tbody>
-                {orderData.products && orderData.products.length > 0 ? (
-                  orderData.products.map((product, index) => (
-                    <tr key={product.orderDetailIdx || index}>
-                      <td>
-                        <input 
-                          type="checkbox"
-                          checked={selectedItems.includes(product.orderDetailIdx)}
-                          onChange={() => handleSelectItem(product.orderDetailIdx)}
-                        />
-                      </td>
-                      <td>{product.productNm || '-'}</td>
-                      <td>{product.productAmount || 0}</td>
-                      <td>{product.productPrice ? `${product.productPrice.toLocaleString()}원` : '-'}</td>
-                      <td>{product.orderStatus || '-'}</td>
-                      <td>{product.qrUsed ? '사용' : '미사용'}</td>
-                      <td>{renderActionButton(product)}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                      판매 상품이 없습니다.
+                {sampleProducts.map(product => (
+                  <tr key={product.id}>
+                    <td>
+                      <input 
+                        type="checkbox"
+                        checked={selectedItems.includes(product.id)}
+                        onChange={() => handleSelectItem(product.id)}
+                      />
                     </td>
+                    <td>{product.name}</td>
+                    <td>{product.quantity}</td>
+                    <td>{product.price.toLocaleString()}원</td>
+                    <td>{product.status}</td>
+                    <td>{renderActionButton(product.status, product.id)}</td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
         </div>
 
         <div className="orderinfo-process-btn-group">
-            <button onClick={handleSubmitSelectedItems}>사용</button>
-            <button onClick={handleCancelSelectedItems}>취소</button>
+            <button>사용</button>
+            <button>취소</button>
         </div>
-        
         <div className="orderinfo-close-btn-group">
         <div className="orderinfo-close-btn" onClick={onClose}>창닫기</div>
         </div>
@@ -344,8 +211,6 @@ const OrderInfo = ({ onClose, orderCode }) => {
           type={reasonType}
           onClose={handleReasonModalClose}
           onSubmit={handleReasonSubmit}
-          orderDetailIdx={selectedOrderDetailIdx}
-          existingReason={reason}
         />
       )}
     </div>

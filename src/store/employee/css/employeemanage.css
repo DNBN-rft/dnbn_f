@@ -125,54 +125,6 @@
     border-color: rgba(241, 129, 30, 1);
 }
 
-/* 빈 카드 스타일 */
-.empmanage-card-empty {
-    border: 2px dashed #d0d0d0;
-    background-color: #fafafa;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-}
-
-.empmanage-card-empty:hover {
-    border-color: rgba(241, 129, 30, 1);
-    background-color: rgba(241, 129, 30, 0.05);
-    transform: translateY(-2px);
-}
-
-.empmanage-card-empty-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.empmanage-card-empty-icon {
-    font-size: 48px;
-    color: #bbb;
-    font-weight: 300;
-    transition: all 0.2s;
-}
-
-.empmanage-card-empty:hover .empmanage-card-empty-icon {
-    color: rgba(241, 129, 30, 1);
-    transform: scale(1.1);
-}
-
-.empmanage-card-empty-text {
-    font-size: 16px;
-    color: #888;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.empmanage-card-empty:hover .empmanage-card-empty-text {
-    color: rgba(241, 129, 30, 1);
-}
-
 .empmanage-modal-wrap {
     position: relative;
 }

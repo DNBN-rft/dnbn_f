@@ -2,7 +2,7 @@
  * 관리자 상품 관리 API 서비스
  */
 
-const BASE_URL = "http://localhost:8080/api/admin/product";
+const BASE_URL = "http://localhost:8080/admin/api/product";
 
 /**
  * 모든 상품 목록 조회

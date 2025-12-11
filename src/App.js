@@ -7,7 +7,6 @@ import {
 import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Layout from "./store/layout/Layout";
 import Membership from "./store/dashboard/Membership";
@@ -47,24 +46,12 @@ import AdminAccept from "./admin/system/AdminAccept";
 import CategoryManage from "./admin/system/CategoryManage";
 import AuthManage from "./admin/system/AuthManage";
 import AdminLogin from "./admin/login/AdminLogin";
-import FaqPage from "./store/customerservice/FaqPage";
-
-// React Query Client 생성
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 1,
-      staleTime: 30000, // 30초
-    },
-  },
-});
+import TestPage from "./test/TestPage";
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
+    <AuthProvider>
+      <Router>
         <Routes>
           {/* 로그인/회원가입 */}
           <Route path="/store/login" element={<Login />} />
@@ -96,11 +83,12 @@ function App() {
             <Route path="/store/mypage" element={<MyPage />} />
             <Route path="/store/edit" element={<MyPageEdit />} />
             <Route path="/store/negotiation" element={<Negotiation />} />
-            <Route path="/store/faq" element={<FaqPage />} />
             <Route
               path="/store/membership-change"
               element={<MembershipChange />}
             />
+
+            <Route path="/store/test" element={<TestPage />}/>
           </Route>
 
           <Route element={<AdminLayout />}>
@@ -125,7 +113,6 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
-    </QueryClientProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 .membership-wrap {
   width: 100%;
-  padding-bottom: 30px;
+  height: calc(100vh - 90px);
 }
 
 /*헤더영역*/

@@ -2,7 +2,7 @@
  * 관리자 리뷰 관리 API 서비스
  */
 
-const BASE_URL = "http://localhost:8080/api/admin/review";
+const BASE_URL = "http://localhost:8080/admin/api/review";
 
 /**
  * 모든 리뷰 목록 조회

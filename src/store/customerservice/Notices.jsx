@@ -52,42 +52,32 @@ const Notices = () => {
 
             <div className="notices-contents">
                 {loading ? (
-                    <div className="notices-loading">로딩 중...</div>
+                    <div style={{textAlign: "center", padding: "20px"}}>로딩 중...</div>
                 ) : notices.length === 0 ? (
-                    <div className="notices-empty">공지사항이 없습니다.</div>
+                    <div style={{textAlign: "center", padding: "20px"}}>공지사항이 없습니다.</div>
                 ) : (
-                    <table className="notices-table">
-                        <thead>
-                            <tr>
-                                <th className="notices-col-num">번호</th>
-                                <th className="notices-col-title">제목</th>
-                                <th className="notices-col-author">작성자</th>
-                                <th className="notices-col-date">작성일</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sortedNotices.map((notice, index) => (
-                                <tr 
-                                    key={notice.noticeIdx}
-                                    className="notices-row"
-                                    onClick={() => navigate(`/store/notice/${notice.noticeIdx}`, { state: { notice } })}
-                                >
-                                    <td className="notices-col-num">
-                                        {notice.isPinned ? (
-                                            <span className="notices-badge-important">중요</span>
-                                        ) : (
-                                            notices.length - index
-                                        )}
-                                    </td>
-                                    <td className="notices-col-title">
-                                        <span className="notices-title-text">{notice.title}</span>
-                                    </td>
-                                    <td className="notices-col-author">{notice.regNm || "관리자"}</td>
-                                    <td className="notices-col-date">{formatDate(notice.regDateTime)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    sortedNotices.map((notice) => (
+                        <div key={notice.noticeIdx} className="notices-item">
+                            <table className="notices-content-table">
+                                <tbody onClick={() => navigate(`/store/notice/${notice.noticeIdx}`, { state: { notice } })}>
+                                    <tr>
+                                        <td className="notices-content-left">
+                                            {notice.isPinned && <span style={{color: "#ff6b6b", fontWeight: "bold"}}>[중요] </span>}
+                                            {notice.title}
+                                        </td>
+                                        <td className="notices-content-right" rowSpan={2}>
+                                            {formatDate(notice.regDateTime)}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="notices-content-body">
+                                            {truncateContent(notice.content)}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    ))
                 )}
             </div>
 

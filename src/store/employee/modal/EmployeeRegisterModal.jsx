@@ -1,15 +1,19 @@
 import "./css/employeeregistermodal.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { apiPost } from "../../../utils/apiClient";
+import { AuthContext } from "../../../context/AuthContext";
 
 const EmployeeRegisterModal = ({ onClose, refreshData }) => {
-    // 권한 메뉴 정의
+    const { user } = useContext(AuthContext);
+
+    // 권한 메뉴 정의 (백엔드 Authority enum에 맞춤)
     const authMenus = [
-        { key: "product", label: "상품" },
-        { key: "sale", label: "매출" },
-        { key: "review", label: "리뷰" },
-        { key: "employee", label: "직원" },
-        { key: "order", label: "할인" },
-        { key: "service", label: "고객센터" },
+        { key: "ROLE_PRODUCT", label: "상품관리" },
+        { key: "ROLE_ORDER", label: "매출목록" },
+        { key: "ROLE_REVIEW", label: "리뷰관리" },
+        { key: "ROLE_EMPLOYEE", label: "직원관리" },
+        { key: "ROLE_SALE", label: "할인목록" },
+        { key: "ROLE_SERVICE", label: "공지사항" },
     ];
 
     const [formData, setFormData] = useState({
@@ -21,9 +25,46 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
         memberAuth: {},
     });
 
+    const [idCheckStatus, setIdCheckStatus] = useState({
+        checked: false,
+        available: false,
+        message: ""
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        
+        if (name === "memberId") {
+            setIdCheckStatus({ checked: false, available: false, message: "" });
+        }
+    };
+
+    const checkDuplicateId = async () => {
+        if (!formData.memberId.trim()) {
+            alert("아이디를 입력해주세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/store/check-loginId/${formData.memberId}`, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                const message = await response.text();
+                const isAvailable = message.includes("사용가능");
+                
+                setIdCheckStatus({
+                    checked: true,
+                    available: isAvailable,
+                    message: message
+                });
+            }
+        } catch (error) {
+            alert("중복 체크 중 오류가 발생했습니다.");
+        }
     };
 
     const formatPhoneNumber = (value) => {
@@ -84,15 +125,29 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
                         <div className="emp-reg-up">
                             <div className="emp-reg-left">
                                 <label htmlFor="emp-reg-id">직원 아이디</label>
-                                <input 
-                                    type="text" 
-                                    name="memberId"
-                                    value={formData.memberId}
-                                    onChange={handleChange}
-                                    className="emp-reg-id-input" 
-                                    required 
-                                    placeholder="직원 아이디를 입력하세요." 
-                                />
+                                <div className="emp-reg-id-check-wrapper">
+                                    <input 
+                                        type="text" 
+                                        name="memberId"
+                                        value={formData.memberId}
+                                        onChange={handleChange}
+                                        className="emp-reg-id-input" 
+                                        required 
+                                        placeholder="직원 아이디를 입력하세요." 
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={checkDuplicateId}
+                                        className="emp-reg-id-check-button"
+                                    >
+                                        중복확인
+                                    </button>
+                                </div>
+                                {idCheckStatus.checked && (
+                                    <div className={`emp-reg-id-check-message ${idCheckStatus.available ? 'emp-reg-id-check-success' : 'emp-reg-id-check-error'}`}>
+                                        {idCheckStatus.message}
+                                    </div>
+                                )}
                                 <label htmlFor="emp-reg-pwd">비밀번호</label>
                                 <input 
                                     type="password" 
@@ -200,6 +255,26 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
         let userInfo = localStorage.getItem("user");
         const storeCode = JSON.parse(userInfo).storeCode;
 
+        if (!idCheckStatus.checked) {
+            alert("아이디 중복확인을 해주세요.");
+            return;
+        }
+
+        if (!idCheckStatus.available) {
+            alert("사용 가능한 아이디로 변경해주세요.");
+            return;
+        }
+
+        // 선택된 권한을 쉼표로 구분된 문자열로 변환
+        const selectedAuths = Object.keys(formData.memberAuth)
+            .filter(key => formData.memberAuth[key])
+            .join(",");
+
+        if (!selectedAuths) {
+            alert("최소 하나 이상의 권한을 선택해주세요.");
+            return;
+        }
+
         const submitData = {
             storeCode: storeCode,
             memberId: formData.memberId,
@@ -208,34 +283,28 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
             menuAuth: JSON.stringify(formData.memberAuth),
             memberTelNo: formData.memberTelNo,
             memberEmail: formData.memberEmail,
-            approved: false,
+            approved: true,
             memberType: "MANAGER",
-            marketAgreed: false
+            marketAgreed: formData.marketAgreed,
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/member/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(submitData),
-            });
+            const response = await apiPost("/member/register", submitData);
 
-            if (!response.ok) {
-                throw new Error("직원 등록에 실패했습니다.");
+            if (response.ok) {
+                alert("직원이 성공적으로 등록되었습니다.");
+
+                if (refreshData) {
+                    await refreshData();
+                }
+
+                onClose();
+            } else {
+                const errorText = await response.text();
+                alert(`직원 등록에 실패했습니다: ${errorText}`);
             }
-
-            alert("직원이 성공적으로 등록되었습니다.");
-
-            // 데이터 새로고침
-            if (refreshData) {
-                await refreshData();
-            }
-
-            onClose();
         } catch (error) {
-            alert("직원 등록에 실패했습니다. 다시 시도해주세요.");
+            alert("직원 등록 중 오류가 발생했습니다.");
         }
     }
 };

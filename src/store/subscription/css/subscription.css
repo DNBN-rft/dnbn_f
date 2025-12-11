@@ -6,8 +6,6 @@
     transition: transform 0.3s ease;
     height: 100%;
     border-color: rgba(241, 129, 30, 0.2);
-    max-width: 450px;
-    margin: 0 auto;
 }
 
 .pricing-card:hover {

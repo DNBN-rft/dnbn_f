@@ -116,7 +116,7 @@ export const validateStoreInfo = (formData) => {
     return { isValid: false, message: "가게 전화번호는 숫자만 입력해주시기 바랍니다." };
   }
 
-  // 주소 검증
+  // // 주소 검증
   // if (!formData.storeZipCode || !formData.storeAddr) {
   //   return { isValid: false, message: "주소를 입력해주세요." };
   // }

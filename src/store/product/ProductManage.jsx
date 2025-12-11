@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import "./css/productmanage.css";
 import ProductDetail from "./modal/ProductDetail";
 import ProductAdd from "./modal/ProductAdd";
@@ -7,7 +6,6 @@ import ProductSale from "./modal/ProductSale";
 import { apiGet, apiPost } from "../../utils/apiClient";
 
 const ProductManage = () => {
-  const location = useLocation();
   const [searchField, setSearchField] = useState("SALE_NUMBER");
   const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -68,6 +66,7 @@ const ProductManage = () => {
     }
   };
 
+  // 검색 기능 (검색 버튼 클릭 시만 호출)
   const searchProducts = async () => {
     setLoading(true);
     setError(null);
@@ -115,20 +114,10 @@ const ProductManage = () => {
     }
   };
 
+  // 초기 로드
   useEffect(() => {
     loadProducts();
   }, []);
-
-  // 알람에서 전달받은 state 처리
-  useEffect(() => {
-    if (location.state?.openModal && location.state?.productCode) {
-      setSelectedProduct(location.state.productCode);
-      setIsDetailModalOpen(true);
-      
-      // state 초기화 (뒤로가기 시 모달이 다시 열리는 것 방지)
-      window.history.replaceState({}, document.title);
-    }
-  }, [location, products]);
 
   const handleReset = () => {
     setSearchField("SALE_NUMBER");
@@ -385,9 +374,9 @@ const ProductManage = () => {
       )}
       {isSaleModalOpen && selectedSaleProduct && (
         <ProductSale
+          productCode={selectedSaleProduct.productCode}
           onClose={() => setIsSaleModalOpen(false)}
           productPrice={selectedSaleProduct.price}
-          productCode={selectedSaleProduct.productCode}
           timeout={36}
         />
       )}

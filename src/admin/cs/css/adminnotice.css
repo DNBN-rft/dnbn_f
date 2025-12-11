@@ -182,12 +182,6 @@
   font-weight: 700;
 }
 
-.adminnotice-table-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
 .adminnotice-write-btn {
   width: 80px;
   height: 40px;
@@ -203,49 +197,6 @@
 .adminnotice-write-btn:hover {
   background-color: #4338ca;
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-}
-
-.adminnotice-delete-btn {
-  width: 80px;
-  height: 40px;
-  background-color: #dc3545;
-  color: white;
-  font-weight: 700;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.adminnotice-delete-btn:hover {
-  background-color: #c82333;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-}
-
-.adminnotice-delete-btn.active {
-  background-color: #6c757d;
-}
-
-.adminnotice-delete-btn.active:hover {
-  background-color: #5a6268;
-  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
-
-.adminnotice-delete-confirm-btn {
-  width: 80px;
-  height: 40px;
-  background-color: #dc3545;
-  color: white;
-  font-weight: 700;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.adminnotice-delete-confirm-btn:hover {
-  background-color: #c82333;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 .adminnotice-table {

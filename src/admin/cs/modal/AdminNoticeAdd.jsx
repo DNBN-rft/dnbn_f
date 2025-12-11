@@ -1,36 +1,15 @@
 import { useState } from "react";
 import "./css/adminnoticeadd.css";
-import { createNotice } from "../../../utils/adminNoticeService";
 
-const AdminNoticeAdd = ({ onClose, onAdd }) => {
+const AdminNoticeAdd = ({ onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPinned, setIsPinned] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!title.trim()) {
-      alert("제목을 입력해주세요.");
-      return;
-    }
-
-    if (!content.trim()) {
-      alert("내용을 입력해주세요.");
-      return;
-    }
-
-    const result = await createNotice({
-      title,
-      content,
-      isPinned,
-    });
-
-    if (result.success) {
-      alert(result.data);
-      if (onAdd) onAdd();
-      onClose();
-    } else {
-      alert(result.error);
-    }
+  const handleSubmit = () => {
+    // TODO: API 호출하여 공지사항 저장
+    console.log({ title, content, isPinned });
+    onClose();
   };
 
   return (

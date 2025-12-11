@@ -11,36 +11,23 @@ const NoticeDetail = () => {
         if (!dateTime) return "-";
         return dateTime.replace("T", " ").substring(0, 16);
     };
-
     return (
-        <div className="noticedetail-wrap">
-            <div className="noticedetail-container">
-                <div className="noticedetail-header">
-                    <div className="noticedetail-title-section">
-                        {notice.isPinned && <span className="noticedetail-badge">공지</span>}
-                        <h1 className="noticedetail-title">{notice.title || "제목 없음"}</h1>
-                    </div>
-                    <div className="noticedetail-meta">
-                        <span className="noticedetail-author">{notice.regNm || "관리자"}</span>
-                        <span className="noticedetail-divider">|</span>
-                        <span className="noticedetail-date">{formatDateTime(notice.regDateTime)}</span>
-                    </div>
+        <div className="notice-detail-wrap">
+            <div className="notice-detail-header">
+                <div className="notice-detail-header-title">{notice.title || "제목 없음"}</div>
+                <div className="notice-detail-header-info">
+                    <div className="notice-detail-date-time">{formatDateTime(notice.regDateTime)}</div>
+                    <div className="notice-detail-regNm">{notice.regNm || "-"}</div>
                 </div>
+            </div>
 
-                <div className="noticedetail-content">
-                    <div className="noticedetail-content-text">
-                        {notice.content || "내용이 없습니다."}
-                    </div>
-                </div>
+            <div className="notice-detail-contents">
+                <p>{notice.content || "내용이 없습니다."}</p>
+            </div>
 
-                <div className="noticedetail-footer">
-                    <button 
-                        className="noticedetail-btn-list"
-                        onClick={() => navigate(-1)}
-                    >
-                        목록으로
-                    </button>
-                </div>
+            <div className="notice-detail-footer">
+                <button className="notice-detail-back-button"
+                onClick={() => navigate(-1)}> 목록으로 돌아가기</button>
             </div>
         </div>
     )

@@ -25,15 +25,12 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
         }
     };
 
-    // 할인방식이 "할인가"로 전환될 때 처리
+    // 할인방식이 "할인가"면 기본값 설정
     useEffect(() => {
         if (discountType === "할인가") {
-            // 할인율로 이미 계산된 가격이 있으면 그대로 유지, 없으면 원가로 설정
-            if (!discountPrice) {
-                setDiscountPrice(productPrice);
-            }
+            setDiscountPrice(productPrice);
         }
-    }, [discountType, productPrice, discountPrice]);
+    }, [discountType, productPrice]);
 
     // 시작/종료 시간 계산
     const handleDateTimeChange = (date, time) => {

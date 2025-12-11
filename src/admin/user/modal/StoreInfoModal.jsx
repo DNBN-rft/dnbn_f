@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import "./css/storeinfomodal.css";
 import {
-  modStoreInfo,
-  modSubsInfo,
-  modMemberInfo,
-  modBizInfo,
-  modAuthInfo,
-  modMemberPassword,
+  updateStoreInfo,
+  updateSubsInfo,
+  updateMemberInfo,
+  updateBizInfo,
+  updateAuthInfo,
+  updateMemberPassword,
   approveStore
 } from "../../../utils/adminStoreService";
 import { getBankList, getMembershipList } from "../../../utils/commonService";
@@ -198,7 +198,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
     // storeOpenDate는 배열이므로 JSON 문자열로 변환
     formData.append("storeOpenDate", JSON.stringify(storeForm.storeOpenDate));
 
-    const result = await modStoreInfo(storeData.storeCode, formData);
+    const result = await updateStoreInfo(storeData.storeCode, formData);
     if (result.success) {
       alert("가맹점 정보가 수정되었습니다.");
       toggleEditMode("store");
@@ -210,7 +210,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
 
   // 구독 정보 저장
   const handleSaveSubscriptionInfo = async () => {
-    const result = await modSubsInfo(storeData.storeCode, subscriptionForm);
+    const result = await updateSubsInfo(storeData.storeCode, subscriptionForm);
     if (result.success) {
       alert("구독 정보가 수정되었습니다.");
       toggleEditMode("subscription");
@@ -222,7 +222,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
 
   // 사용자 정보 저장
   const handleSaveMemberInfo = async () => {
-    const result = await modMemberInfo(storeData.storeCode, {
+    const result = await updateMemberInfo(storeData.storeCode, {
       memberLoginId: memberForm.memberLoginId,
       ownerNm: memberForm.ownerNm,
       ownerTelNo: memberForm.ownerTelNo,
@@ -232,7 +232,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
 
       // 비밀번호가 입력된 경우 비밀번호도 변경
       if (memberForm.newPassword) {
-        const pwResult = await modMemberPassword(storeData.storeCode, {
+        const pwResult = await updateMemberPassword(storeData.storeCode, {
           newPassword: memberForm.newPassword,
         });
         if (pwResult.success) {
@@ -251,7 +251,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
 
   // 사업자 정보 저장
   const handleSaveBusinessInfo = async () => {
-    const result = await modBizInfo(storeData.storeCode, businessForm);
+    const result = await updateBizInfo(storeData.storeCode, businessForm);
     if (result.success) {
       alert("사업자 정보가 수정되었습니다.");
       toggleEditMode("business");
@@ -265,7 +265,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
   const handleSaveAuthInfo = async () => {
     // 메뉴 배열을 콤마로 구분된 문자열로 변환
     const menuAuthString = selectedMenus.join(',');
-    const result = await modAuthInfo(storeData.storeCode, { menuAuth: menuAuthString });
+    const result = await updateAuthInfo(storeData.storeCode, { menuAuth: menuAuthString });
     if (result.success) {
       alert("권한 정보가 수정되었습니다.");
       toggleEditMode("auth");

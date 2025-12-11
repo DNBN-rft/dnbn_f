@@ -7,11 +7,14 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
   const [isModOpen, setIsModOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // ★ 상세 데이터 상태
   const [product, setProduct] = useState(null);
 
+  // ★ 로딩 & 에러 상태
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // 상품 상세 조회
   const loadProduct = async () => {
     setLoading(true);
     setError(null);

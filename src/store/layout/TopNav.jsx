@@ -2,16 +2,14 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import StoreAlarmModal from './modal/StoreAlarmModal';
-import { useAlarmList } from '../../hooks/useAlarm';
 import './css/topnav.css';
 
 const TopNav = () => {
+  const [alarms, setAlarms] = useState([]);
+  const hasAlarms = alarms.length > 0;
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const { data: alarmData = [] } = useAlarmList(user?.memberId);
-  const hasUnreadAlarms = alarmData.some(alarm => alarm.readDateTime === null);
 
   const handleLogout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
@@ -31,7 +29,7 @@ const TopNav = () => {
             style={{ background: 'none', border: 'none', cursor: 'pointer' }}
             onClick={() => setIsAlarmModalOpen(!isAlarmModalOpen)}
           >
-            <i className={`${hasUnreadAlarms ? 'fa-solid' : 'fa-regular'} fa-alarm-clock fa-fw topnav-i`}></i>
+            <i className={`${hasAlarms ? 'fa-solid' : 'fa-regular'} fa-alarm-clock fa-fw topnav-i`}></i>
           </button>
           {isAlarmModalOpen && <StoreAlarmModal onClose={() => setIsAlarmModalOpen(false)} />}
         </li>

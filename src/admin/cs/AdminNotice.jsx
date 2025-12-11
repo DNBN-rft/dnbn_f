@@ -1,69 +1,46 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./css/adminnotice.css";
 import AdminNoticeDetail from "./modal/AdminNoticeDetail";
 import AdminNoticeAdd from "./modal/AdminNoticeAdd";
-import { getNotices, deleteNotices } from "../../utils/adminNoticeService";
 
 const AdminNotice = () => {
   const [selectedNotice, setSelectedNotice] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [notices, setNotices] = useState([]);
-  const [showCheckbox, setShowCheckbox] = useState(false);
-  const [selectedNotices, setSelectedNotices] = useState([]);
 
-  // 공지사항 목록 조회
-  useEffect(() => {
-    fetchNotices();
-  }, []);
-
-  const fetchNotices = async () => {
-    const result = await getNotices();
-    if (result.success) {
-      setNotices(result.data);
-    } else {
-      alert(result.error || "공지사항 목록 조회 실패");
-    }
-  };
-
-  // 체크박스 선택
-  const handleCheckboxChange = (noticeIdx) => {
-    setSelectedNotices(prev => {
-      if (prev.includes(noticeIdx)) {
-        return prev.filter(idx => idx !== noticeIdx);
-      } else {
-        return [...prev, noticeIdx];
-      }
-    });
-  };
-
-  // 삭제 모드 토글
-  const toggleDeleteMode = () => {
-    setShowCheckbox(!showCheckbox);
-    setSelectedNotices([]);
-  };
-
-  // 공지사항 삭제
-  const handleDelete = async () => {
-    if (selectedNotices.length === 0) {
-      alert("삭제할 공지사항을 선택해주세요.");
-      return;
-    }
-
-    if (!window.confirm(`선택한 ${selectedNotices.length}개의 공지사항을 삭제하시겠습니까?`)) {
-      return;
-    }
-
-    const result = await deleteNotices(selectedNotices);
-    if (result.success) {
-      alert(result.data);
-      setSelectedNotices([]);
-      setShowCheckbox(false);
-      fetchNotices();
-    } else {
-      alert(result.error);
-    }
-  };
+  // 예시 데이터 (수정자/수정일이 없는 경우 null)
+  const notices = [
+    {
+      id: 1,
+      title: "시스템 점검 안내",
+      content: "시스템 점검을 위해 2024년 1월 15일 오전 2시부터 6시까지 서비스가 일시 중단됩니다. 이용에 불편을 드려 죄송합니다.",
+      writer: "관리자",
+      createDate: "2024-01-01",
+      editor: "관리자",
+      editDate: "2024-01-02",
+      isPinned: true,
+    },
+    {
+      id: 2,
+      title: "서비스 이용 안내",
+      content: "저희 서비스를 이용해 주셔서 감사합니다. 보다 나은 서비스를 위해 항상 노력하겠습니다.",
+      writer: "관리자",
+      createDate: "2024-01-03",
+      editor: null,
+      editDate: null,
+      isPinned: false,
+    },
+    {
+      id: 3,
+      title: "개인정보 처리방침 변경 안내",
+      content: "개인정보 처리방침이 2024년 1월 10일부터 변경됩니다. 자세한 내용은 공지사항을 확인해 주세요.",
+      writer: "관리자",
+      createDate: "2024-01-05",
+      editor: null,
+      editDate: null,
+      isPinned: false,
+    },
+  ];
 
   return (
     <div className="adminnotice-container">
@@ -119,34 +96,17 @@ const AdminNotice = () => {
             <div className="adminnotice-table-info">
               총 <span className="adminnotice-count-bold">{notices.length}</span>건
             </div>
-            <div className="adminnotice-table-actions">
-              {showCheckbox && (
-                <button 
-                  className="adminnotice-delete-confirm-btn"
-                  onClick={handleDelete}
-                >
-                  삭제 확인
-                </button>
-              )}
-              <button 
-                className={`adminnotice-delete-btn ${showCheckbox ? 'active' : ''}`}
-                onClick={toggleDeleteMode}
-              >
-                {showCheckbox ? '취소' : '공지 삭제'}
-              </button>
-              <button 
-                className="adminnotice-write-btn"
-                onClick={() => setIsAddModalOpen(true)}
-              >
-                공지작성
-              </button>
-            </div>
+            <button 
+              className="adminnotice-write-btn"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              공지작성
+            </button>
           </div>
 
           <table className="adminnotice-table">
             <thead>
               <tr>
-                {showCheckbox && <th>선택</th>}
                 <th>No.</th>
                 <th>제목</th>
                 <th>작성자</th>
@@ -158,23 +118,14 @@ const AdminNotice = () => {
               </tr>
             </thead>
             <tbody>
-              {notices.map((notice, index) => (
-                <tr key={notice.noticeIdx}>
-                  {showCheckbox && (
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedNotices.includes(notice.noticeIdx)}
-                        onChange={() => handleCheckboxChange(notice.noticeIdx)}
-                      />
-                    </td>
-                  )}
-                  <td>{index + 1}</td>
+              {notices.map((notice) => (
+                <tr key={notice.id}>
+                  <td>{notice.id}</td>
                   <td className="adminnotice-title">{notice.title}</td>
-                  <td>{notice.regNm}</td>
-                  <td>{notice.regDate}</td>
-                  <td>{notice.modNm || "-"}</td>
-                  <td>{notice.modDate || "-"}</td>
+                  <td>{notice.writer}</td>
+                  <td>{notice.createDate}</td>
+                  <td>{notice.editor || "-"}</td>
+                  <td>{notice.editDate || "-"}</td>
                   <td>
                     {notice.isPinned ? (
                       <span className="adminnotice-status-pinned">고정</span>
@@ -186,11 +137,14 @@ const AdminNotice = () => {
                     <button
                       className="adminnotice-btn adminnotice-btn-detail"
                       onClick={() => {
-                        setSelectedNotice(notice.noticeIdx);
+                        setSelectedNotice(notice);
                         setIsModalOpen(true);
                       }}
                     >
                       상세
+                    </button>
+                    <button className="adminnotice-btn adminnotice-btn-delete">
+                      삭제
                     </button>
                   </td>
                 </tr>
@@ -216,12 +170,11 @@ const AdminNotice = () => {
       {/* 모달 */}
       {isModalOpen && selectedNotice && (
         <AdminNoticeDetail
-          noticeIdx={selectedNotice}
+          notice={selectedNotice}
           onClose={() => {
             setIsModalOpen(false);
             setSelectedNotice(null);
           }}
-          onUpdate={fetchNotices}
         />
       )}
 
@@ -229,7 +182,6 @@ const AdminNotice = () => {
       {isAddModalOpen && (
         <AdminNoticeAdd
           onClose={() => setIsAddModalOpen(false)}
-          onAdd={fetchNotices}
         />
       )}
     </div>

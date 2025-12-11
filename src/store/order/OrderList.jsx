@@ -1,20 +1,13 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useState } from "react";
 import "./css/orderlist.css";
 import OrderInfo from "./modal/OrderInfo";
-import { apiGet } from "../../utils/apiClient";
 
 const OrderList = () => {
-  const location = useLocation();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchField, setSearchField] = useState("판매번호");
   const [searchText, setSearchText] = useState("");
   const [isOrderInfoModalOpen, setIsOrderInfoModalOpen] = useState(false);
-  const [selectedOrderCode, setSelectedOrderCode] = useState(null);
-  const [list, setList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const handleReset = () => {
     setSearchField("판매번호");
@@ -23,55 +16,16 @@ const OrderList = () => {
     setEndDate("");
   };
 
-  // 페이지네이션 계산
-  const totalItems = list.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentItems = list.slice(startIndex, endIndex);
+  const sampleProducts = Array.from({ length: 10 }).map((_, i) => ({
+  id: `PROD_${String(i + 1).padStart(6, "0")}`,
+  productName: i === 0 ? "아메리카노" : "카페라떼",
+  productCount: 3,
+  buyerName: "홍길동",
+  totalAmount: 25000,
+  paymentMethod: "카드결제",
+  paymentDate: "2025-11-10 09:30",
+}));
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        let userData = localStorage.getItem("user");
-        const storeCode = JSON.parse(userData).storeCode;
-       
-        const response = await apiGet(`/order/statistics/list/${storeCode}`);
-        const data = await response.json();
-        if (response.ok) {
-          const orderList = data.map(p => ({
-            orderCode: p.orderCode || p.orderId || p.saleCode,
-            productNm: p.productsNm,
-            buyer: p.buyer,
-            totalPrice: p.price,
-            payType: p.payType,
-            payDate: p.paymentDateTime
-          }));
-          setList(orderList);
-        }
-    } catch (error) {
-      console.error("주문 목록 조회 중 오류 발생:", error);
-    }
-    };
-    fetchOrderList();
-  }, []);
-
-  // 알람에서 전달받은 state 처리
-  useEffect(() => {
-    if (location.state?.openModal && location.state?.orderCode) {
-      setSelectedOrderCode(location.state.orderCode);
-      setIsOrderInfoModalOpen(true);
-      
-      // state 초기화 (뒤로가기 시 모달이 다시 열리는 것 방지)
-      window.history.replaceState({}, document.title);
-    }
-  }, [location]);
 
   return (
     <div>
@@ -139,7 +93,7 @@ useEffect(() => {
       </div>
 
       <div className="orderlist-count">
-        전체 {totalItems}개 상품 중 {totalItems > 0 ? `${startIndex + 1}-${endIndex}개` : '0개'} 표시
+        전체 30개 상품 중 1-10개 표시
       </div>
 
       <div className="product-table-wrap">
@@ -155,19 +109,16 @@ useEffect(() => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((p, idx) => (
-              <tr key={p.orderCode || idx} onClick={() => {
-                setSelectedOrderCode(p.orderCode);
-                setIsOrderInfoModalOpen(true);
-              }} className="product-table-row">
-                <td>{startIndex + idx + 1}</td>
+            {sampleProducts.map((p, idx) => (
+              <tr key={p.id} onClick={() => setIsOrderInfoModalOpen(true)} style={{cursor: "pointer"}}>
+                <td>{idx + 1}</td>
                 <td className="product-product-info">
-                  {p.productNm}
+                  {p.productName} 외 {p.productCount}개
                 </td>
-                <td>{p.buyer}</td>
-                <td>{p.totalPrice.toLocaleString()}원</td>
-                <td>{p.payType}</td>
-                <td>{p.payDate}</td>
+                <td>{p.buyerName}</td>
+                <td>{p.totalAmount.toLocaleString()}원</td>
+                <td>{p.paymentMethod}</td>
+                <td>{p.paymentDate}</td>
               </tr>
             ))}
           </tbody>
@@ -175,41 +126,15 @@ useEffect(() => {
 
         <div className="product-footer">
           <div className="product-pagination">
-            <button 
-              className="product-page" 
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              이전
-            </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i + 1}
-                className={`product-page ${currentPage === i + 1 ? 'active' : ''}`}
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-            <button 
-              className="product-page" 
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              다음
-            </button>
+            <button className="product-page">이전</button>
+            <button className="product-page active">1</button>
+            <button className="product-page">2</button>
+            <button className="product-page">3</button>
+            <button className="product-page">다음</button>
           </div>
         </div>
       </div>
-      {isOrderInfoModalOpen && (
-        <OrderInfo 
-          orderCode={selectedOrderCode}
-          onClose={() => {
-            setIsOrderInfoModalOpen(false);
-            setSelectedOrderCode(null);
-          }} 
-        />
-      )}
+      {isOrderInfoModalOpen && <OrderInfo onClose={() => setIsOrderInfoModalOpen(false)} />}
     </div>
   );
 };

@@ -1,0 +1,22 @@
+.section-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  position: absolute;
+  top: 350px;
+  left: 600px;
+}
+
+.section1 {
+  display: flex;
+  justify-content: space-between;
+}
+.section2 {
+  display: flex;
+  justify-content: space-between;
+}
+.test-border {
+  border: 1px solid black;
+  margin-bottom: 10px;
+  text-align: center;
+}

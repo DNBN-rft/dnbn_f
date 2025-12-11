@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./css/adminstoreinfo.css";
 import StoreInfoModal from "./modal/StoreInfoModal";
-import { getAllStores, viewStoreDetail, approveStore } from "../../utils/adminStoreService";
+import { getAllStores, getStoreDetail, approveStore } from "../../utils/adminStoreService";
 
 const StoreInfo = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -19,7 +19,6 @@ const StoreInfo = () => {
   const fetchStoreList = async () => {
     setIsLoading(true);
     const result = await getAllStores();
-
     if (result.success) {
       setStoreList(result.data);
     } else {
@@ -31,7 +30,7 @@ const StoreInfo = () => {
 
   const handleOpenModal = async (store) => {
     // 상세 정보 조회
-    const result = await viewStoreDetail(store.storeCode);
+    const result = await getStoreDetail(store.storeCode);
     if (result.success) {
       setSelectedStore(result.data);
       setIsDetailOpen(true);
@@ -97,7 +96,7 @@ const StoreInfo = () => {
               </select>
             </div>
 
-            <div className="adminstoreinfo-filter-group-disabled">
+            <div className="adminstoreinfo-filter-group">
               <label htmlFor="store-type">가맹점 타입</label>
               <select
                 name="store-type"
@@ -105,8 +104,8 @@ const StoreInfo = () => {
                 className="adminstoreinfo-select"
               >
                 <option value="all">전체</option>
-                <option value="normal">가맹점</option>
-                <option value="wholesale">도매점</option>
+                <option value="normal">일반상품</option>
+                <option value="adult">성인상품</option>
               </select>
             </div>
           </div>
@@ -122,7 +121,7 @@ const StoreInfo = () => {
               >
                 <option value="all">전체</option>
                 <option value="storeName">가맹점명</option>
-                <option value="storeCode">가맹코드</option>
+                <option value="userId">아이디</option>
                 <option value="ownerName">점주명</option>
                 <option value="businessNumber">사업자번호</option>
               </select>
@@ -183,18 +182,11 @@ const StoreInfo = () => {
                     <td>{store.bizType}</td>
                     <td>{store.approvedDateTime ? new Date(store.approvedDateTime).toLocaleDateString() : "-"}</td>
                     <td
-                      className={`storeinfo-status-${store.approvalStatus === "APPROVED"
-                          ? "approved"
-                          : store.approvalStatus === "REJECTED"
-                            ? "rejected"
-                            : "pending"
-                        }`}
+                      className={`storeinfo-status-${
+                        store.isApproved ? "approved" : "pending"
+                      }`}
                     >
-                      {store.approvalStatus === "APPROVED"
-                        ? "승인"
-                        : store.approvalStatus === "REJECTED"
-                          ? "거절"
-                          : "대기 중"}
+                      {store.isApproved ? "승인" : "대기중"}
                     </td>
                     <td>
                       <button

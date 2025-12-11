@@ -76,7 +76,7 @@
 
 .emp-reg-left input:focus,
 .emp-reg-right input:focus,
-.emp-reg-status:focus{
+.emp-reg-status:focus {
     border-color: rgba(255, 122, 0, 0.6);
     outline: none;
 }
@@ -201,4 +201,84 @@
 
 .emp-reg-submit-button-not:hover {
     background-color: rgba(220, 220, 220, 1);
+}
+
+.emp-reg-marketing {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.emp-reg-marketing-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.emp-reg-marketing-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.emp-reg-down {
+    margin-top: 20px;
+}
+
+.emp-reg-auth-wrap label {
+    font-weight: bold;
+}
+
+.emp-reg-id-check-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.emp-reg-id-check-wrapper .emp-reg-id-input {
+    flex: 1;
+    border-radius: 5px 0 0 5px;
+    margin-bottom: 0;
+    height: 100%;
+    border-right: none;
+}
+
+.emp-reg-id-check-button {
+border-left: none;
+    padding: 8px 12px;
+    background-color: rgb(241, 129, 25);
+    height: 100%;    
+    color: white;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 0 5px 5px 0;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: all 0.3s;
+}
+
+.emp-reg-id-check-button:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
+}
+
+.emp-reg-id-check-message {
+    font-size: 13px;
+    margin-bottom: 10px;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+
+.emp-reg-id-check-success {
+    color: #28a745;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.emp-reg-id-check-error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
 }

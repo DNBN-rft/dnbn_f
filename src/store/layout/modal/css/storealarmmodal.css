@@ -165,37 +165,4 @@
     .storealarmmodal-item-content {
         font-size: 13px;
     }
-
-    .storealarmmodal-divider {
-        padding: 8px 12px;
-    }
-
-    .storealarmmodal-divider-text {
-        font-size: 11px;
-    }
 }
-
-/* 알람 구분선 */
-.storealarmmodal-divider {
-    display: flex;
-    align-items: center;
-    padding: 16px 20px;
-    margin: 8px 0;
-}
-
-.storealarmmodal-divider::before,
-.storealarmmodal-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, transparent, #dee2e6, transparent);
-}
-
-.storealarmmodal-divider-text {
-    padding: 0 16px;
-    color: #868e96;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-

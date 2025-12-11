@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import "./css/review.css";
 import ReviewAnswer from "./modal/ReviewAnswer";
 
 const Review = () => {
-  const location = useLocation();
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchField, setSearchField] = useState("판매번호");
@@ -22,8 +21,7 @@ const Review = () => {
 
   const fetchReviews = async () => {
     try {
-      const userInfo = JSON.parse(localStorage.getItem("user"));
-      const storeCode = userInfo.storeCode;
+      const storeCode = "STO_00001";
 
       const response = await fetch (`http://localhost:8080/api/review/view/${storeCode}`, 
         {
@@ -44,21 +42,6 @@ const Review = () => {
   useEffect(() => {
     fetchReviews();
   }, []);
-
-  // 알람에서 전달받은 state 처리
-  useEffect(() => {
-    if (location.state?.openModal && location.state?.reviewIdx) {
-      // reviewIdx로 해당 리뷰 찾기
-      const targetReview = reviewData.find(r => r.reviewIdx === parseInt(location.state.reviewIdx));
-      if (targetReview) {
-        setSelectedReview(targetReview);
-        setIsReviewAnswerModalOpen(true);
-      }
-      
-      // state 초기화 (뒤로가기 시 모달이 다시 열리는 것 방지)
-      window.history.replaceState({}, document.title);
-    }
-  }, [location, reviewData]);
 
   // 숨김 처리 함수
   const handleHideReview = async (reviewIdx) => {

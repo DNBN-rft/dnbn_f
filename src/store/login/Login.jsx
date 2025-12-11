@@ -50,8 +50,7 @@ const Login = () => {
       setAuthState({
         memberNm: result.data.memberNm,
         storeCode: result.data.storeCode,
-        planNm: result.data.planNm,
-        memberId: result.data.memberId
+        planNm: result.data.planNm
       });
 
       // 대시보드로 이동

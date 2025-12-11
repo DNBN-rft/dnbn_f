@@ -22,8 +22,8 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        let userInfo = localStorage.getItem("user");
-        const storeCode = JSON.parse(userInfo).storeCode;
+        // TODO: 실제 storeIdx를 로그인 정보나 라우터 파라미터에서 가져와야 합니다
+        const storeCode = "STO_90865359"; // 임시값
         
         const response = await fetch(`http://localhost:8080/api/store/view/${storeCode}`, {
           method: 'GET',
@@ -139,12 +139,6 @@ const MyPage = () => {
                     <div className="mypage-middle-content-subtitle">주소</div>
                     <div className="mypage-middle-content-subcontent">
                       {storeData.StoreAddr} {storeData.StoreAddrDetail}
-                    </div>
-                  </div>
-                  <div className="mypage-middle-content-info">
-                    <div className="mypage-middle-content-subtitle">누적 신고횟수</div>
-                    <div className="mypage-middle-content-subcontent">
-                      {storeData.storeReport}회
                     </div>
                   </div>
                 </div>

@@ -1,37 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./css/adminaccept.css";
 import AdminStoreDetail from "./modal/AdminStoreDetail";
-import { getReadyStores } from "../../utils/adminStoreService";
 
 const AdminAccept = () => {
   const [selectedStore, setSelectedStore] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [stores, setStores] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // 승인 대기 가맹점 목록 조회
-  const fetchStores = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await getReadyStores();
-      if (result.success) {
-        setStores(result.data || []);
-      } else {
-        setError(result.error);
-      }
-    } catch (err) {
-      setError("가맹점 목록을 불러오는 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 컴포넌트 마운트 시 목록 조회
-  useEffect(() => {
-    fetchStores();
-  }, []);
 
   const handleDetailClick = (store) => {
     setSelectedStore(store);
@@ -43,9 +16,18 @@ const AdminAccept = () => {
     setSelectedStore(null);
   };
 
-  // 승인/거절 후 목록 새로고침
-  const handleRefresh = () => {
-    fetchStores();
+  // 샘플 데이터
+  const sampleStore = {
+    no: 1,
+    businessType: "개인사업자",
+    storeName: "동네가게",
+    businessNumber: "123-45-67890",
+    representativeName: "홍길동",
+    contact: "010-1234-5678",
+    registrationDate: "2024-06-01",
+    franchiseName: "동네비빔밥",
+    address: "서울특별시 강남구 테헤란로 123",
+    franchiseType: "일반상품",
   };
 
   return (
@@ -97,17 +79,9 @@ const AdminAccept = () => {
         <div className="adminaccept-table-wrap">
           <div className="adminaccept-table-header">
             <div className="adminaccept-table-info">
-              총 <span className="adminaccept-count">{stores.length}</span>건
+              총 <span className="adminaccept-count">1</span>건
             </div>
           </div>
-
-          {loading && (
-            <div className="adminaccept-loading">로딩 중...</div>
-          )}
-
-          {error && (
-            <div className="adminaccept-error">{error}</div>
-          )}
 
           <table className="adminaccept-table">
             <thead>
@@ -123,32 +97,23 @@ const AdminAccept = () => {
               </tr>
             </thead>
             <tbody>
-              {!loading && !error && stores.length === 0 && (
-                <tr>
-                  <td colSpan="8" className="adminaccept-empty">
-                    승인 대기 중인 가맹점이 없습니다.
-                  </td>
-                </tr>
-              )}
-              {!loading && !error && stores.map((store, index) => (
-                <tr key={store.storeCode || index}>
-                  <td>{index + 1}</td>
-                  <td>{store.bizType || "-"}</td>
-                  <td>{store.storeNm || "-"}</td>
-                  <td>{store.bizNo || "-"}</td>
-                  <td>{store.ownerNm || "-"}</td>
-                  <td>{store.ownerTelNo || "-"}</td>
-                  <td>{store.requestedDateTime ? new Date(store.requestedDateTime).toLocaleDateString() : "-"}</td>
-                  <td>
-                    <button
-                      className="adminaccept-btn adminaccept-btn-detail"
-                      onClick={() => handleDetailClick(store)}
-                    >
-                      상세
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              <tr>
+                <td>{sampleStore.no}</td>
+                <td>{sampleStore.businessType}</td>
+                <td>{sampleStore.storeName}</td>
+                <td>{sampleStore.businessNumber}</td>
+                <td>{sampleStore.representativeName}</td>
+                <td>{sampleStore.contact}</td>
+                <td>{sampleStore.registrationDate}</td>
+                <td>
+                  <button
+                    className="adminaccept-btn adminaccept-btn-detail"
+                    onClick={() => handleDetailClick(sampleStore)}
+                  >
+                    상세
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -165,11 +130,7 @@ const AdminAccept = () => {
       </div>
 
       {showModal && selectedStore && (
-        <AdminStoreDetail 
-          store={selectedStore} 
-          onClose={handleCloseModal}
-          onRefresh={handleRefresh}
-        />
+        <AdminStoreDetail store={selectedStore} onClose={handleCloseModal} />
       )}
     </div>
   );
