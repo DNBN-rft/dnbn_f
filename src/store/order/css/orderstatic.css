@@ -54,10 +54,12 @@
     line-height: 45px;
     border-radius: 10px;
     cursor: pointer;
+    border: none;
 }
 
 .orderlist-header-excel:hover {
     background-color: #16a04a;
+    border: none;
 }
 
 

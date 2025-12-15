@@ -8,6 +8,9 @@
 .product-container {
   background: #fff;
   padding-bottom: 30px;
+  width: 90%;
+  margin: auto;
+  padding-top: 20px;
 }
 
 /*헤더영역*/
@@ -23,6 +26,23 @@
     font-size: 20px;
     font-weight: bold;
     line-height: 50px;
+}
+
+.productmanage-header-excel {
+    width: 120px;
+    height: 45px;
+    background-color: #1BB052;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.productmanage-header-excel:hover {
+    background-color: #16a04a;
 }
 
 .product-filter {

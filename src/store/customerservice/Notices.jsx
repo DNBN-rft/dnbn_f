@@ -21,7 +21,6 @@ const Notices = () => {
                 setNotices(data);
             }
         } catch (err) {
-            console.error("공지사항 목록 조회 실패:", err);
         } finally {
             setLoading(false);
         }
@@ -30,12 +29,6 @@ const Notices = () => {
     const formatDate = (dateTime) => {
         if (!dateTime) return "-";
         return dateTime.split("T")[0];
-    };
-
-    const truncateContent = (content, maxLength = 50) => {
-        if (!content) return "";
-        if (content.length <= maxLength) return content;
-        return content.substring(0, maxLength) + "...";
     };
 
     const sortedNotices = [...notices].sort((a, b) => {

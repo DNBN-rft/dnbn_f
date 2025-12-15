@@ -13,19 +13,8 @@ const EmployeeManage = () => {
   // 직원 데이터 새로고침 함수
   const fetchMemberData = async () => {
     try {
-      const userData = localStorage.getItem("user");
-      if (!userData) {
-        console.error("사용자 정보가 없습니다.");
-        return;
-      }
-
-      const user = JSON.parse(userData);
-      const storeCode = user.storeCode;
-
-      if (!storeCode) {
-        console.error("storeCode가 없습니다.");
-        return;
-      }
+      const userInfo = localStorage.getItem("user");
+      const storeCode = JSON.parse(userInfo).storeCode;
 
       const response = await fetch (`http://localhost:8080/api/member/view/${storeCode}`, {
         method: "GET",

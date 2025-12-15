@@ -1,6 +1,8 @@
 .membership-wrap {
-  width: 100%;
+  width: 90%;
   padding-bottom: 30px;
+  margin: auto;
+  padding-top: 20px;
 }
 
 /*헤더영역*/
@@ -8,6 +10,7 @@
   width: 100%;
   height: 50px;
   margin-bottom: 10px;
+  margin: auto;
 }
 
 .membership-title {
@@ -18,7 +21,7 @@
 
 /*요약 정보 영역*/
 .membership-info {
-  width: 80%;
+  width: 100%;
   height: 150px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -69,7 +72,7 @@
 
 /*기능 사용량 영역*/
 .membership-usage-info {
-  width: 80%;
+  width: 100%;
   margin: auto;
   margin-top: 50px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -144,7 +147,7 @@
 
 /*플랜 결제 히스토리*/
 .membership-credit-history {
-  width: 80%;
+  width: 100%;
   min-height: 300px;
   margin: auto;
   margin-top: 20px;

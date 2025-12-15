@@ -1,6 +1,7 @@
 /**
  * 로그인 처리 서비스
  */
+import apiClient from "./apiClient";
 
 /**
  * 로그인 API 호출 및 localStorage에 사용자 정보 저장
@@ -10,7 +11,7 @@
  */
 export const login = async (username, password) => {
   try {
-    const response = await fetch("http://localhost:8080/api/auth/store/login", {
+    const response = await fetch("http://localhost:8080/api/store/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,9 +31,12 @@ export const login = async (username, password) => {
         memberNm: data.memberNm,
         storeCode: data.storeCode,
         planNm: data.subscriptionNm,
-        memberId: data.memberId
+        memberId: data.memberId,
       };
       localStorage.setItem("user", JSON.stringify(user));
+
+      // 로그인 성공 시 주기적 토큰 갱신 시작
+      apiClient.startTokenRefresh();
 
       return {
         success: true,
@@ -84,4 +88,6 @@ export const getUserFromStorage = () => {
  */
 export const clearUserFromStorage = () => {
   localStorage.removeItem("user");
+  // 로그아웃 시 토큰 자동 갱신 중지
+  apiClient.stopTokenRefresh();
 };

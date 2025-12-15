@@ -207,10 +207,50 @@ const ProductManage = () => {
     }
   };
 
+  const excelDownload = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/product/excel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      const today = new Date();
+      const dateString = today.getFullYear() + 
+                        String(today.getMonth() + 1).padStart(2, '0') + 
+                        String(today.getDate()).padStart(2, '0');
+      
+      a.download = `상품목록_${dateString}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 100);
+      
+    } catch (error) {
+      console.error("엑셀 다운로드 실패:", error);
+      alert("엑셀 다운로드 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className="product-container">
       <div className="productmanage-header">
         <div className="productmanage-header-title">상품관리</div>
+        <div className="productmanage-header-excel" onClick={excelDownload}>엑셀 다운로드</div>
       </div>
 
       {/* 필터탭 */}

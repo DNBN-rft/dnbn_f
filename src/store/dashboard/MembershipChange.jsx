@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/membershipchange.css";
-
+import { apiCall } from "../../utils/apiClient";
 const MembershipChange = () => {
   const navigate = useNavigate();
   const [currentPlan, setCurrentPlan] = useState(null);
@@ -9,22 +9,21 @@ const MembershipChange = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [expandedPlan, setExpandedPlan] = useState(null);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         let userInfo = localStorage.getItem("user");
         const storeCode = JSON.parse(userInfo).storeCode;
-        
-
         // 현재 멤버십 정보 가져오기
-        const storeResponse = await fetch(`http://localhost:8080/api/store/view/${storeCode}`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
+        const storeResponse = await fetch(
+          `http://localhost:8080/api/store/view/${storeCode}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (storeResponse.ok) {
           const storeData = await storeResponse.json();
           setCurrentPlan({
@@ -32,15 +31,16 @@ const MembershipChange = () => {
             price: storeData.PlanPrice,
           });
         }
-
         // 구독 플랜 목록 가져오기
-        const plansResponse = await fetch(`http://localhost:8080/api/member/membership-plans`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
+        const plansResponse = await fetch(
+          `http://localhost:8080/api/member/membership-plans`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (plansResponse.ok) {
           const plansData = await plansResponse.json();
           setmemberShipPlans(plansData);
@@ -51,43 +51,36 @@ const MembershipChange = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
-
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
   };
-
   const togglePlanExpand = (planIdx) => {
     setExpandedPlan(expandedPlan === planIdx ? null : planIdx);
   };
-
   const handlePlanChange = async () => {
     if (!selectedPlan) {
       alert("변경할 멤버십 플랜을 선택해주세요.");
       return;
     }
-
-    if (window.confirm(`${selectedPlan.memberShipPlanNm}으로 변경하시겠습니까?`)) {
+    if (
+      window.confirm(`${selectedPlan.memberShipPlanNm}으로 변경하시겠습니까?`)
+    ) {
       try {
-        // TODO: 실제 멤버십 변경 API 호출
-        const storeIdx = 1;
-        
-        const response = await fetch(`http://localhost:8080/api/membership/change`, {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            storeIdx: storeIdx,
-            memberShipPlanIdx: selectedPlan.memberShipPlanIdx,
-          }),
+        let userInfo = localStorage.getItem("user");
+        const storeCode = JSON.parse(userInfo).storeCode;
+        const requestBody = {
+          storeCode: storeCode,
+          memberShipPlanIdx: selectedPlan.memberShipPlanIdx,
+        };
+        const response = await apiCall("/store/changeMembership", {
+          method: "POST",
+          body: JSON.stringify(requestBody),
         });
-
         if (response.ok) {
           alert("멤버십이 성공적으로 변경되었습니다.");
-          navigate('/mypage');
+          navigate("/mypage");
         } else {
           alert("멤버십 변경에 실패했습니다.");
         }
@@ -97,48 +90,46 @@ const MembershipChange = () => {
       }
     }
   };
-
   if (loading) {
     return <div className="membership-change-wrap">로딩 중...</div>;
   }
-
   return (
     <div className="membership-change-wrap">
       <div className="membership-change-header">
         <div className="membership-change-title">멤버쉽 변경</div>
-        <button 
+        <button
           className="membership-change-back-btn"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate("/dashboard")}
         >
           돌아가기
         </button>
       </div>
-
       {currentPlan && (
         <>
           <div className="membership-change-current">
             <div className="membership-change-current-title">현재 멤버쉽</div>
             <div className="membership-change-current-info">
-              <span className="membership-change-current-name">{currentPlan.name}</span>
+              <span className="membership-change-current-name">
+                {currentPlan.name}
+              </span>
               <span className="membership-change-current-price">
                 월 {currentPlan.price?.toLocaleString()}원
               </span>
             </div>
           </div>
-
           <div className="membership-change-features-info">
-            <div className="membership-change-features-title">💡 각 플랜의 기능을 확인하세요</div>
+            <div className="membership-change-features-title">
+              :전구: 각 플랜의 기능을 확인하세요
+            </div>
             <p className="membership-change-features-description">
-              각 멤버쉽 플랜을 클릭하면 포함된 기능의 상세 정보를 확인할 수 있습니다.
-              현재 사용 중인 플랜과 다른 플랜을 비교해보세요.
+              각 멤버쉽 플랜을 클릭하면 포함된 기능의 상세 정보를 확인할 수
+              있습니다. 현재 사용 중인 플랜과 다른 플랜을 비교해보세요.
             </p>
           </div>
         </>
       )}
-
       <div className="membership-change-content">
         <div className="membership-change-plans-title">플랜 선택</div>
-        
         <div className="membership-change-plans-list">
           {memberShipPlans.map((plan, index) => (
             <div
@@ -153,7 +144,7 @@ const MembershipChange = () => {
                   : ""
               }`}
             >
-              <div 
+              <div
                 className="membership-change-plan-box-header"
                 onClick={() => togglePlanExpand(plan.memberShipPlanIdx)}
               >
@@ -162,8 +153,10 @@ const MembershipChange = () => {
                     <span className="membership-change-plan-box-name">
                       {plan.memberShipPlanNm}
                     </span>
-                    {currentPlan?.name === plan.memberShipPlanNm&& (
-                      <span className="membership-change-plan-box-current-badge">현재 플랜</span>
+                    {currentPlan?.name === plan.memberShipPlanNm && (
+                      <span className="membership-change-plan-box-current-badge">
+                        현재 플랜
+                      </span>
                     )}
                   </div>
                   <span className="membership-change-plan-box-price">
@@ -191,24 +184,27 @@ const MembershipChange = () => {
                   </span>
                 </div>
               </div>
-
               {expandedPlan === plan.memberShipPlanIdx && (
                 <div className="membership-change-plan-box-details">
                   <div className="membership-change-plan-box-description">
                     {plan.memberShipPlanDescription}
                   </div>
-                  
                   <div className="membership-change-plan-box-features-title">
                     포함된 기능
                   </div>
-                  
                   <div className="membership-change-plan-box-features">
                     {plan.memberShipPlanFuncList?.map((func, idx) => (
-                      <div key={idx} className="membership-change-plan-box-feature">
-                        <span className="membership-change-plan-box-feature-icon">✓</span>
+                      <div
+                        key={idx}
+                        className="membership-change-plan-box-feature"
+                      >
+                        <span className="membership-change-plan-box-feature-icon">
+                          ✓
+                        </span>
                         <span className="membership-change-plan-box-feature-text">
                           <strong>{func.funcDescription}:</strong>{" "}
-                          {func.usageLimit}{func.usageUnit}
+                          {func.usageLimit}
+                          {func.usageUnit}
                         </span>
                       </div>
                     ))}
@@ -218,14 +214,17 @@ const MembershipChange = () => {
             </div>
           ))}
         </div>
-
         <div className="membership-change-btn-wrap">
           <button
             className="membership-change-confirm-btn"
             onClick={handlePlanChange}
-            disabled={!selectedPlan || currentPlan?.name === selectedPlan?.memberShipPlanNm}
+            disabled={
+              !selectedPlan ||
+              currentPlan?.name === selectedPlan?.memberShipPlanNm
+            }
           >
-            {selectedPlan && currentPlan?.name === selectedPlan?.memberShipPlanNm
+            {selectedPlan &&
+            currentPlan?.name === selectedPlan?.memberShipPlanNm
               ? "현재 사용 중인 플랜입니다"
               : "멤버쉽 변경하기"}
           </button>
@@ -234,5 +233,4 @@ const MembershipChange = () => {
     </div>
   );
 };
-
 export default MembershipChange;

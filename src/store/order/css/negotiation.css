@@ -6,8 +6,9 @@
 }
 
 .nego-wrap {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  padding-top: 20px;
+  margin: auto;
 }
 
 /*헤더영역*/
@@ -23,23 +24,6 @@
     font-size: 20px;
     font-weight: bold;
     line-height: 50px;
-}
-
-.nego-header-excel {
-    width: 120px;
-    height: 45px;
-    background-color: #1BB052;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    text-align: center;
-    line-height: 45px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.nego-header-excel:hover {
-    background-color: #16a04a;
 }
 
 /*필터영역*/

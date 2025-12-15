@@ -68,11 +68,11 @@ const Membership = () => {
 
     // 데이터를 먼저 맵으로 변환
     membershipPlanFuncList.forEach(func => {
-      if (func.funcNm === '특가 등록 시간' || func.funcNm === '네고 등록 시간') {
+      if (func.funcNm === '할인 등록 시간' || func.funcNm === '네고 등록 시간') {
         // 특가/네고 등록 시간 병합 (24시간만 표기)
         if (!specialTimeCombined) {
           specialTimeCombined = {
-            funcNm: '특가/네고 등록 시간',
+            funcNm: '할인/네고 등록 시간',
             usageLimit: 24,
             usageUnit: '시간'
           };
@@ -83,11 +83,11 @@ const Membership = () => {
     });
 
     // 정렬 순서 정의
-    const order = ['상품 등록', '할인 등록 횟수', '네고 등록 횟수', '특가/네고 등록 시간', '상품 노출 반경', '요금'];
+    const order = ['상품 등록', '할인 등록 횟수', '네고 등록 횟수', '할인/네고 등록 시간', '상품 노출 반경', '요금'];
     const result = [];
 
     order.forEach(name => {
-      if (name === '특가/네고 등록 시간' && specialTimeCombined) {
+      if (name === '할인/네고 등록 시간' && specialTimeCombined) {
         result.push(specialTimeCombined);
       } else if (functionMap[name]) {
         result.push(functionMap[name]);
@@ -114,7 +114,7 @@ const Membership = () => {
           <td>무제한</td>
         </tr>
       );
-    } else if (func.funcNm === '특가/네고 등록 시간' || func.funcNm === '상품 노출 반경' || func.funcNm === '요금') {
+    } else if (func.funcNm === '할인/네고 등록 시간' || func.funcNm === '상품 노출 반경' || func.funcNm === '요금') {
       return (
         <tr key={func.funcNm}>
           <td>{func.funcNm}</td>
@@ -123,18 +123,22 @@ const Membership = () => {
       );
     } else {
       // 특가 등록 횟수, 네고 등록 횟수 등 진행률 표시
+      const remainingCount = func.funcNm === '할인 등록 횟수' ? dashboardData.discountRegCount : dashboardData.negoRegCount;
+      const currentUsage = func.usageLimit - remainingCount;
+      const percentage = func.usageLimit > 0 ? Math.round((currentUsage / func.usageLimit) * 100) : 0;
+      
       return (
         <tr key={func.funcNm}>
           <td>{func.funcNm}</td>
-          <td>-</td>
+          <td>{percentage}%</td>
           <td>
             <progress 
-              value={0} 
+              value={currentUsage} 
               max={func.usageLimit} 
               className='membership-progress'
             ></progress>
           </td>
-          <td>0/{func.usageLimit}{func.usageUnit}</td>
+          <td>{func.usageLimit}{func.usageUnit}</td>
         </tr>
       );
     }

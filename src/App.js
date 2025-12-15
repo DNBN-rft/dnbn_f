@@ -8,7 +8,6 @@ import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import Layout from "./store/layout/Layout";
 import Membership from "./store/dashboard/Membership";
 import SubscriptionPlans from "./store/subscription/SubscriptionPlans";
@@ -27,7 +26,6 @@ import Sale from "./store/sale/Sale";
 import Negotiation from "./store/order/Negotiation";
 import RegisterStep from "./store/register/RegisterStep";
 import MembershipChange from "./store/dashboard/MembershipChange";
-
 import AdminLayout from "./admin/layout/Layout";
 import AdminMain from "./admin/main/AdminMain";
 import AdminProduct from "./admin/product/AdminProduct";
@@ -48,6 +46,10 @@ import CategoryManage from "./admin/system/CategoryManage";
 import AuthManage from "./admin/system/AuthManage";
 import AdminLogin from "./admin/login/AdminLogin";
 import FaqPage from "./store/customerservice/FaqPage";
+import { useEffect } from "react";
+import apiClient from "./utils/apiClient";
+import { getUserFromStorage } from "./utils/authService";
+import { getAdminFromStorage } from "./utils/adminAuthService";
 
 // React Query Client 생성
 const queryClient = new QueryClient({
@@ -61,6 +63,21 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  // 페이지 로드 시 사용자(가맹점 또는 관리자)가 로그인되어 있으면 토큰 갱신 시작
+  useEffect(() => {
+    const user = getUserFromStorage();
+    const admin = getAdminFromStorage();
+    
+    if (user || admin) {
+      apiClient.startTokenRefresh();
+    }
+
+    // 컴포넌트 언마운트 시 정리
+    return () => {
+      apiClient.stopTokenRefresh();
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -70,10 +87,8 @@ function App() {
           <Route path="/store/login" element={<Login />} />
           <Route path="/store/register" element={<RegisterStep />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-
           {/* 기본 경로 리다이렉트 */}
           <Route path="/" element={<Navigate to="/store/login" replace />} />
-
           {/* 스토어 관리자 - 보호된 경로 */}
           <Route
             element={
@@ -102,7 +117,6 @@ function App() {
               element={<MembershipChange />}
             />
           </Route>
-
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminMain />} />
             <Route path="/admin/product" element={<AdminProduct />} />
@@ -128,5 +142,4 @@ function App() {
     </QueryClientProvider>
   );
 }
-
 export default App;

@@ -73,11 +73,59 @@ useEffect(() => {
     }
   }, [location]);
 
+  const excelDownload = async () => {
+    try {
+      let userData = localStorage.getItem("user");
+      if (!userData) {
+        alert('로그인 정보를 찾을 수 없습니다.');
+        return;
+      }
+      
+      const storeCode = JSON.parse(userData).storeCode;
+      
+      const response = await fetch(`http://localhost:8080/api/order/list/${storeCode}/excel`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      // 현재 날짜로 파일명 생성
+      const today = new Date();
+      const dateString = today.getFullYear() + 
+                        String(today.getMonth() + 1).padStart(2, '0') + 
+                        String(today.getDate()).padStart(2, '0');
+      
+      a.download = `상품_판매_리스트_${dateString}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 100);
+      
+    } catch (error) {
+      alert('엑셀 다운로드 중 오류가 발생했습니다.');
+    }
+  }
+
   return (
-    <div>
+    <div className="orderlist-wrap">
       <div className="orderlist-header">
         <div className="orderlist-header-title">매출목록</div>
-        <div className="orderlist-header-excel">엑셀 다운로드</div>
+        <div className="orderlist-header-excel" onClick={excelDownload}>엑셀 다운로드</div>
       </div>
 
       <div className="orderlist-filter">

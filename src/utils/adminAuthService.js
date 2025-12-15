@@ -2,6 +2,9 @@
  * 관리자 로그인 처리 서비스
  */
 
+import { apiCall } from "./apiClient";
+import apiClient from "./apiClient";
+
 /**
  * 관리자 로그인 API 호출 및 localStorage에 사용자 정보 저장
  * @param {string} empId - 관리자 아이디
@@ -10,12 +13,8 @@
  */
 export const adminLogin = async (empId, password) => {
   try {
-    const response = await fetch("http://localhost:8080/api/admin/login", {
+    const response = await apiCall("/admin/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // 쿠키를 자동으로 포함
       body: JSON.stringify({
         empId: empId,
         empPw: password,
@@ -31,6 +30,9 @@ export const adminLogin = async (empId, password) => {
         empNm: data.empNm,
       };
       localStorage.setItem("admin", JSON.stringify(admin));
+
+      // 로그인 성공 시 주기적 토큰 갱신 시작
+      apiClient.startTokenRefresh();
 
       return {
         success: true,
@@ -82,4 +84,31 @@ export const getAdminFromStorage = () => {
  */
 export const clearAdminFromStorage = () => {
   localStorage.removeItem("admin");
+  // 로그아웃 시 토큰 자동 갱신 중지
+  apiClient.stopTokenRefresh();
+};
+
+// 권한 목록 조회
+export const getAuthList = async () => {
+  try {
+    const response = await apiCall("/admin/auth", {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("권한 목록 조회 실패");
+    }
+
+    const data = await response.json();
+    return {
+      success: true,
+      data: data,
+    };
+  } catch (error) {
+    console.error("권한 목록 조회 에러:", error);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
 };

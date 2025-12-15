@@ -18,7 +18,6 @@ const Negotiation = () => {
 
     <div className="nego-header">
         <div className="nego-header-title">네고목록</div>
-        <div className="nego-header-excel">엑셀 다운로드</div>
     </div>
 
     <div className="nego-filter">

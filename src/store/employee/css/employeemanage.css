@@ -1,3 +1,9 @@
+.empmanage-wrap {
+    width: 90%;
+    margin: auto;
+    padding-top: 20px;
+}
+
 /*헤더영역*/
 .empmanage-header {
     width: 100%;

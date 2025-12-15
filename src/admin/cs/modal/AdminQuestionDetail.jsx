@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./css/adminquestiondetail.css";
 import { getQuestionDetail, registerAnswer, modifyAnswer } from "../../../utils/adminQuestionService";
-
-const AdminQuestionDetail = ({ question, onClose }) => {
+const AdminQuestionDetail = ({ questionIdx, onClose }) => {
   const [questionDetail, setQuestionDetail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isAnswering, setIsAnswering] = useState(false);
   const [answerContent, setAnswerContent] = useState("");
   const [saving, setSaving] = useState(false);
-
-  // 상세 정보 로드
-  useEffect(() => {
-    fetchQuestionDetail();
-  }, [question.questionIdx]);
-
-  const fetchQuestionDetail = async () => {
+  const fetchQuestionDetail = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getQuestionDetail(question.questionIdx);
+      const data = await getQuestionDetail(questionIdx);
       setQuestionDetail(data);
       setAnswerContent(data.answerContent || "");
     } catch (err) {
@@ -28,41 +21,39 @@ const AdminQuestionDetail = ({ question, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [questionIdx]);
+  // 상세 정보 로드
+  useEffect(() => {
+    fetchQuestionDetail();
+  }, [fetchQuestionDetail]);
   const hasAnswer = questionDetail && questionDetail.answerContent && questionDetail.answerContent.trim() !== "";
-
   // 모달 배경 클릭 시 닫히지 않도록 이벤트 전파 중지
   const handleModalContentClick = (e) => {
     e.stopPropagation();
   };
-
   // 답변 버튼 클릭
   const handleAnswerClick = () => {
     setIsAnswering(true);
   };
-
   // 수정 버튼 클릭
   const handleEditClick = () => {
     setIsAnswering(true);
   };
-
   // 답변 저장 (등록 또는 수정)
   const handleSaveAnswer = async () => {
     if (!answerContent.trim()) {
       alert("답변 내용을 입력해주세요.");
       return;
     }
-
     setSaving(true);
     try {
       if (hasAnswer) {
         // 답변 수정
-        await modifyAnswer(question.questionIdx, answerContent);
+        await modifyAnswer(questionIdx, answerContent);
         alert("답변이 수정되었습니다.");
       } else {
         // 답변 등록
-        await registerAnswer(question.questionIdx, answerContent);
+        await registerAnswer(questionIdx, answerContent);
         alert("답변이 등록되었습니다.");
         console.log(hasAnswer)
       }
@@ -75,13 +66,11 @@ const AdminQuestionDetail = ({ question, onClose }) => {
       setSaving(false);
     }
   };
-
   // 답변 취소
   const handleCancelAnswer = () => {
     setAnswerContent(questionDetail?.answerContent || "");
     setIsAnswering(false);
   };
-
   // 문의 유형 한글 변환
   const getQuestionTypeLabel = (type) => {
     const typeMap = {
@@ -91,7 +80,6 @@ const AdminQuestionDetail = ({ question, onClose }) => {
     };
     return typeMap[type] || type;
   };
-
   // 사용자 구분 결정
   const getUserType = () => {
     if (!questionDetail) return "-";
@@ -99,7 +87,6 @@ const AdminQuestionDetail = ({ question, onClose }) => {
     if (questionDetail.custIdx) return "일반사용자";
     return "-";
   };
-
   if (loading) {
     return (
       <div className="adminquestiondetail-overlay">
@@ -109,7 +96,6 @@ const AdminQuestionDetail = ({ question, onClose }) => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="adminquestiondetail-overlay">
@@ -124,11 +110,9 @@ const AdminQuestionDetail = ({ question, onClose }) => {
       </div>
     );
   }
-
   if (!questionDetail) {
     return null;
   }
-
   return (
     <div className="adminquestiondetail-overlay">
       <div className="adminquestiondetail-modal" onClick={handleModalContentClick}>
@@ -139,7 +123,6 @@ const AdminQuestionDetail = ({ question, onClose }) => {
             <div className="adminquestiondetail-author">{questionDetail.questionRegNm}</div>
           </div>
         </div>
-
         <div className="adminquestiondetail-section">
           <div className="adminquestiondetail-section-title">문의 정보</div>
           <div className="adminquestiondetail-info-grid">
@@ -165,14 +148,12 @@ const AdminQuestionDetail = ({ question, onClose }) => {
             )}
           </div>
         </div>
-
         <div className="adminquestiondetail-section">
           <div className="adminquestiondetail-section-title">문의 내용</div>
           <div className="adminquestiondetail-content">
             <p>{questionDetail.questionContent}</p>
           </div>
         </div>
-
         {/* 답변 섹션 */}
         <div className="adminquestiondetail-section">
           <div className="adminquestiondetail-section-title">답변 내용</div>
@@ -190,7 +171,6 @@ const AdminQuestionDetail = ({ question, onClose }) => {
             </div>
           )}
         </div>
-
         {/* 답변자 및 수정자 정보 */}
         {questionDetail.answerRegNm && !isAnswering && (
           <div className="adminquestiondetail-section">
@@ -214,19 +194,18 @@ const AdminQuestionDetail = ({ question, onClose }) => {
             </div>
           </div>
         )}
-
         <div className="adminquestiondetail-footer">
           {isAnswering ? (
             <>
-              <button 
-                className="adminquestiondetail-save-btn" 
+              <button
+                className="adminquestiondetail-save-btn"
                 onClick={handleSaveAnswer}
                 disabled={saving}
               >
                 {saving ? '저장 중...' : '저장'}
               </button>
-              <button 
-                className="adminquestiondetail-cancel-btn" 
+              <button
+                className="adminquestiondetail-cancel-btn"
                 onClick={handleCancelAnswer}
                 disabled={saving}
               >
@@ -254,5 +233,4 @@ const AdminQuestionDetail = ({ question, onClose }) => {
     </div>
   );
 };
-
 export default AdminQuestionDetail;

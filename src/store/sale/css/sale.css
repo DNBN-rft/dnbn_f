@@ -1,6 +1,9 @@
 /*wrap*/
 .sale-wrap {
     padding-bottom: 50px;
+    width: 90%;
+    margin: auto;
+    padding-top: 20px;
 }
 
 /*헤더 영역*/

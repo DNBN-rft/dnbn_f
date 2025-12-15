@@ -28,7 +28,6 @@ const Questions = () => {
         setQuestions(data);
       }
     } catch (err) {
-      console.error("문의 목록 조회 실패:", err);
     } finally {
       setLoading(false);
     }
