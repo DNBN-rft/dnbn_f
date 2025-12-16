@@ -32,15 +32,6 @@ const OrderStatic = () => {
   const [loading, setLoading] = useState(false);
   const [dateType, setDateType] = useState("");
 
-  const handleDateChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "startDate") {
-      setStartDate(value);
-    } else if (name === "endDate") {
-      setEndDate(value);
-    }
-  };
-
   // 날짜를 YYYY-MM-DD 형식으로 변환 (로컬 타임존)
   const formatDate = (date) => {
     const year = date.getFullYear();
@@ -54,7 +45,6 @@ const OrderStatic = () => {
     let startDate, endDate;
 
     if (type === "today") {
-      // 오늘
       startDate = new Date(today);
       endDate = new Date(today);
     } else if (type === "week") {
@@ -101,11 +91,6 @@ const OrderStatic = () => {
       
       // localStorage에서 storeCode 가져오기
       const userInfo = localStorage.getItem("user");
-      if (!userInfo) {
-        alert("로그인 정보가 없습니다.");
-        return;
-      }
-      
       const storeCode = JSON.parse(userInfo).storeCode;
       
       const requestBody = {
@@ -114,12 +99,12 @@ const OrderStatic = () => {
       };
       
       console.log("API 요청:", {
-        url: `/order/static/${storeCode}`,
+        url: `/store/order/statistics/${storeCode}`,
         body: requestBody
       });
       
       // API 호출
-      const response = await apiCall(`/order/statistics/${storeCode}`, {
+      const response = await apiCall(`/store/order/statistics/${storeCode}`, {
         method: "POST",
         body: JSON.stringify(requestBody)
       });
@@ -170,7 +155,7 @@ const OrderStatic = () => {
       };
       
       // 엑셀 다운로드 API 호출 - fetch 직접 사용
-      const response = await fetch(`http://localhost:8080/api/order/statistics/${storeCode}/excel`, {
+      const response = await fetch(`http://localhost:8080/api/store/order/statistics/${storeCode}/excel`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -19,6 +19,12 @@ const ProductManage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
@@ -27,15 +33,20 @@ const ProductManage = () => {
   const [selectedSaleProduct, setSelectedSaleProduct] = useState(null);
 
   // 초기 상품 목록 조회 (검색 없이)
-  const loadProducts = async () => {
+  const loadProducts = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiGet("/product");
+      const response = await apiGet(`/product?page=${page}&size=${pageSize}`);
       const data = await response.json();
       
       if (response.ok) {
-        const formattedProducts = data.map(p => ({
+        // 페이지네이션 정보 업데이트
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+        
+        const formattedProducts = data.content.map(p => ({
           productCode: p.productCode,
           name: p.productNm,
           category: p.categoryNm,
@@ -68,7 +79,7 @@ const ProductManage = () => {
     }
   };
 
-  const searchProducts = async () => {
+  const searchProducts = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
@@ -77,12 +88,21 @@ const ProductManage = () => {
       params.append("searchType", searchField);
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
+      params.append("page", page);
+      params.append("size", pageSize);
 
       const response = await apiGet(`/product/search?${params.toString()}`);
       const data = await response.json();
       
       if (response.ok) {
-        const formattedProducts = data.map(p => ({
+        // 페이지네이션 정보 업데이트 (검색 결과도 페이징되는 경우)
+        if (data.content) {
+          setCurrentPage(data.number);
+          setTotalPages(data.totalPages);
+          setTotalElements(data.totalElements);
+        }
+        
+        const formattedProducts = (data.content || data).map(p => ({
           productIdx: p.productIdx,
           name: p.productNm,
           category: p.categoryNm,
@@ -137,11 +157,13 @@ const ProductManage = () => {
     setEndDate("");
     setStatusFilter("전체");
     setSelectedCheckboxes(new Set());
-    loadProducts(); // 초기화 시 전체 목록 다시 로드
+    setCurrentPage(0);
+    loadProducts(0); // 초기화 시 첫 페이지부터 로드
   };
 
   const handleSearch = () => {
-    searchProducts(); // 검색 버튼 클릭 시만 search API 호출
+    setCurrentPage(0);
+    searchProducts(0); // 검색 시 첫 페이지부터 시작
   };
 
   // 상품 클릭: 모달이 열려 있으면 열지 않음
@@ -398,12 +420,47 @@ const ProductManage = () => {
         {/* 페이지네이션 */}
         <div className="product-footer">
           <div className="product-count">
-            전체 {products.length}개 상품
+            전체 {totalElements}개 상품
           </div>
           <div className="product-pagination">
-            <button className="product-page">이전</button>
-            <button className="product-page active">1</button>
-            <button className="product-page">다음</button>
+            <button 
+              className="product-page" 
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  searchText ? searchProducts(newPage) : loadProducts(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`product-page ${currentPage === index ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  searchText ? searchProducts(index) : loadProducts(index);
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button 
+              className="product-page"
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  searchText ? searchProducts(newPage) : loadProducts(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
           </div>
           <div className="product-footer-spacer"></div>
         </div>

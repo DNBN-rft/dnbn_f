@@ -26,8 +26,8 @@ export const adminLogin = async (empId, password) => {
       
       // localStorage에 관리자 정보 저장
       const admin = {
-        empId: data.empId,
-        empNm: data.empNm,
+        empId: data.memberId,
+        empNm: data.memberNm,
       };
       localStorage.setItem("admin", JSON.stringify(admin));
 

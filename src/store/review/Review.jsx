@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./css/review.css";
 import ReviewAnswer from "./modal/ReviewAnswer";
+import { apiGet, apiPut } from "../../utils/apiClient";
+import ReviewReport from "./modal/ReviewReport";
 
 const Review = () => {
   const location = useLocation();
@@ -12,6 +14,13 @@ const Review = () => {
   const [isReviewAnswerModalOpen, setIsReviewAnswerModalOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
   const [reviewData, setReviewData] = useState([]);
+  const [selectedReviewIdx, setSelectedReviewIdx] = useState(null);
+  const [isReviewReportModalOpen, setIsReviewReportModalOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
 
   const handleReset = () => {
     setStartDate("");
@@ -20,26 +29,26 @@ const Review = () => {
     setSearchText("");
   }
 
-  const fetchReviews = async () => {
+  const fetchReviews = async (page = 0) => {
     try {
       const userInfo = JSON.parse(localStorage.getItem("user"));
       const storeCode = userInfo.storeCode;
 
-      const response = await fetch (`http://localhost:8080/api/review/view/${storeCode}`, 
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-      if (!response.ok) {
-        throw new Error("네트워크 응답에 문제가 있습니다.");
-      }
+      const response = await apiGet(`/store/review/view/${storeCode}?page=${page}&size=${pageSize}`);
       const data = await response.json();
-      setReviewData(data);
+      
+      if (response.ok) {
+        setReviewData(data.content || []);
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+      } else {
+        setReviewData([]);
+      }
     } catch (error) {
-    }};
+      setReviewData([]);
+    }
+  };
 
   useEffect(() => {
     fetchReviews();
@@ -48,33 +57,24 @@ const Review = () => {
   // 알람에서 전달받은 state 처리
   useEffect(() => {
     if (location.state?.openModal && location.state?.reviewIdx) {
-      // reviewIdx로 해당 리뷰 찾기
       const targetReview = reviewData.find(r => r.reviewIdx === parseInt(location.state.reviewIdx));
       if (targetReview) {
         setSelectedReview(targetReview);
         setIsReviewAnswerModalOpen(true);
       }
       
-      // state 초기화 (뒤로가기 시 모달이 다시 열리는 것 방지)
       window.history.replaceState({}, document.title);
     }
   }, [location, reviewData]);
 
-  // 숨김 처리 함수
   const handleHideReview = async (reviewIdx) => {
     if (!window.confirm("이 리뷰를 숨김 처리하시겠습니까?")) {
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/review/hidden/${reviewIdx}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          hidden: true
-        }),
+      const response = await apiPut(`/store/review/hidden/${reviewIdx}`, {
+        hidden: true
       });
 
       if (!response.ok) {
@@ -86,6 +86,11 @@ const Review = () => {
     } catch (error) {
       alert("숨김 처리에 실패했습니다. 다시 시도해주세요.");
     }
+  };
+
+  const handleReportReview = async (reviewIdx) => {
+    setSelectedReviewIdx(reviewIdx);
+    setIsReviewReportModalOpen(true);
   };
 
   return (
@@ -111,20 +116,6 @@ const Review = () => {
               onChange={(e) => setEndDate(e.target.value)}
               className="review-date-input"
             />
-          </div>
-          <div className="review-recent-btn-group">
-            <button type="button" className="review-recent-btn">
-              최근 1개월
-            </button>
-            <button type="button" className="review-recent-btn">
-              최근 3개월
-            </button>
-            <button type="button" className="review-recent-btn">
-              최근 6개월
-            </button>
-            <button type="button" className="review-recent-btn">
-              최근 12개월
-            </button>
           </div>
         </div>
         <div className="review-search">
@@ -155,14 +146,9 @@ const Review = () => {
       <div className="review-info">
         <div className="review-info1">
           <div className="review-info-title">총 리뷰수</div>
-          <div className="review-info-value">{reviewData.length.toLocaleString()}</div>
+          <div className="review-info-value">{totalElements.toLocaleString()}</div>
           <div className="review-info-sub">
-            오늘 신규 {reviewData.filter(r => {
-              if (!r.regDate) return false;
-              const today = new Date();
-              const regDate = new Date(r.regDate);
-              return regDate.toDateString() === today.toDateString();
-            }).length}건
+            현재 페이지 {reviewData.length}건
           </div>
         </div>
         <div className="review-info2">
@@ -204,7 +190,7 @@ const Review = () => {
             {reviewData.map((p, idx) => {
               return (
                 <tr key={p.reviewIdx}>
-                  <td>{idx + 1}</td>
+                  <td>{currentPage * pageSize + idx + 1}</td>
                   <td className="review-review-info">
                     {p.reviewImg && <div className="review-thumb" style={{backgroundImage: `url(${p.reviewImg})`}} />}
                     <div className="review-name">{p.productNm || "-"}</div>
@@ -235,6 +221,16 @@ const Review = () => {
                         숨김
                       </button>
                     )}
+                    {p.reported ? (
+                      <button className="review-btn" disabled>신고처리 중</button>
+                    ) : p.reportExpireDate ? (
+                      <button className="review-btn" disabled>신고됨</button>
+                    ) :  (
+                      <button
+                      className="review-btn"
+                      onClick={() => handleReportReview(p.reviewIdx)}
+                      >신고</button>
+                    )}
                   </td>
                 </tr>
               );
@@ -244,11 +240,29 @@ const Review = () => {
 
         <div className="review-footer">
           <div className="review-pagination">
-            <button className="review-page">이전</button>
-            <button className="review-page active">1</button>
-            <button className="review-page">2</button>
-            <button className="review-page">3</button>
-            <button className="review-page">다음</button>
+            <button 
+              className="review-page"
+              onClick={() => fetchReviews(currentPage - 1)}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`review-page ${currentPage === index ? 'active' : ''}`}
+                onClick={() => fetchReviews(index)}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button 
+              className="review-page"
+              onClick={() => fetchReviews(currentPage + 1)}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
           </div>
         </div>
       </div>
@@ -256,6 +270,16 @@ const Review = () => {
         <ReviewAnswer
           onClose={() => setIsReviewAnswerModalOpen(false)}
           review={selectedReview}
+          refreshData={fetchReviews}
+        />
+      )}
+      {isReviewReportModalOpen && selectedReviewIdx && (
+        <ReviewReport
+          onClose={() => {
+            setIsReviewReportModalOpen(false);
+            setSelectedReviewIdx(null);
+          }}
+          reviewIdx={selectedReviewIdx}
           refreshData={fetchReviews}
         />
       )}

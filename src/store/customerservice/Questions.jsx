@@ -13,21 +13,31 @@ const Questions = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 10;
+
   useEffect(() => {
     if (user?.storeCode) {
-      loadQuestions();
+      loadQuestions(0);
     }
   }, [user]);
 
-  const loadQuestions = async () => {
+  const loadQuestions = async (page = 0) => {
     setLoading(true);
     try {
-      const response = await apiGet(`/question/${user.storeCode}`);
+      const response = await apiGet(`/question/${user.storeCode}?page=${page}&size=${pageSize}`);
+      const data = await response.json();
+      
       if (response.ok) {
-        const data = await response.json();
-        setQuestions(data);
+        setQuestions(data.content || []);
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+      } else {
+        setQuestions([]);
       }
     } catch (err) {
+      setQuestions([]);
     } finally {
       setLoading(false);
     }
@@ -86,7 +96,7 @@ const Questions = () => {
                 >
                   <div className="questions-item-header">
                     <div className="questions-item-info">
-                      <span className="questions-item-no">No. {idx + 1}</span>
+                      <span className="questions-item-no">No. {currentPage * pageSize + idx + 1}</span>
                       <span
                         className={`questions-item-status ${
                           q.isAnswered
@@ -111,13 +121,29 @@ const Questions = () => {
         {!loading && questions.length > 0 && (
           <div className="questions-footer">
             <div className="questions-pagination">
-              <button className="questions-page">이전</button>
-              <button className="questions-page questions-page-active">
-                1
+              <button 
+                className="questions-page"
+                onClick={() => loadQuestions(currentPage - 1)}
+                disabled={currentPage === 0}
+              >
+                이전
               </button>
-              <button className="questions-page">2</button>
-              <button className="questions-page">3</button>
-              <button className="questions-page">다음</button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  className={`questions-page ${currentPage === index ? 'questions-page-active' : ''}`}
+                  onClick={() => loadQuestions(index)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button 
+                className="questions-page"
+                onClick={() => loadQuestions(currentPage + 1)}
+                disabled={currentPage === totalPages - 1}
+              >
+                다음
+              </button>
             </div>
           </div>
         )}

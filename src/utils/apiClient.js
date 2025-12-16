@@ -16,7 +16,7 @@ const getLoginType = () => {
 const getRefreshEndpoint = () => {
   const loginType = getLoginType();
   if (loginType === "admin") return "/admin/refresh";
-  return "/auth/refresh";
+  return "/store/refresh";
 };
 // 로그인 타입에 따른 로그인 페이지 반환
 const getLoginPage = () => {

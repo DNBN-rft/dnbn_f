@@ -13,53 +13,58 @@ const OrderList = () => {
   const [isOrderInfoModalOpen, setIsOrderInfoModalOpen] = useState(false);
   const [selectedOrderCode, setSelectedOrderCode] = useState(null);
   const [list, setList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [loading, setLoading] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
 
   const handleReset = () => {
     setSearchField("판매번호");
     setSearchText("");
     setStartDate("");
     setEndDate("");
+    setCurrentPage(0);
+    loadOrders(0);
   };
 
-  // 페이지네이션 계산
-  const totalItems = list.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentItems = list.slice(startIndex, endIndex);
-
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        let userData = localStorage.getItem("user");
-        const storeCode = JSON.parse(userData).storeCode;
-       
-        const response = await apiGet(`/order/statistics/list/${storeCode}`);
-        const data = await response.json();
-        if (response.ok) {
-          const orderList = data.map(p => ({
-            orderCode: p.orderCode || p.orderId || p.saleCode,
-            productNm: p.productsNm,
-            buyer: p.buyer,
-            totalPrice: p.price,
-            payType: p.payType,
-            payDate: p.paymentDateTime
-          }));
-          setList(orderList);
-        }
+  const loadOrders = async (page = 0) => {
+    setLoading(true);
+    try {
+      let userData = localStorage.getItem("user");
+      const storeCode = JSON.parse(userData).storeCode;
+     
+      const response = await apiGet(`/store/order/statistics/list/${storeCode}?page=${page}&size=${pageSize}`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setCurrentPage(data.number || 0);
+        setTotalPages(data.totalPages || 0);
+        setTotalElements(data.totalElements || 0);
+        
+        const orderList = (data.content || []).map(p => ({
+          orderCode: p.orderCode || p.orderId || p.saleCode,
+          productNm: p.productsNm,
+          buyer: p.buyer,
+          totalPrice: p.price,
+          payType: p.payType,
+          payDate: p.paymentDateTime
+        }));
+        setList(orderList);
+      } else {
+        setList([]);
+      }
     } catch (error) {
       console.error("주문 목록 조회 중 오류 발생:", error);
+      setList([]);
+    } finally {
+      setLoading(false);
     }
-    };
-    fetchOrderList();
+  };
+
+  useEffect(() => {
+    loadOrders();
   }, []);
 
   // 알람에서 전달받은 state 처리
@@ -187,7 +192,7 @@ useEffect(() => {
       </div>
 
       <div className="orderlist-count">
-        전체 {totalItems}개 상품 중 {totalItems > 0 ? `${startIndex + 1}-${endIndex}개` : '0개'} 표시
+        전체 {totalElements}개 상품
       </div>
 
       <div className="product-table-wrap">
@@ -203,21 +208,35 @@ useEffect(() => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((p, idx) => (
-              <tr key={p.orderCode || idx} onClick={() => {
-                setSelectedOrderCode(p.orderCode);
-                setIsOrderInfoModalOpen(true);
-              }} className="product-table-row">
-                <td>{startIndex + idx + 1}</td>
-                <td className="product-product-info">
-                  {p.productNm}
+            {loading ? (
+              <tr>
+                <td colSpan="6" style={{textAlign: 'center', padding: '20px'}}>
+                  로딩 중...
                 </td>
-                <td>{p.buyer}</td>
-                <td>{p.totalPrice.toLocaleString()}원</td>
-                <td>{p.payType}</td>
-                <td>{p.payDate}</td>
               </tr>
-            ))}
+            ) : list.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{textAlign: 'center', padding: '20px'}}>
+                  주문 내역이 없습니다.
+                </td>
+              </tr>
+            ) : (
+              list.map((p, idx) => (
+                <tr key={p.orderCode || idx} onClick={() => {
+                  setSelectedOrderCode(p.orderCode);
+                  setIsOrderInfoModalOpen(true);
+                }} className="product-table-row">
+                  <td>{currentPage * pageSize + idx + 1}</td>
+                  <td className="product-product-info">
+                    {p.productNm}
+                  </td>
+                  <td>{p.buyer}</td>
+                  <td>{p.totalPrice?.toLocaleString()}원</td>
+                  <td>{p.payType}</td>
+                  <td>{p.payDate}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
@@ -225,24 +244,32 @@ useEffect(() => {
           <div className="product-pagination">
             <button 
               className="product-page" 
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
+              onClick={() => {
+                if (currentPage > 0) {
+                  loadOrders(currentPage - 1);
+                }
+              }}
+              disabled={currentPage === 0}
             >
               이전
             </button>
             {[...Array(totalPages)].map((_, i) => (
               <button
-                key={i + 1}
-                className={`product-page ${currentPage === i + 1 ? 'active' : ''}`}
-                onClick={() => handlePageChange(i + 1)}
+                key={i}
+                className={`product-page ${currentPage === i ? 'active' : ''}`}
+                onClick={() => loadOrders(i)}
               >
                 {i + 1}
               </button>
             ))}
             <button 
               className="product-page" 
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  loadOrders(currentPage + 1);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
             >
               다음
             </button>

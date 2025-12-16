@@ -1,4 +1,3 @@
-/* 모달 오버레이 */
 .adminreportdetail-overlay,
 .adminreportdetail-confirm-overlay {
   position: fixed;
@@ -8,47 +7,42 @@
   bottom: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 60px;
+  overflow-y: auto;
 }
-
 .adminreportdetail-overlay {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
-
 .adminreportdetail-confirm-overlay {
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 1001;
 }
-
 /* 모달 컨테이너 */
 .adminreportdetail-modal,
 .adminreportdetail-confirm-modal {
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   border-radius: 12px;
   padding: 32px;
   width: 90%;
 }
-
 .adminreportdetail-modal {
   max-width: 800px;
   max-height: 90vh;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   overflow-y: auto;
 }
-
 .adminreportdetail-confirm-modal {
   max-width: 400px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
-
 /* 헤더 */
 .adminreportdetail-header {
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid #E5E7EB;
 }
-
 .adminreportdetail-header-title {
   font-size: 24px;
   font-weight: 700;
@@ -56,69 +50,58 @@
   margin-bottom: 12px;
   line-height: 1.4;
 }
-
 .adminreportdetail-header-info {
   display: flex;
   gap: 20px;
   align-items: center;
 }
-
 .adminreportdetail-date-time,
 .adminreportdetail-author {
   font-size: 14px;
-  color: #6b7280;
+  color: #6B7280;
 }
-
 .adminreportdetail-author {
   font-weight: 500;
 }
-
 /* 섹션 */
 .adminreportdetail-section {
   margin-bottom: 24px;
 }
-
 .adminreportdetail-section-title {
   font-size: 16px;
   font-weight: 700;
   color: #374151;
   margin-bottom: 12px;
   padding-left: 12px;
-  border-left: 4px solid #4f46e5;
+  border-left: 4px solid #4F46E5;
 }
-
 /* 정보 그리드 */
 .adminreportdetail-info-grid {
   display: flex;
   gap: 24px;
   padding: 16px;
-  background-color: #f9fafb;
+  background-color: #F9FAFB;
   border-radius: 8px;
   flex-wrap: wrap;
 }
-
 .adminreportdetail-info-item {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .adminreportdetail-info-label,
 .adminreportdetail-info-value {
   font-size: 14px;
 }
-
 .adminreportdetail-info-label {
-  color: #6b7280;
+  color: #6B7280;
   font-weight: 600;
   white-space: nowrap;
 }
-
 .adminreportdetail-info-value {
   color: #111827;
   font-weight: 500;
 }
-
 /* 상태 뱃지 */
 .adminreportdetail-status {
   display: inline-block;
@@ -128,29 +111,25 @@
   font-weight: 700;
   white-space: nowrap;
 }
-
 .adminreportdetail-status-pending {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: #FEF3C7;
+  color: #92400E;
 }
-
 .adminreportdetail-status-complete {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: #D1FAE5;
+  color: #065F46;
 }
-
 /* 컨텐츠 */
 .adminreportdetail-content {
   padding: 20px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #E5E7EB;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   min-height: 180px;
   height: 180px;
   overflow-y: auto;
 }
-
 .adminreportdetail-content p {
   font-size: 15px;
   color: #374151;
@@ -159,28 +138,24 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-
 .adminreportdetail-answer {
-  background-color: #f0fdf4;
-  border-color: #86efac;
+  background-color: #F0FDF4;
+  border-color: #86EFAC;
 }
-
 .adminreportdetail-no-answer {
-  background-color: #f9fafb;
+  background-color: #F9FAFB;
 }
-
 .adminreportdetail-no-answer p {
-  color: #9ca3af;
+  color: #9CA3AF;
   font-style: italic;
 }
-
 /* 답변 입력 텍스트영역 */
 .adminreportdetail-textarea {
   width: 100%;
   min-height: 180px;
   height: 180px;
   padding: 16px;
-  border: 2px solid #4f46e5;
+  border: 2px solid #4F46E5;
   border-radius: 8px;
   font-size: 15px;
   color: #374151;
@@ -190,17 +165,58 @@
   box-sizing: border-box;
   resize: none;
 }
-
 .adminreportdetail-textarea:focus {
   outline: none;
-  border-color: #4338ca;
+  border-color: #4338CA;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
-
 .adminreportdetail-textarea::placeholder {
-  color: #9ca3af;
+  color: #9CA3AF;
 }
-
+/* 답변 제목 선택 영역 */
+.adminreportdetail-answer-title-group {
+  margin-bottom: 12px;
+}
+.adminreportdetail-answer-title-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+.adminreportdetail-answer-title-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #4F46E5;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.adminreportdetail-answer-title-select:focus {
+  outline: none;
+  border-color: #4338CA;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+/* 답변 제목 표시 */
+.adminreportdetail-answer-title-display {
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #4F46E5;
+  background-color: #EEF2FF;
+  border-left: 4px solid #4F46E5;
+  border-radius: 4px;
+  font-size: 14px;
+}
+/* 에러 메시지 */
+.adminreportdetail-error-message {
+  color: #DC2626;
+  margin-top: 10px;
+  font-size: 14px;
+}
 /* 푸터 버튼 영역 */
 .adminreportdetail-footer {
   display: flex;
@@ -208,9 +224,8 @@
   gap: 12px;
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid #E5E7EB;
 }
-
 /* 버튼 공통 스타일 */
 .adminreportdetail-answer-btn,
 .adminreportdetail-edit-btn,
@@ -227,7 +242,6 @@
   transition: all 0.2s ease;
   border: none;
 }
-
 .adminreportdetail-answer-btn,
 .adminreportdetail-edit-btn,
 .adminreportdetail-save-btn,
@@ -236,116 +250,96 @@
 .adminreportdetail-reject-cancel-btn {
   padding: 10px 24px;
 }
-
 .adminreportdetail-confirm-ok-btn,
 .adminreportdetail-confirm-cancel-btn {
   padding: 10px 32px;
 }
-
 /* 파란색 버튼 그룹 */
 .adminreportdetail-answer-btn,
 .adminreportdetail-edit-btn,
 .adminreportdetail-save-btn,
 .adminreportdetail-reject-cancel-btn,
 .adminreportdetail-confirm-ok-btn {
-  background-color: #4f46e5;
-  color: #ffffff;
+  background-color: #4F46E5;
+  color: #FFFFFF;
 }
-
 .adminreportdetail-answer-btn:hover,
 .adminreportdetail-edit-btn:hover,
 .adminreportdetail-save-btn:hover,
 .adminreportdetail-reject-cancel-btn:hover,
 .adminreportdetail-confirm-ok-btn:hover {
-  background-color: #4338ca;
+  background-color: #4338CA;
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
-
 .adminreportdetail-cancel-btn {
-  background-color: #ef4444;
-  color: #ffffff;
+  background-color: #EF4444;
+  color: #FFFFFF;
 }
-
 .adminreportdetail-cancel-btn:hover {
-  background-color: #dc2626;
+  background-color: #DC2626;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
-
 /* 흰색 버튼 그룹 */
 .adminreportdetail-close-btn,
 .adminreportdetail-confirm-cancel-btn {
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   color: #374151;
-  border: 1px solid #d1d5db;
+  border: 1px solid #D1D5DB;
 }
-
 .adminreportdetail-close-btn:hover,
 .adminreportdetail-confirm-cancel-btn:hover {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
+  background-color: #F3F4F6;
+  border-color: #9CA3AF;
 }
-
 /* 확인 모달 */
-
 .adminreportdetail-confirm-title,
 .adminreportdetail-confirm-message {
   text-align: center;
 }
-
 .adminreportdetail-confirm-title {
   font-size: 20px;
   font-weight: 700;
   color: #111827;
   margin-bottom: 16px;
 }
-
 .adminreportdetail-confirm-message {
   font-size: 15px;
   color: #374151;
   line-height: 1.6;
   margin-bottom: 24px;
 }
-
 .adminreportdetail-confirm-buttons {
   display: flex;
   gap: 12px;
   justify-content: center;
 }
-
 /* 반응형 */
 @media (max-width: 768px) {
   .adminreportdetail-modal {
     width: 95%;
     padding: 24px;
   }
-
   .adminreportdetail-header-title {
     font-size: 20px;
   }
-
   .adminreportdetail-info-grid {
     grid-template-columns: 1fr;
   }
-
   .adminreportdetail-footer {
     flex-direction: column;
   }
-
   .adminreportdetail-answer-btn,
   .adminreportdetail-edit-btn,
   .adminreportdetail-close-btn {
     width: 100%;
   }
-
   .adminreportdetail-confirm-modal {
     width: 90%;
     padding: 24px;
   }
-
   .adminreportdetail-confirm-buttons {
     flex-direction: column;
   }
-
   .adminreportdetail-confirm-ok-btn,
   .adminreportdetail-confirm-cancel-btn {
     width: 100%;

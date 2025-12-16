@@ -7,21 +7,29 @@ const Sale = () => {
     const [loading, setLoading] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const pageSize = 10;
 
     useEffect(() => {
         loadSales();
     }, []);
 
-    const loadSales = async () => {
+    const loadSales = async (page = 0) => {
         setLoading(true);
         try {
-            const response = await apiGet("/sale");
+            const response = await apiGet(`/sale?page=${page}&size=${pageSize}`);
             if (response.ok) {
                 const data = await response.json();
-                setSales(data);
+                setSales(data.content || []);
+                setCurrentPage(data.number || 0);
+                setTotalPages(data.totalPages || 0);
+            } else {
+                setSales([]);
             }
         } catch (err) {
             console.error("할인 목록 조회 실패:", err);
+            setSales([]);
         } finally {
             setLoading(false);
         }
@@ -48,7 +56,7 @@ const Sale = () => {
         }
     };
 
-    const filteredSales = sales.filter(sale => {
+    const filteredSales = (Array.isArray(sales) ? sales : []).filter(sale => {
         const matchKeyword = searchKeyword === "" || 
             sale.productNm?.toLowerCase().includes(searchKeyword.toLowerCase());
         const matchStatus = statusFilter === "" || sale.saleStatus === statusFilter;
@@ -75,7 +83,7 @@ const Sale = () => {
                         <div className="sale-sent-contents">
                             <div className="sale-sent-title">할인 완료</div>
                             <div className="sale-sent-number">
-                                {sales.filter(s => s.saleStatus === "할인 완료").length}
+                                {(Array.isArray(sales) ? sales : []).filter(s => s.saleStatus === "할인 완료").length}
                             </div>
                         </div>
                     </div>
@@ -85,7 +93,7 @@ const Sale = () => {
                         <div className="sale-left-contents">
                             <div className="sale-left-title">진행 중</div>
                             <div className="sale-left-number">
-                                {sales.filter(s => s.saleStatus === "할인 중").length}
+                                {(Array.isArray(sales) ? sales : []).filter(s => s.saleStatus === "할인 중").length}
                             </div>
                         </div>
                     </div>
@@ -111,7 +119,7 @@ const Sale = () => {
                         value={searchKeyword}
                         onChange={(e) => setSearchKeyword(e.target.value)}
                     />
-                    <button className="sale-search-btn" onClick={loadSales}>새로고침</button>
+                    <button className="sale-search-btn" onClick={() => loadSales(0)}>새로고침</button>
                 </div>
 
                 {/* 테이블 */}
@@ -190,11 +198,39 @@ const Sale = () => {
 
             <div className="sale-footer">
                 <div className="sale-pagination">
-                    <button className="sale-page">이전</button>
-                    <button className="sale-page active">1</button>
-                    <button className="sale-page">2</button>
-                    <button className="sale-page">3</button>
-                    <button className="sale-page">다음</button>
+                    <button 
+                        className="product-page" 
+                        onClick={() => {
+                            if (currentPage > 0) {
+                                const newPage = currentPage - 1;
+                                loadSales(newPage);
+                            }
+                        }}
+                        disabled={currentPage === 0}
+                    >
+                        이전
+                    </button>
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button
+                            key={index}
+                            className={`product-page ${currentPage === index ? 'active' : ''}`}
+                            onClick={() => loadSales(index)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button 
+                        className="product-page"
+                        onClick={() => {
+                            if (currentPage < totalPages - 1) {
+                                const newPage = currentPage + 1;
+                                loadSales(newPage);
+                            }
+                        }}
+                        disabled={currentPage === totalPages - 1}
+                    >
+                        다음
+                    </button>
                 </div>
             </div>
         </div>

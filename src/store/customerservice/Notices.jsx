@@ -7,20 +7,29 @@ const Notices = () => {
     const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const pageSize = 10;
 
     useEffect(() => {
         loadNotices();
     }, []);
 
-    const loadNotices = async () => {
+    const loadNotices = async (page = 0) => {
         setLoading(true);
         try {
-            const response = await apiGet("/notice");
+            const response = await apiGet(`/notice?page=${page}&size=${pageSize}`);
             if (response.ok) {
                 const data = await response.json();
-                setNotices(data);
+                setNotices(data.content || []);
+                setCurrentPage(data.number || 0);
+                setTotalPages(data.totalPages || 0);
+            } else {
+                setNotices([]);
             }
         } catch (err) {
+            console.error('공지사항 조회 실패:', err);
+            setNotices([]);
         } finally {
             setLoading(false);
         }
@@ -31,7 +40,7 @@ const Notices = () => {
         return dateTime.split("T")[0];
     };
 
-    const sortedNotices = [...notices].sort((a, b) => {
+    const sortedNotices = (Array.isArray(notices) ? [...notices] : []).sort((a, b) => {
         if (a.isPinned && !b.isPinned) return -1;
         if (!a.isPinned && b.isPinned) return 1;
         return 0;
@@ -86,11 +95,37 @@ const Notices = () => {
 
             <div className="notices-footer">
                 <div className="notices-pagination">
-                    <button className="notices-page">이전</button>
-                    <button className="notices-page active">1</button>
-                    <button className="notices-page">2</button>
-                    <button className="notices-page">3</button>
-                    <button className="notices-page">다음</button>
+                    <button 
+                        className="notices-page" 
+                        onClick={() => {
+                            if (currentPage > 0) {
+                                loadNotices(currentPage - 1);
+                            }
+                        }}
+                        disabled={currentPage === 0}
+                    >
+                        이전
+                    </button>
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button
+                            key={index}
+                            className={`notices-page ${currentPage === index ? 'active' : ''}`}
+                            onClick={() => loadNotices(index)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button 
+                        className="notices-page"
+                        onClick={() => {
+                            if (currentPage < totalPages - 1) {
+                                loadNotices(currentPage + 1);
+                            }
+                        }}
+                        disabled={currentPage === totalPages - 1}
+                    >
+                        다음
+                    </button>
                 </div>
             </div>
         </div>
