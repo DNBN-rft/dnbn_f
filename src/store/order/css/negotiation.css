@@ -28,90 +28,90 @@
 
 /*필터영역*/
 .nego-filter {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    width: 100%;
-    height: 100%;
-    margin-bottom: 10px;
-    padding-top: 40px;
-    padding-left: 200px;
-    padding-bottom: 20px;
+    border: 1px solid var(--nego-border);
+    padding: 18px 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    background: #fff;
 }
 
 .nego-date-range {
     display: flex;
     align-items: center;
+    gap: 12px;
+}
+
+.negotiation-date-range-inner {
+    display: flex;
+    align-items: center;
     gap: 8px;
-    flex: 1 1 60%;
-    margin-bottom: 20px;
+}
+
+.nego-date-range label {
+    font-weight: 600;
+    min-width: 80px;
+    color: #333;
 }
 
 .nego-date-input {
-    width: 250px;
-    padding: 6px 8px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    width: 250px;
+    font-size: 14px;
+    font-weight: bold;
     text-align: center;
 }
 
 .nego-date-sep {
-    margin: 0 6px;
-}
-
-.nego-recent-btn-group {
-    margin-left: 20px;
-}
-
-.nego-recent-btn {
-    width: 120px;
-    margin-right: 10px;
-    padding: 6px 10px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    background-color: white;
-    color: black;
-    cursor: pointer;
-}
-
-.nego-recent-btn:hover {
-    background-color: rgba(241, 129, 30, 1);
-    color: white;
-    border-color: rgba(241, 129, 30, 1);
+    margin: 0 4px;
+    color: #666;
 }
 
 .nego-search {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    gap: 10px;
+    flex: 1;
+    margin-left: 50px;
 }
 
 .nego-search-select {
-    padding: 6px 8px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    min-width: 120px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
 }
 
 .nego-search-input {
-    padding: 6px 8px;
-    width: 415px;
+    flex: 1;
+    max-width: 500px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    font-size: 14px;
+    text-align: left !important;
 }
 
-.nego-search-btn {
-    margin-left: 15px;
+.negotiation-search-btn {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .nego-btn {
-    padding: 6px 12px;
-    border: 1px solid #bbb;
+    padding: 8px 16px;
     border-radius: 5px;
-    background-color: white;
-    color: black;
-    margin-right: 10px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #333;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .nego-btn:hover {
@@ -222,4 +222,50 @@
   background: var(--nego-accent);
   color: #fff;
   border-color: var(--nego-accent);
+}
+
+@media (max-width: 1024px) {
+  .nego-date-range {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .nego-search {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+  
+  .nego-search-input {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .nego-filter {
+    padding: 14px 16px;
+  }
+  
+  .nego-date-range {
+    width: 100%;
+  }
+  
+  .negotiation-date-range-inner {
+    width: 100%;
+  }
+  
+  .nego-date-input {
+    flex: 1;
+  }
+  
+  .nego-search {
+    width: 100%;
+    margin-top: 12px;
+  }
+  
+  .negotiation-search-btn {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 }

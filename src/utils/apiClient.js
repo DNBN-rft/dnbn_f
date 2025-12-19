@@ -175,7 +175,7 @@ export const apiPostFormData = async (endpoint, formData, options = {}) => {
       if (!isRefreshing) {
         isRefreshing = true;
         try {
-          const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          const refreshResponse = await fetch(`${API_BASE_URL}/store/refresh`, {
             method: "POST",
             credentials: "include",
           });
@@ -232,7 +232,7 @@ export const apiPutFormData = async (endpoint, formData, options = {}) => {
       if (!isRefreshing) {
         isRefreshing = true;
         try {
-          const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          const refreshResponse = await fetch(`${API_BASE_URL}/admin/refresh`, {
             method: "POST",
             credentials: "include",
           });

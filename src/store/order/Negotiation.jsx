@@ -22,7 +22,7 @@ const Negotiation = () => {
 
     <div className="nego-filter">
         <div className="nego-date-range">
-          <div className="nego-date-range-inner">
+          <div className="negotiation-date-range-inner">
             <input
               type="date"
               value={startDate}
@@ -37,43 +37,30 @@ const Negotiation = () => {
               className="nego-date-input"
             />
           </div>
-          <div className="nego-recent-btn-group">
-            <button type="button" className="nego-recent-btn">
-              최근 1개월
-            </button>
-            <button type="button" className="nego-recent-btn">
-              최근 3개월
-            </button>
-            <button type="button" className="nego-recent-btn">
-              최근 6개월
-            </button>
-            <button type="button" className="nego-recent-btn">
-              최근 12개월
-            </button>
-          </div>
-        </div>
-        <div className="nego-search">
-          <select
-            value={searchField}
-            onChange={(e) => setSearchField(e.target.value)}
-            className="nego-search-select"
-          >
-            <option>판매번호</option>
-            <option>상품명</option>
-            <option>상품코드</option>
-          </select>
-          <input
-            type="text"
-            placeholder="검색어를 입력해주세요."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="nego-search-input"
-          />
-          <div className="nego-search-btn">
-            <button className="nego-btn">검색</button>
-            <button className="nego-btn" onClick={handleReset}>
-              초기화
-            </button>
+
+          <div className="nego-search">
+            <select
+              value={searchField}
+              onChange={(e) => setSearchField(e.target.value)}
+              className="nego-search-select"
+            >
+              <option>판매번호</option>
+              <option>상품명</option>
+              <option>상품코드</option>
+            </select>
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="nego-search-input"
+            />
+            <div className="negotiation-search-btn">
+              <button className="nego-btn">검색</button>
+              <button className="nego-btn" onClick={handleReset}>
+                초기화
+              </button>
+            </div>
           </div>
         </div>
       </div>

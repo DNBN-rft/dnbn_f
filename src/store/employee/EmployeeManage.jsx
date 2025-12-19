@@ -16,8 +16,9 @@ const EmployeeManage = () => {
       const userInfo = localStorage.getItem("user");
       const storeCode = JSON.parse(userInfo).storeCode;
 
-      const response = await fetch (`http://localhost:8080/api/member/view/${storeCode}`, {
+      const response = await fetch (`http://localhost:8080/api/store/member/view/${storeCode}`, {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -57,7 +58,7 @@ const EmployeeManage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/member/${member.memberId}`, {
+      const response = await fetch(`http://localhost:8080/api/store/member/${member.memberId}`, {
         method: "DELETE",
         credentials: "include",
         headers: {

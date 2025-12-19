@@ -23,6 +23,7 @@ export const adminLogin = async (empId, password) => {
 
     if (response.ok) {
       const data = await response.json();
+      localStorage.clear();
       
       // localStorage에 관리자 정보 저장
       const admin = {

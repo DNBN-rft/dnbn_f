@@ -1,11 +1,11 @@
-.orderlist-wrap {
+.orderstatic-wrap {
   width: 100%;
   height: 100%;
   padding: 20px;
 }
 
 /*헤더영역*/
-.orderlist-header {
+.orderstatic-header {
     width: 100%;
     height: 50px;
     display: flex;
@@ -13,7 +13,7 @@
     margin-bottom: 10px;
 }
 
-.orderlist-header-title {
+.orderstatic-header-title {
     font-size: 20px;
     font-weight: bold;
     line-height: 50px;
@@ -43,7 +43,7 @@
     cursor: pointer;
 }
 
-.orderlist-header-excel {
+.orderstatic-header-excel {
     width: 120px;
     height: 45px;
     background-color: #1BB052;
@@ -57,14 +57,14 @@
     border: none;
 }
 
-.orderlist-header-excel:hover {
+.orderstatic-header-excel:hover {
     background-color: #16a04a;
     border: none;
 }
 
 
 /*필터영역*/
-.orderlist-filter {
+.orderstatic-filter {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     width: 100%;
@@ -75,7 +75,7 @@
     padding-bottom: 20px;
 }
 
-.orderlist-date-range {
+.orderstatic-date-range {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -83,7 +83,7 @@
     margin-bottom: 20px;
 }
 
-.orderlist-date-input {
+.orderstatic-date-input {
     width: 250px;
     padding: 6px 8px;
     border: 1px solid #ddd;
@@ -91,15 +91,15 @@
     text-align: center;
 }
 
-.orderlist-date-sep {
+.orderstatic-date-sep {
     margin: 0 6px;
 }
 
-.orderlist-recent-btn-group {
+.orderstatic-recent-btn-group {
     margin-left: 20px;
 }
 
-.orderlist-recent-btn {
+.orderstatic-recent-btn {
     width: 120px;
     margin-right: 10px;
     padding: 6px 10px;
@@ -110,13 +110,13 @@
     cursor: pointer;
 }
 
-.orderlist-recent-btn:hover {
+.orderstatic-recent-btn:hover {
     background-color: rgba(241, 129, 30, 1);
     color: white;
     border-color: rgba(241, 129, 30, 1);
 }
 
-.orderlist-search {
+.orderstatic-search {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -124,24 +124,24 @@
     justify-content: flex-start;
 }
 
-.orderlist-search-select {
+.orderstatic-search-select {
     padding: 6px 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.orderlist-search-input {
+.orderstatic-search-input {
     padding: 6px 8px;
     width: 415px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.orderlist-search-btn {
+.orderstatic-search-btn {
     margin-left: 15px;
 }
 
-.orderlist-btn {
+.orderstatic-btn {
     padding: 6px 12px;
     border: 1px solid #bbb;
     border-radius: 5px;
@@ -151,7 +151,7 @@
     cursor: pointer;
 }
 
-.orderlist-btn:hover {
+.orderstatic-btn:hover {
     background-color: rgba(241, 129, 30, 1);
     color: white;
     border-color: rgba(241, 129, 30, 1);
@@ -159,7 +159,7 @@
 
 
 /*정보영역*/
-.orderlist-info {
+.orderstatic-info {
     width: 100%;
     height: 100%;
     display: flex;
@@ -168,7 +168,7 @@
     padding: 20px 40px;
 }
 
-.orderlist-info1, .orderlist-info2, .orderlist-info3, .orderlist-info4 {
+.orderstatic-info1, .orderstatic-info2, .orderstatic-info3, .orderstatic-info4 {
     width: 100%;
     min-width: 250px;
     height: 100px;
@@ -182,7 +182,7 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
-.orderlist-info-title {
+.orderstatic-info-title {
     font-size: 15px;
     color: black;
     text-align: left;
@@ -190,7 +190,7 @@
     height: 50%;
 }
 
-.orderlist-info-value {
+.orderstatic-info-value {
     font-size: 25px;
     font-weight: bold;
     text-align: right;
@@ -201,7 +201,7 @@
 }
 
 /*랭킹영역*/
-.orderlist-info-detail {
+.orderstatic-info-detail {
     width: 100%;
     height: 300px;
     margin-bottom: 30px;
@@ -209,7 +209,7 @@
     justify-content: space-around;
 }
 
-.orderlist-info-detail-left, .orderlist-info-detail-right {
+.orderstatic-info-detail-left, .orderstatic-info-detail-right {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -218,25 +218,25 @@
     padding: 10px;
 }
 
-.orderlist-info-detail-title {
+.orderstatic-info-detail-title {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-.orderlist-info-detail-rank {
+.orderstatic-info-detail-rank {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.orderlist-rank-detail {
+.orderstatic-rank-detail {
     display: flex;
     justify-content: flex-start;
     margin-top: 20px;
 }
 
-.orderlist-product-detail {
+.orderstatic-product-detail {
     margin-left: 15px;
 }
 
@@ -267,13 +267,13 @@
     color: white;
 }
 
-.orderlist-info-detail-right-bar {
+.orderstatic-info-detail-right-bar {
     margin-top: 5px;
     margin-bottom: 10px;
     width: 100%;
 }
 
-.orderlist-info-detail-right-bg {
+.orderstatic-info-detail-right-bg {
     width: 100%;
     height: 15px;
     background-color: #e5e7eb;
@@ -282,7 +282,7 @@
     position: relative;
 }
 
-.orderlist-info-detail-right-color {
+.orderstatic-info-detail-right-color {
     height: 100%;
     background-color: #2d6eef;
     border-radius: 10px;
@@ -291,7 +291,7 @@
 
 
 /*통계영역*/
-.orderlist-graph {
+.orderstatic-graph {
     width: 100%;
     height: 500px;
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -299,7 +299,7 @@
     padding: 20px;
 }
 
-.orderlist-graph-detail {
+.orderstatic-graph-detail {
     width: 100%;
     height: 90%;
     background-color: #edf3fe;

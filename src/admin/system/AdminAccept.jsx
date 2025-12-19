@@ -17,7 +17,7 @@ const AdminAccept = () => {
     try {
       const result = await getReadyStores();
       if (result.success) {
-        setStores(result.data || []);
+        setStores(result.data?.content || []);
       } else {
         setError(result.error);
       }

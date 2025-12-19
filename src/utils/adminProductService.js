@@ -5,11 +5,13 @@
 const BASE_URL = "http://localhost:8080/api/admin/product";
 
 /**
- * 모든 상품 목록 조회
+ * 모든 상품 목록 조회 (페이지네이션)
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
  */
-export const getProducts = async () => {
+export const getProducts = async (page = 0, size = 10) => {
   try {
-    const response = await fetch(`${BASE_URL}`, {
+    const response = await fetch(`${BASE_URL}?page=${page}&size=${size}`, {
       method: "GET",
       credentials: "include",
     });
@@ -183,6 +185,60 @@ export const deleteProducts = async (productCodes) => {
     }
   } catch (error) {
     console.error("상품 삭제 중 오류:", error);
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
+};
+
+/**
+ * 상품 검색 (페이지네이션)
+ * @param {object} searchParams - 검색 파라미터
+ * @param {number} page - 페이지 번호
+ * @param {number} size - 페이지 크기
+ */
+export const searchProducts = async (searchParams, page = 0, size = 10) => {
+  try {
+    const params = new URLSearchParams();
+    
+    if (searchParams.startDate) params.append("startDate", searchParams.startDate);
+    if (searchParams.endDate) params.append("endDate", searchParams.endDate);
+    if (searchParams.categoryNm && searchParams.categoryNm !== "all-category") {
+      params.append("categoryNm", searchParams.categoryNm);
+    }
+    if (searchParams.productState && searchParams.productState !== "all") {
+      params.append("productState", searchParams.productState);
+    }
+    if (searchParams.searchTerm) {
+      params.append("searchTerm", searchParams.searchTerm);
+      params.append("searchType", searchParams.searchType || "all");
+    }
+    params.append("page", page);
+    params.append("size", size);
+
+    const response = await fetch(`${BASE_URL}/search?${params.toString()}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "상품 검색에 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    console.error("상품 검색 중 오류:", error);
     return {
       success: false,
       data: null,

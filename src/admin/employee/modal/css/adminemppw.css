@@ -183,10 +183,16 @@
   color: white;
 }
 
-.adminemppw-submit-btn:hover {
+.adminemppw-submit-btn:hover:not(:disabled) {
   background-color: #2563eb;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+}
+
+.adminemppw-submit-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .adminemppw-cancel-btn {
@@ -195,9 +201,14 @@
   border: 1px solid #dee2e6;
 }
 
-.adminemppw-cancel-btn:hover {
+.adminemppw-cancel-btn:hover:not(:disabled) {
   background-color: #f8f9fa;
   border-color: #adb5bd;
+}
+
+.adminemppw-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* 반응형 */

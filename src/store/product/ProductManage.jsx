@@ -8,7 +8,7 @@ import { apiGet, apiPost } from "../../utils/apiClient";
 
 const ProductManage = () => {
   const location = useLocation();
-  const [searchField, setSearchField] = useState("SALE_NUMBER");
+  const [searchField, setSearchField] = useState("ALL");
   const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -37,7 +37,7 @@ const ProductManage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiGet(`/product?page=${page}&size=${pageSize}`);
+      const response = await apiGet(`/store/product?page=${page}&size=${pageSize}`);
       const data = await response.json();
       
       if (response.ok) {
@@ -231,7 +231,7 @@ const ProductManage = () => {
 
   const excelDownload = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/product/excel", {
+      const response = await fetch("http://localhost:8080/api/store/product/excel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -278,7 +278,7 @@ const ProductManage = () => {
       {/* 필터탭 */}
       <div className="product-filter">
         <div className="product-date-range">
-          <div className="product-date-range-inner">
+          <div className="productmanage-date-range-inner">
             <input
               type="date"
               value={startDate}
@@ -291,33 +291,28 @@ const ProductManage = () => {
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
-          <div className="product-recent-buttons">
-            <button type="button">최근 1개월</button>
-            <button type="button">최근 3개월</button>
-            <button type="button">최근 6개월</button>
-            <button type="button">최근 12개월</button>
-          </div>
-        </div>
 
-        <div className="product-search">
-          <select
-            value={searchField}
-            onChange={(e) => setSearchField(e.target.value)}
-          >
-            <option value="SALE_NUMBER">판매번호</option>
-            <option value="PRONAME">상품명</option>
-            <option value="PROCODE">상품코드</option>
-          </select>
-          <input
-            type="text"
-            placeholder="검색어를 입력해주세요."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="product-search-input"
-          />
-          <div className="product-search-btn">
-            <button className="product-btn" onClick={handleSearch}>검색</button>
-            <button className="product-btn" onClick={handleReset}>초기화</button>
+          <div className="product-search">
+            <select
+              value={searchField}
+              onChange={(e) => setSearchField(e.target.value)}
+            >
+              <option value="ALL">전체</option>
+              <option value="SALE_NUMBER">판매번호</option>
+              <option value="PRONAME">상품명</option>
+              <option value="PROCODE">상품코드</option>
+            </select>
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="product-search-input"
+            />
+            <div className="productmanage-search-btn">
+              <button className="product-btn" onClick={handleSearch}>검색</button>
+              <button className="product-btn" onClick={handleReset}>초기화</button>
+            </div>
           </div>
         </div>
       </div>
@@ -325,17 +320,18 @@ const ProductManage = () => {
       {/* 서브필터 */}
       <div className="product-sub">
         <div className="product-sub-inner">
-          <div className="product-status-and-actions">
+          <div className="productmanage-status-and-actions">
             <label>판매상태</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="product-state-select"
             >
-              <option>전체</option>
-              <option>판매중</option>
-              <option>품절</option>
-              <option>판매중지</option>
+              <option value="ALL">전체</option>
+              <option value="PENDING">판매대기</option>
+              <option value="ON_SALE">판매중</option>
+              <option value="ENDED">판매중지</option>
+              <option value="REJECTED">제재상품</option>
             </select>
           </div>
 

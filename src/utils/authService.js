@@ -25,6 +25,7 @@ export const login = async (username, password) => {
 
     if (response.ok) {
       const data = await response.json();
+      localStorage.clear();
       
       // localStorage에 사용자 정보 저장
       const user = {
@@ -66,20 +67,6 @@ export const login = async (username, password) => {
       data: null,
       error: "네트워크 오류가 발생했습니다. 다시 시도해주세요.",
     };
-  }
-};
-
-/**
- * localStorage에서 사용자 정보 가져오기
- * @returns {Object|null} - 사용자 정보 또는 null
- */
-export const getUserFromStorage = () => {
-  try {
-    const userStr = localStorage.getItem("user");
-    return userStr ? JSON.parse(userStr) : null;
-  } catch (error) {
-    console.error("사용자 정보 읽기 실패:", error);
-    return null;
   }
 };
 

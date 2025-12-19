@@ -5,11 +5,11 @@
 import { apiCall } from "./apiClient";
 
 /**
- * 승인 대기 가맹점 목록 조회
+ * 승인 대기 가맹점 목록 조회 (페이지네이션)
  */
-export const getReadyStores = async () => {
+export const getReadyStores = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall("/admin/store", {
+    const response = await apiCall(`/admin/store?page=${page}&size=${size}`, {
       method: "GET",
     });
 
@@ -38,11 +38,11 @@ export const getReadyStores = async () => {
 };
 
 /**
- * 모든 가맹점 목록 조회
+ * 모든 가맹점 목록 조회 (페이지네이션)
  */
-export const getAllStores = async () => {
+export const getAllStores = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall("/admin/store/all", {
+    const response = await apiCall(`/admin/store/all?page=${page}&size=${size}`, {
       method: "GET",
     });
 
@@ -393,6 +393,45 @@ export const modMemberPassword = async (storeCode, data) => {
     }
   } catch (error) {
     console.error("비밀번호 변경 중 오류:", error);
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
+};
+
+/**
+ * 가맹점 검색 (페이지네이션)
+ */
+export const searchStores = async (searchParams, page = 0, size = 10) => {
+  try {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      size: size.toString(),
+      ...searchParams
+    });
+
+    const response = await apiCall(`/admin/store/search?${params.toString()}`, {
+      method: "GET",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "가맹점 검색에 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    console.error("가맹점 검색 중 오류:", error);
     return {
       success: false,
       data: null,

@@ -1,7 +1,140 @@
+:root {
+  --orderlist-accent: rgb(241, 129, 25);
+  --orderlist-accent-dark: rgba(241, 129, 25, 0.9);
+  --orderlist-muted: #f8f8f8;
+  --orderlist-border: #e9e9e9;
+}
+
 .orderlist-wrap {
     width: 90%;
     margin: auto;
     padding-top: 20px;
+}
+
+/*헤더영역*/
+.orderlist-header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.orderlist-header-title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+}
+
+.orderlist-header-excel {
+    width: 120px;
+    height: 45px;
+    background-color: #1BB052;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.orderlist-header-excel:hover {
+    background-color: #16a04a;
+}
+
+/*필터영역*/
+.orderlist-filter {
+    border: 1px solid var(--orderlist-border);
+    padding: 18px 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    background: #fff;
+}
+
+.orderlist-date-range {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.orderlist-date-range-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.orderlist-date-range label {
+    font-weight: 600;
+    min-width: 80px;
+    color: #333;
+}
+
+.orderlist-date-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 250px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.orderlist-date-sep {
+    margin: 0 4px;
+    color: #666;
+}
+
+.orderlist-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    margin-left: 50px;
+}
+
+.orderlist-search-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    min-width: 120px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.orderlist-search-input {
+    flex: 1;
+    max-width: 500px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: left !important;
+}
+
+.orderlist-search-btn {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.orderlist-btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.orderlist-btn:hover {
+    background-color: rgba(241, 129, 30, 1);
+    color: white;
+    border-color: rgba(241, 129, 30, 1);
 }
 
 .orderlist-table-wrap {
@@ -72,4 +205,50 @@
     justify-content: center;
     align-items: center;
     margin-top: 12px;
+}
+
+@media (max-width: 1024px) {
+  .orderlist-date-range {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .orderlist-search {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+  
+  .orderlist-search-input {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .orderlist-filter {
+    padding: 14px 16px;
+  }
+  
+  .orderlist-date-range {
+    width: 100%;
+  }
+  
+  .orderlist-date-range-inner {
+    width: 100%;
+  }
+  
+  .orderlist-date-input {
+    flex: 1;
+  }
+  
+  .orderlist-search {
+    width: 100%;
+    margin-top: 12px;
+  }
+  
+  .orderlist-search-btn {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 }

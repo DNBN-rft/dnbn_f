@@ -150,43 +150,30 @@ const OrderList = () => {
               className="orderlist-date-input"
             />
           </div>
-          <div className="orderlist-recent-btn-group">
-            <button type="button" className="orderlist-recent-btn">
-              최근 1개월
-            </button>
-            <button type="button" className="orderlist-recent-btn">
-              최근 3개월
-            </button>
-            <button type="button" className="orderlist-recent-btn">
-              최근 6개월
-            </button>
-            <button type="button" className="orderlist-recent-btn">
-              최근 12개월
-            </button>
-          </div>
-        </div>
-        <div className="orderlist-search">
-          <select
-            value={searchField}
-            onChange={(e) => setSearchField(e.target.value)}
-            className="orderlist-search-select"
-          >
-            <option>판매번호</option>
-            <option>상품명</option>
-            <option>상품코드</option>
-          </select>
-          <input
-            type="text"
-            placeholder="검색어를 입력해주세요."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="orderlist-search-input"
-          />
-          <div className="orderlist-search-btn">
-            <button className="orderlist-btn">검색</button>
-            <button className="orderlist-btn" onClick={handleReset}>
-              초기화
-            </button>
+
+          <div className="orderlist-search">
+            <select
+              value={searchField}
+              onChange={(e) => setSearchField(e.target.value)}
+              className="orderlist-search-select"
+            >
+              <option>판매번호</option>
+              <option>상품명</option>
+              <option>상품코드</option>
+            </select>
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="orderlist-search-input"
+            />
+            <div className="orderlist-search-btn">
+              <button className="orderlist-btn">검색</button>
+              <button className="orderlist-btn" onClick={handleReset}>
+                초기화
+              </button>
+            </div>
           </div>
         </div>
       </div>

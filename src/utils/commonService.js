@@ -77,7 +77,7 @@ export const getCategoryList = async () => {
  */
 export const getMembershipList = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/membership`, {
+    const response = await fetch(`${BASE_URL}/admin/membership`, {
       method: "GET",
       credentials: "include",
     });

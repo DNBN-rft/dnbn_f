@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import "./css/adminproduct.css";
 import AdminProductDetail from "./modal/AdminProductDetail";
-import { getProducts, restrictProducts, deleteProducts } from "../../utils/adminProductService";
+import { getProducts, restrictProducts, deleteProducts, searchProducts } from "../../utils/adminProductService";
 import { getCategoryList } from "../../utils/commonService";
 
 const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
+  
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+  
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
   
   // 필터 상태
   const [filters, setFilters] = useState({
@@ -18,23 +26,24 @@ const AdminProduct = () => {
     endDate: "",
     category: "all-category",
     saleStatus: "all",
-    searchType: "all-option",
+    searchType: "all",
     searchKeyword: "",
   });
 
   // 상품 목록 조회
   useEffect(() => {
-    fetchProducts();
+    loadProducts();
     fetchCategories();
   }, []);
 
-  const fetchProducts = async () => {
-    const result = await getProducts();
+  const loadProducts = async (page = 0) => {
+    const result = await getProducts(page, pageSize);
     if (result.success) {
-      setProducts(result.data);
-      setFilteredProducts(result.data);
-    } else {
-      alert(result.error);
+      setProducts(result.data.content);
+      setCurrentPage(result.data.number);
+      setTotalPages(result.data.totalPages);
+      setTotalElements(result.data.totalElements);
+      setIsSearchMode(false);
     }
   };
 
@@ -56,7 +65,11 @@ const AdminProduct = () => {
   };
 
   const handleUpdateSuccess = () => {
-    fetchProducts();
+    if (isSearchMode) {
+      handleSearchInternal(currentPage);
+    } else {
+      loadProducts(currentPage);
+    }
   };
 
   // 체크박스 선택
@@ -73,7 +86,7 @@ const AdminProduct = () => {
   // 전체 선택
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      const allCodes = filteredProducts.map(p => p.productCode);
+      const allCodes = products.map(p => p.productCode);
       setSelectedProducts(allCodes);
     } else {
       setSelectedProducts([]);
@@ -95,7 +108,11 @@ const AdminProduct = () => {
     if (result.success) {
       alert(result.data);
       setSelectedProducts([]);
-      fetchProducts();
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadProducts(currentPage);
+      }
     } else {
       alert(result.error);
     }
@@ -116,62 +133,49 @@ const AdminProduct = () => {
     if (result.success) {
       alert(result.data);
       setSelectedProducts([]);
-      fetchProducts();
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadProducts(currentPage);
+      }
     } else {
       alert(result.error);
     }
   };
 
-  // 필터 적용
+  // 검색 내부 함수
+  const handleSearchInternal = async (page = 0) => {
+    const searchParams = {
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+      categoryNm: filters.category,
+      productState: filters.saleStatus === "판매중" ? "AVAILABLE" : 
+                    filters.saleStatus === "품절" ? "SOLDOUT" : 
+                    filters.saleStatus === "제재" ? "REJECTED" : 
+                    filters.saleStatus,
+      searchTerm: filters.searchKeyword,
+      searchType: filters.searchType === "all-option" ? "all" : 
+                  filters.searchType === "productNm" ? "productnm" : 
+                  filters.searchType === "productCode" ? "productcode" : 
+                  filters.searchType === "storeNm" ? "registernm" : "all",
+    };
+
+    const result = await searchProducts(searchParams, page, pageSize);
+    if (result.success) {
+      setProducts(result.data.content);
+      setCurrentPage(result.data.number);
+      setTotalPages(result.data.totalPages);
+      setTotalElements(result.data.totalElements);
+      setIsSearchMode(true);
+    } else {
+      alert(result.error);
+    }
+  };
+
+  // 검색 버튼 클릭
   const handleSearch = () => {
-    let result = [...products];
-
-    // 날짜 필터
-    if (filters.startDate) {
-      result = result.filter(p => 
-        new Date(p.productRegDateTime) >= new Date(filters.startDate)
-      );
-    }
-    if (filters.endDate) {
-      result = result.filter(p => 
-        new Date(p.productRegDateTime) <= new Date(filters.endDate)
-      );
-    }
-
-    // 카테고리 필터
-    if (filters.category !== "all-category") {
-      result = result.filter(p => p.categoryNm === filters.category);
-    }
-
-    // 판매상태 필터
-    if (filters.saleStatus !== "all") {
-      if (filters.saleStatus === "판매중") {
-        result = result.filter(p => p.productState === "AVAILABLE");
-      } else if (filters.saleStatus === "품절") {
-        result = result.filter(p => p.productState === "SOLDOUT");
-      } else if (filters.saleStatus === "제재") {
-        result = result.filter(p => p.productState === "REJECTED");
-      }
-    }
-
-    // 검색어 필터
-    if (filters.searchKeyword) {
-      result = result.filter(p => {
-        if (filters.searchType === "productNm") {
-          return p.productNm.includes(filters.searchKeyword);
-        } else if (filters.searchType === "productCode") {
-          return p.productCode.includes(filters.searchKeyword);
-        } else if(filters.searchType === "storeNm"){
-          return p.storeNm.includes(filters.searchKeyword);
-        } else {
-          return p.productNm.includes(filters.searchKeyword) || 
-                 p.productCode.includes(filters.searchKeyword) || 
-                 p.storeNm.includes(filters.searchKeyword);
-        }
-      });
-    }
-
-    setFilteredProducts(result);
+    setCurrentPage(0);
+    handleSearchInternal(0);
   };
 
   // 필터 초기화
@@ -181,10 +185,11 @@ const AdminProduct = () => {
       endDate: "",
       category: "all-category",
       saleStatus: "all",
-      searchType: "all-option",
+      searchType: "all",
       searchKeyword: "",
     });
-    setFilteredProducts(products);
+    setCurrentPage(0);
+    loadProducts(0);
   };
 
   // 판매상태 한글 변환
@@ -292,7 +297,7 @@ const AdminProduct = () => {
         <div className="adminproduct-table-wrap">
           <div className="adminproduct-table-header">
             <div className="adminproduct-table-info">
-              총 <span className="adminproduct-count">{filteredProducts.length}</span>건
+              총 <span className="adminproduct-count">{totalElements}</span>건
             </div>
             <div className="adminproduct-btn-group">
               <button 
@@ -317,7 +322,7 @@ const AdminProduct = () => {
                   <input 
                     type="checkbox"
                     onChange={handleSelectAll}
-                    checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
+                    checked={selectedProducts.length === products.length && products.length > 0}
                   />
                 </th>
                 <th>No.</th>
@@ -334,14 +339,14 @@ const AdminProduct = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.length === 0 ? (
+              {products.length === 0 ? (
                 <tr>
                   <td colSpan="12" style={{ textAlign: 'center' }}>
                     등록된 상품이 없습니다.
                   </td>
                 </tr>
               ) : (
-                filteredProducts.map((product, index) => (
+                products.map((product, index) => (
                   <tr key={product.productCode}>
                     <td>
                       <input 
@@ -350,7 +355,7 @@ const AdminProduct = () => {
                         onChange={() => handleCheckboxChange(product.productCode)}
                       />
                     </td>
-                    <td>{index + 1}</td>
+                    <td>{currentPage * pageSize + index + 1}</td>
                     <td>{product.storeNm}</td>
                     <td>{product.productNm}</td>
                     <td>{product.categoryNm}</td>
@@ -373,6 +378,48 @@ const AdminProduct = () => {
               )}
             </tbody>
           </table>
+
+          {/* 페이지네이션 */}
+          <div className="adminproduct-pagination">
+            <button 
+              className="adminproduct-page-btn"
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadProducts(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`adminproduct-page-btn ${currentPage === index ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  isSearchMode ? handleSearchInternal(index) : loadProducts(index);
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button 
+              className="adminproduct-page-btn"
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadProducts(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
+          </div>
         </div>
       </div>
 

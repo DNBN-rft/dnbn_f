@@ -193,9 +193,9 @@ const OrderStatic = () => {
   };
 
   return (
-    <div className="orderlist-wrap">
-      <div className="orderlist-header">
-        <div className="orderlist-header-title">매출통계</div>
+    <div className="orderstatic-wrap">
+      <div className="orderstatic-header">
+        <div className="orderstatic-header-title">매출통계</div>
         <div className="orderstatic-header-right">
           <button
             type="button"
@@ -207,7 +207,7 @@ const OrderStatic = () => {
           </button>
           <button 
             type="button"
-            className="orderlist-header-excel"
+            className="orderstatic-header-excel"
             onClick={handleExcelDownload}
             disabled={!staticData}
           >
@@ -216,27 +216,27 @@ const OrderStatic = () => {
         </div>
       </div>
 
-      <div className="orderlist-filter">
-        <div className="orderlist-date-range">
-          <div className="orderlist-date-range-inner">
+      <div className="orderstatic-filter">
+        <div className="orderstatic-date-range">
+          <div className="orderstatic-date-range-inner">
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="orderlist-date-input"
+              className="orderstatic-date-input"
             />
-            <span className="orderlist-date-sep">~</span>
+            <span className="orderstatic-date-sep">~</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="orderlist-date-input"
+              className="orderstatic-date-input"
             />
           </div>
-          <div className="orderlist-recent-btn-group">
+          <div className="orderstatic-recent-btn-group">
             <button
               type="button"
-              className="orderlist-recent-btn"
+              className="orderstatic-recent-btn"
               name="today"
               onClick={handleRecentDateClickWrapper}
             >
@@ -244,7 +244,7 @@ const OrderStatic = () => {
             </button>
             <button
               type="button"
-              className="orderlist-recent-btn"
+              className="orderstatic-recent-btn"
               name="week"
               onClick={handleRecentDateClickWrapper}
             >
@@ -252,7 +252,7 @@ const OrderStatic = () => {
             </button>
             <button
               type="button"
-              className="orderlist-recent-btn"
+              className="orderstatic-recent-btn"
               name="month"
               onClick={handleRecentDateClickWrapper}
             >
@@ -262,44 +262,44 @@ const OrderStatic = () => {
         </div>
       </div>
 
-      <div className="orderlist-info">
-        <div className="orderlist-info1">
-          <div className="orderlist-info-title">총 판매량</div>
-          <div className="orderlist-info-value">
+      <div className="orderstatic-info">
+        <div className="orderstatic-info1">
+          <div className="orderstatic-info-title">총 판매량</div>
+          <div className="orderstatic-info-value">
             {staticData ? `${(staticData.total || 0).toLocaleString()}개` : "-"}
           </div>
         </div>
-        <div className="orderlist-info2">
-          <div className="orderlist-info-title">총 매출액</div>
-          <div className="orderlist-info-value">
+        <div className="orderstatic-info2">
+          <div className="orderstatic-info-title">총 매출액</div>
+          <div className="orderstatic-info-value">
             {staticData ? `${(staticData.orderPrice || 0).toLocaleString()}원` : "-"}
           </div>
         </div>
-        <div className="orderlist-info3">
-          <div className="orderlist-info-title">총 주문수</div>
-          <div className="orderlist-info-value">
+        <div className="orderstatic-info3">
+          <div className="orderstatic-info-title">총 주문수</div>
+          <div className="orderstatic-info-value">
             {staticData ? `${(staticData.orderCount || 0).toLocaleString()}개` : "-"}
           </div>
         </div>
-        <div className="orderlist-info4">
-          <div className="orderlist-info-title">평균 주문액</div>
-          <div className="orderlist-info-value">
+        <div className="orderstatic-info4">
+          <div className="orderstatic-info-title">평균 주문액</div>
+          <div className="orderstatic-info-value">
             {staticData ? `${(staticData.average || 0).toLocaleString()}원` : "-"}
           </div>
         </div>
       </div>
 
-      <div className="orderlist-info-detail">
-        <div className="orderlist-info-detail-left">
-          <div className="orderlist-info-detail-title">인기 상품 TOP 3</div>
+      <div className="orderstatic-info-detail">
+        <div className="orderstatic-info-detail-left">
+          <div className="orderstatic-info-detail-title">인기 상품 TOP 3</div>
 
           {staticData ? (
             <>
               {staticData.topProductNm && (
-                <div className="orderlist-info-detail-rank">
-                  <div className="orderlist-rank-detail">
+                <div className="orderstatic-info-detail-rank">
+                  <div className="orderstatic-rank-detail">
                     <div className="rank">1</div>
-                    <div className="orderlist-product-detail">
+                    <div className="orderstatic-product-detail">
                       <div className="product-name">{staticData.topProductNm}</div>
                       <div className="product-sale">{staticData.topProductAmount || 0}개 판매</div>
                     </div>
@@ -308,10 +308,10 @@ const OrderStatic = () => {
                 </div>
               )}
               {staticData.secondProductNm && (
-                <div className="orderlist-info-detail-rank">
-                  <div className="orderlist-rank-detail">
+                <div className="orderstatic-info-detail-rank">
+                  <div className="orderstatic-rank-detail">
                     <div className="rank">2</div>
-                    <div className="orderlist-product-detail">
+                    <div className="orderstatic-product-detail">
                       <div className="product-name">{staticData.secondProductNm}</div>
                       <div className="product-sale">{staticData.secondProductAmount || 0}개 판매</div>
                     </div>
@@ -320,10 +320,10 @@ const OrderStatic = () => {
                 </div>
               )}
               {staticData.thirdProductNm && (
-                <div className="orderlist-info-detail-rank">
-                  <div className="orderlist-rank-detail">
+                <div className="orderstatic-info-detail-rank">
+                  <div className="orderstatic-rank-detail">
                     <div className="rank">3</div>
-                    <div className="orderlist-product-detail">
+                    <div className="orderstatic-product-detail">
                       <div className="product-name">{staticData.thirdProductNm}</div>
                       <div className="product-sale">{staticData.thirdProductAmount || 0}개 판매</div>
                     </div>
@@ -337,21 +337,21 @@ const OrderStatic = () => {
           )}
         </div>
 
-        <div className="orderlist-info-detail-right">
-          <div className="orderlist-info-detail-title">카테고리별 매출</div>
+        <div className="orderstatic-info-detail-right">
+          <div className="orderstatic-info-detail-title">카테고리별 매출</div>
 
           {staticData ? (
             <>
               {staticData.topCategoryNm && (
                 <>
-                  <div className="orderlist-info-detail-rank">
+                  <div className="orderstatic-info-detail-rank">
                     <div>{staticData.topCategoryNm}</div>
                     <div>{(staticData.topCategoryTotal || 0).toLocaleString()}원</div>
                   </div>
-                  <div className="orderlist-info-detail-right-bar">
-                    <div className="orderlist-info-detail-right-bg">
+                  <div className="orderstatic-info-detail-right-bar">
+                    <div className="orderstatic-info-detail-right-bg">
                       <div
-                        className="orderlist-info-detail-right-color"
+                        className="orderstatic-info-detail-right-color"
                         style={{ width: "100%" }}
                       ></div>
                     </div>
@@ -360,14 +360,14 @@ const OrderStatic = () => {
               )}
               {staticData.secondCategoryNm && (
                 <>
-                  <div className="orderlist-info-detail-rank">
+                  <div className="orderstatic-info-detail-rank">
                     <div>{staticData.secondCategoryNm}</div>
                     <div>{(staticData.secondCategoryTotal || 0).toLocaleString()}원</div>
                   </div>
-                  <div className="orderlist-info-detail-right-bar">
-                    <div className="orderlist-info-detail-right-bg">
+                  <div className="orderstatic-info-detail-right-bar">
+                    <div className="orderstatic-info-detail-right-bg">
                       <div
-                        className="orderlist-info-detail-right-color"
+                        className="orderstatic-info-detail-right-color"
                         style={{ 
                           width: `${(staticData.topCategoryTotal || 0) > 0 
                             ? ((staticData.secondCategoryTotal || 0) / (staticData.topCategoryTotal || 1) * 100) 
@@ -380,14 +380,14 @@ const OrderStatic = () => {
               )}
               {staticData.thirdCategoryNm && (
                 <>
-                  <div className="orderlist-info-detail-rank">
+                  <div className="orderstatic-info-detail-rank">
                     <div>{staticData.thirdCategoryNm}</div>
                     <div>{(staticData.thirdCategoryTotal || 0).toLocaleString()}원</div>
                   </div>
-                  <div className="orderlist-info-detail-right-bar">
-                    <div className="orderlist-info-detail-right-bg">
+                  <div className="orderstatic-info-detail-right-bar">
+                    <div className="orderstatic-info-detail-right-bg">
                       <div
-                        className="orderlist-info-detail-right-color"
+                        className="orderstatic-info-detail-right-color"
                         style={{ 
                           width: `${(staticData.topCategoryTotal || 0) > 0 
                             ? ((staticData.thirdCategoryTotal || 0) / (staticData.topCategoryTotal || 1) * 100) 
@@ -404,9 +404,9 @@ const OrderStatic = () => {
           )}
         </div>
       </div>
-      <div className="orderlist-graph">
-        <div className="orderlist-info-detail-title">매출 그래프</div>
-        <div className="orderlist-graph-detail">
+      <div className="orderstatic-graph">
+        <div className="orderstatic-info-detail-title">매출 그래프</div>
+        <div className="orderstatic-graph-detail">
           {staticData && staticData.orderGraph && staticData.orderGraph.length > 0 ? (
             renderChart()
           ) : (

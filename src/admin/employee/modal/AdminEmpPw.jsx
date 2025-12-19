@@ -1,10 +1,12 @@
 import { useState } from "react";
 import "./css/adminemppw.css";
+import { changeEmployeePassword } from "../../../utils/adminEmployeeService";
 
-const AdminEmpPw = ({ onClose, employeeName, employeeId }) => {
+const AdminEmpPw = ({ onClose, employeeName, employeeId, onSuccess }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -21,28 +23,23 @@ const AdminEmpPw = ({ onClose, employeeName, employeeId }) => {
       return;
     }
 
+    setLoading(true);
     try {
-      // TODO: 실제 API 엔드포인트로 교체 필요
-      const response = await fetch(`http://localhost:8080/api/admin/employee/change-password`, {
-        method: 'PUT',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          employeeId: employeeId,
-          newPassword: newPassword,
-        }),
+      await changeEmployeePassword({
+        empId: employeeId,
+        newPw: newPassword
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to change password');
-      }
-
       alert(`${employeeName} 직원의 비밀번호가 성공적으로 변경되었습니다.`);
+      if (onSuccess) {
+        onSuccess();
+      }
       onClose();
     } catch (error) {
       console.error("Error changing password:", error);
-      setError("비밀번호 변경 중 오류가 발생했습니다.");
+      setError(error.message || "비밀번호 변경 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,13 +99,18 @@ const AdminEmpPw = ({ onClose, employeeName, employeeId }) => {
             {error && <div className="adminemppw-error">{error}</div>}
 
             <div className="adminemppw-buttons">
-              <button type="submit" className="adminemppw-submit-btn">
-                변경
+              <button 
+                type="submit" 
+                className="adminemppw-submit-btn"
+                disabled={loading}
+              >
+                {loading ? "변경 중..." : "변경"}
               </button>
               <button 
                 type="button" 
                 className="adminemppw-cancel-btn"
                 onClick={onClose}
+                disabled={loading}
               >
                 취소
               </button>

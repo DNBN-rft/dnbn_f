@@ -48,8 +48,7 @@ import AdminLogin from "./admin/login/AdminLogin";
 import FaqPage from "./store/customerservice/FaqPage";
 import { useEffect } from "react";
 import apiClient from "./utils/apiClient";
-import { getUserFromStorage } from "./utils/authService";
-import { getAdminFromStorage } from "./utils/adminAuthService";
+import AdminReportedReview from "./admin/review/AdminReportedReview";
 
 // React Query Client 생성
 const queryClient = new QueryClient({
@@ -65,8 +64,8 @@ const queryClient = new QueryClient({
 function App() {
   // 페이지 로드 시 사용자(가맹점 또는 관리자)가 로그인되어 있으면 토큰 갱신 시작
   useEffect(() => {
-    const user = getUserFromStorage();
-    const admin = getAdminFromStorage();
+    const user = localStorage.getItem("user");
+    const admin = localStorage.getItem("admin");
     
     if (user || admin) {
       apiClient.startTokenRefresh();
@@ -126,6 +125,7 @@ function App() {
             <Route path="/admin/plan" element={<AdminPlan />} />
             <Route path="/admin/category" element={<AdminCategory />} />
             <Route path="/admin/review" element={<AdminReview />} />
+            <Route path="/admin/review/reported" element={<AdminReportedReview />} />
             <Route path="/admin/emp" element={<AdminEmp />} />
             <Route path="/admin/alarm" element={<AdminAlarm />} />
             <Route path="/admin/push" element={<AdminPush />} />

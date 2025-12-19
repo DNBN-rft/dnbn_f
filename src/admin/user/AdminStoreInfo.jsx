@@ -1,32 +1,104 @@
 import { useState, useEffect } from "react";
 import "./css/adminstoreinfo.css";
 import StoreInfoModal from "./modal/StoreInfoModal";
-import { getAllStores, viewStoreDetail, approveStore } from "../../utils/adminStoreService";
+import { getAllStores, viewStoreDetail, approveStore, searchStores } from "../../utils/adminStoreService";
 
 const StoreInfo = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedStore, setSelectedStore] = useState(null);
-  const [searchType, setSearchType] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
   const [storeList, setStoreList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+  
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  
+  // 필터 상태
+  const [filters, setFilters] = useState({
+    approvalStatus: "",
+    bizType: "",
+    storeType: "all",
+    searchType: "all",
+    searchTerm: "",
+  });
 
   // 가맹점 목록 조회
   useEffect(() => {
-    fetchStoreList();
+    loadStores();
   }, []);
 
-  const fetchStoreList = async () => {
+  const loadStores = async (page = 0) => {
     setIsLoading(true);
-    const result = await getAllStores();
+    const result = await getAllStores(page, pageSize);
 
-    if (result.success) {
-      setStoreList(result.data);
+    if (result.success && result.data) {
+      setStoreList(result.data.content || []);
+      setCurrentPage(result.data.number || 0);
+      setTotalPages(result.data.totalPages || 0);
+      setTotalElements(result.data.totalElements || 0);
+      setIsSearchMode(false);
     } else {
       console.error(result.error);
-      alert(result.error);
+      setStoreList([]);
+      setTotalPages(0);
+      setTotalElements(0);
+      if (result.error) {
+        alert(result.error);
+      }
     }
     setIsLoading(false);
+  };
+
+  // 검색 내부 함수
+  const handleSearchInternal = async (page = 0) => {
+    const searchParams = {
+      ...(filters.approvalStatus && { approvalStatus: filters.approvalStatus }),
+      ...(filters.bizType && filters.bizType !== "all" && { bizType: filters.bizType }),
+      ...(filters.searchType && { searchType: filters.searchType }),
+      ...(filters.searchTerm && { searchTerm: filters.searchTerm }),
+    };
+
+    setIsLoading(true);
+    const result = await searchStores(searchParams, page, pageSize);
+    if (result.success && result.data) {
+      setStoreList(result.data.content || []);
+      setCurrentPage(result.data.number || 0);
+      setTotalPages(result.data.totalPages || 0);
+      setTotalElements(result.data.totalElements || 0);
+      setIsSearchMode(true);
+    } else {
+      setStoreList([]);
+      setTotalPages(0);
+      setTotalElements(0);
+      if (result.error) {
+        alert(result.error);
+      }
+    }
+    setIsLoading(false);
+  };
+
+  // 검색 버튼 클릭
+  const handleSearch = () => {
+    setCurrentPage(0);
+    handleSearchInternal(0);
+  };
+
+  // 필터 초기화
+  const handleReset = () => {
+    setFilters({
+      approvalStatus: "",
+      bizType: "",
+      storeType: "all",
+      searchType: "all",
+      searchTerm: "",
+    });
+    setCurrentPage(0);
+    loadStores(0);
   };
 
   const handleOpenModal = async (store) => {
@@ -47,7 +119,11 @@ const StoreInfo = () => {
 
   const handleUpdate = () => {
     // 수정 후 목록 새로고침
-    fetchStoreList();
+    if (isSearchMode) {
+      handleSearchInternal(currentPage);
+    } else {
+      loadStores(currentPage);
+    }
   };
 
   const handleApprovalChange = async (storeCode) => {
@@ -58,7 +134,11 @@ const StoreInfo = () => {
     const result = await approveStore(storeCode);
     if (result.success) {
       alert("승인되었습니다.");
-      fetchStoreList();
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadStores(currentPage);
+      }
       handleCloseModal();
     } else {
       alert(result.error);
@@ -76,11 +156,13 @@ const StoreInfo = () => {
                 name="store-status"
                 id="store-status"
                 className="adminstoreinfo-select"
+                value={filters.approvalStatus}
+                onChange={(e) => setFilters({...filters, approvalStatus: e.target.value})}
               >
-                <option value="all">전체</option>
-                <option value="approved">승인</option>
-                <option value="pending">대기중</option>
-                <option value="rejected">승인 거절</option>
+                <option value="">전체</option>
+                <option value="APPROVED">승인</option>
+                <option value="PENDING">대기중</option>
+                <option value="REJECTED">승인 거절</option>
               </select>
             </div>
 
@@ -90,19 +172,23 @@ const StoreInfo = () => {
                 name="business-type"
                 id="business-type"
                 className="adminstoreinfo-select"
+                value={filters.bizType}
+                onChange={(e) => setFilters({...filters, bizType: e.target.value})}
               >
-                <option value="all">전체</option>
-                <option value="personal">개인</option>
-                <option value="corporate">법인</option>
+                <option value="">전체</option>
+                <option value="개인">개인</option>
+                <option value="법인">법인</option>
               </select>
             </div>
 
-            <div className="adminstoreinfo-filter-group-disabled">
+            <div className="adminstoreinfo-filter-group">
               <label htmlFor="store-type">가맹점 타입</label>
               <select
                 name="store-type"
                 id="store-type"
                 className="adminstoreinfo-select"
+                value={filters.storeType || "all"}
+                onChange={(e) => setFilters({...filters, storeType: e.target.value})}
               >
                 <option value="all">전체</option>
                 <option value="normal">가맹점</option>
@@ -117,8 +203,8 @@ const StoreInfo = () => {
                 name="search-type"
                 id="search-type"
                 className="adminstoreinfo-select-type"
-                value={searchType}
-                onChange={(e) => setSearchType(e.target.value)}
+                value={filters.searchType}
+                onChange={(e) => setFilters({...filters, searchType: e.target.value})}
               >
                 <option value="all">전체</option>
                 <option value="storeName">가맹점명</option>
@@ -130,10 +216,11 @@ const StoreInfo = () => {
                 type="text"
                 className="adminstoreinfo-input"
                 placeholder="검색어를 입력하세요"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={filters.searchTerm}
+                onChange={(e) => setFilters({...filters, searchTerm: e.target.value})}
               />
-              <button className="adminstoreinfo-search-btn">검색</button>
+              <button className="adminstoreinfo-search-btn" onClick={handleSearch}>검색</button>
+              <button className="adminstoreinfo-search-btn" onClick={handleReset}>초기화</button>
             </div>
           </div>
         </div>
@@ -141,7 +228,7 @@ const StoreInfo = () => {
         <div className="adminstoreinfo-table-wrap">
           <div className="adminstoreinfo-table-header">
             <div className="adminstoreinfo-table-info">
-              총 <span className="adminstoreinfo-count">{storeList.length}</span>건
+              총 <span className="adminstoreinfo-count">{totalElements}</span>건
             </div>
           </div>
 
@@ -175,7 +262,7 @@ const StoreInfo = () => {
               ) : (
                 storeList.map((store, index) => (
                   <tr key={store.storeCode}>
-                    <td>{index + 1}</td>
+                    <td>{currentPage * pageSize + index + 1}</td>
                     <td>{store.storeCode}</td>
                     <td>{store.storeNm}</td>
                     <td>{store.ownerNm}</td>
@@ -210,16 +297,46 @@ const StoreInfo = () => {
             </tbody>
           </table>
 
+          {/* 페이지네이션 */}
           <div className="adminstoreinfo-pagination">
-            <button className="adminstoreinfo-pagination-btn">이전</button>
-            <div className="adminstoreinfo-pagination-numbers">
-              <button className="adminstoreinfo-page-number storeinfo-page-active">
-                1
+            <button 
+              className="adminstoreinfo-pagination-btn"
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadStores(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`adminstoreinfo-pagination-btn ${currentPage === index ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  isSearchMode ? handleSearchInternal(index) : loadStores(index);
+                }}
+              >
+                {index + 1}
               </button>
-              <button className="adminstoreinfo-page-number">2</button>
-              <button className="adminstoreinfo-page-number">3</button>
-            </div>
-            <button className="adminstoreinfo-pagination-btn">다음</button>
+            ))}
+            <button 
+              className="adminstoreinfo-pagination-btn"
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadStores(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
           </div>
         </div>
       </div>

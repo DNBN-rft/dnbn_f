@@ -1,5 +1,5 @@
 import { createContext, useState, useCallback, useEffect } from "react";
-import { getUserFromStorage, clearUserFromStorage } from "../utils/authService";
+import { clearUserFromStorage } from "../utils/authService";
 
 export const AuthContext = createContext();
 
@@ -17,13 +17,13 @@ export const AuthProvider = ({ children }) => {
   // 앱 시작 시 토큰 유효성 확인 및 localStorage에서 사용자 정보 불러오기
   useEffect(() => {
     checkAuthStatus();
-  }, []);
+  });
 
   // 인증 상태 확인
   const checkAuthStatus = useCallback(async () => {
     try {
       // localStorage에서 사용자 정보 확인
-      const storedUser = getUserFromStorage();
+      const storedUser = localStorage.getItem("user");
       
       if (storedUser) {
         setIsAuthenticated(true);
