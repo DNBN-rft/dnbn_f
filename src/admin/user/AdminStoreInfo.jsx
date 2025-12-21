@@ -300,7 +300,7 @@ const StoreInfo = () => {
           {/* 페이지네이션 */}
           <div className="adminstoreinfo-pagination">
             <button 
-              className="adminstoreinfo-pagination-btn"
+              className="adminstoreinfo-page-btn"
               onClick={() => {
                 if (currentPage > 0) {
                   const newPage = currentPage - 1;
@@ -315,7 +315,7 @@ const StoreInfo = () => {
             {[...Array(totalPages)].map((_, index) => (
               <button
                 key={index}
-                className={`adminstoreinfo-pagination-btn ${currentPage === index ? 'active' : ''}`}
+                className={`adminstoreinfo-page-btn ${currentPage === index ? 'active' : ''}`}
                 onClick={() => {
                   setCurrentPage(index);
                   isSearchMode ? handleSearchInternal(index) : loadStores(index);
@@ -325,7 +325,7 @@ const StoreInfo = () => {
               </button>
             ))}
             <button 
-              className="adminstoreinfo-pagination-btn"
+              className="adminstoreinfo-page-btn"
               onClick={() => {
                 if (currentPage < totalPages - 1) {
                   const newPage = currentPage + 1;

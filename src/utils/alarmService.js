@@ -85,3 +85,21 @@ export const markAllAlarmsAsRead = async (memberId) => {
     throw new Error("모든 알림을 읽음 처리하는데 실패했습니다.");
   }
 };
+
+/**
+ * 관리자 가맹점 알림 목록 조회 (페이지네이션)
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
+ * @returns {Promise<Object>} 페이지네이션된 알림 목록
+ */
+export const getAdminStoreAlarms = async (page = 0, size = 10) => {
+  const response = await apiCall(`/admin/alarm/store?page=${page}&size=${size}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("알림 목록을 불러오는데 실패했습니다.");
+  }
+
+  return await response.json();
+};

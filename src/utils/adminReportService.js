@@ -1,11 +1,13 @@
 import { apiGet, apiPost, apiPut } from "./apiClient";
 /**
- * 신고 목록 조회
+ * 신고 목록 조회 (페이지네이션)
  * GET /api/admin/report
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
  */
-export const getReportList = async () => {
+export const getReportList = async (page = 0, size = 10) => {
   try {
-    const response = await apiGet("/admin/report");
+    const response = await apiGet(`/admin/report?page=${page}&size=${size}`);
     if (!response.ok) {
       throw new Error("신고 목록을 불러오는데 실패했습니다.");
     }
@@ -72,12 +74,18 @@ export const modAnswer = async (reportIdx, answerData) => {
   }
 };
 /**
- * 신고 검색
+ * 신고 검색 (페이지네이션)
  * GET /api/admin/report/search
+ * @param {object} searchParams - 검색 조건
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
  */
-export const searchReports = async (searchParams) => {
+export const searchReports = async (searchParams, page = 0, size = 10) => {
   try {
     const queryString = new URLSearchParams();
+    queryString.append('page', page);
+    queryString.append('size', size);
+    
     if (searchParams.startDate) {
       queryString.append("startDate", searchParams.startDate);
     }

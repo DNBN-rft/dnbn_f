@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiGet } from "../../utils/apiClient";
+import { getAdminStoreAlarms } from "../../utils/alarmService";
 import "./css/adminalarm.css";
 const AdminAlarm = () => {
   const navigate = useNavigate();
@@ -8,6 +8,13 @@ const AdminAlarm = () => {
   const [alarms, setAlarms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
   // 필터 상태
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -16,21 +23,26 @@ const AdminAlarm = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   // 알림 목록 조회
   useEffect(() => {
-    fetchAlarms();
+    if (activeTab === "store") {
+      fetchAlarms(0);
+    }
   }, [activeTab]);
-  const fetchAlarms = async () => {
+  const fetchAlarms = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
-      const endpoint = (activeTab === "store"
-        ? "/admin/alarm/store"
-        : "/admin/alarm/cust"); // CustAlarm은 아직 없지만 준비
-      const response = await apiGet(endpoint);
-      if (!response.ok) {
-        throw new Error("알림 목록을 불러오는데 실패했습니다.");
+      if (activeTab === "store") {
+        const data = await getAdminStoreAlarms(page, pageSize);
+        setAlarms(data.content || []);
+        setCurrentPage(data.number || 0);
+        setTotalPages(data.totalPages || 0);
+        setTotalElements(data.totalElements || 0);
+      } else {
+        // CustAlarm은 아직 구현되지 않음
+        setAlarms([]);
+        setTotalElements(0);
+        setTotalPages(0);
       }
-      const data = await response.json();
-      setAlarms(data);
     } catch (err) {
       setError(err.message);
       console.error("알림 목록 조회 실패:", err);
@@ -66,8 +78,9 @@ const AdminAlarm = () => {
   };
   // 검색 처리
   const handleSearch = () => {
-    // TODO: 필터링 로직 구현
-    fetchAlarms();
+    // TODO: 필터링 로직은 향후 백엔드 구현 후 추가
+    setCurrentPage(0);
+    fetchAlarms(0);
   };
   // 페이지 이동 - AlarmType에 따라 적절한 페이지로 이동
   const handleNavigate = (alarm) => {
@@ -145,22 +158,7 @@ const AdminAlarm = () => {
         break;
     }
   };
-  // 필터링된 알림 목록
-  const filteredAlarms = alarms.filter(alarm => {
-    // 기간 필터
-    if (startDate && new Date(alarm.sendDateTime) < new Date(startDate)) return false;
-    if (endDate && new Date(alarm.sendDateTime) > new Date(endDate)) return false;
-    // 알림 타입 필터
-    if (alarmType !== "all" && alarm.alarmType !== alarmType) return false;
-    // 검색어 필터
-    if (searchKeyword) {
-      const keyword = searchKeyword.toLowerCase();
-      if (searchType === "all") {
-        return alarm.content?.toLowerCase().includes(keyword);
-      }
-    }
-    return true;
-  });
+
   return (
     <div className="adminalarm-container">
       <div className="adminalarm-wrap">
@@ -245,7 +243,7 @@ const AdminAlarm = () => {
         <div className="adminalarm-table-wrap">
           <div className="adminalarm-table-header">
             <div className="adminalarm-table-info">
-              총 <b>{filteredAlarms.length}</b>건
+              총 <b>{totalElements}</b>건
             </div>
           </div>
           {loading ? (
@@ -268,14 +266,16 @@ const AdminAlarm = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAlarms.length === 0 ? (
+                  {alarms.length === 0 ? (
                     <tr>
-                      <td colSpan="8">알림이 없습니다.</td>
+                      <td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                        조회된 알림이 없습니다.
+                      </td>
                     </tr>
                   ) : (
-                    filteredAlarms.map((alarm) => (
+                    alarms.map((alarm, index) => (
                       <tr key={alarm.alarmIdx}>
-                        <td>{alarm.alarmIdx}</td>
+                        <td>{currentPage * pageSize + index + 1}</td>
                         <td>{alarm.storeNm || "-"}</td>
                         <td>{alarm.memberId || "-"}</td>
                         <td>{getAlarmTypeLabel(alarm.alarmType)}</td>
@@ -297,15 +297,50 @@ const AdminAlarm = () => {
                 </tbody>
               </table>
               <div className="adminalarm-pagination">
-                <button className="adminalarm-pagination-btn">이전</button>
-                <div className="adminalarm-pagination-numbers">
-                  <button className="adminalarm-page-number adminalarm-page-active">
+                <button 
+                  className="adminalarm-page-btn"
+                  onClick={() => {
+                    if (currentPage > 0) {
+                      const newPage = currentPage - 1;
+                      setCurrentPage(newPage);
+                      fetchAlarms(newPage);
+                    }
+                  }}
+                  disabled={currentPage === 0 || totalPages === 0}
+                >
+                  이전
+                </button>
+                {totalPages > 0 ? (
+                  [...Array(totalPages)].map((_, index) => (
+                    <button
+                      key={index}
+                      className={`adminalarm-page-btn ${currentPage === index ? 'active' : ''}`}
+                      onClick={() => {
+                        setCurrentPage(index);
+                        fetchAlarms(index);
+                      }}
+                    >
+                      {index + 1}
+                    </button>
+                  ))
+                ) : (
+                  <button className="adminalarm-page-btn active">
                     1
                   </button>
-                  <button className="adminalarm-page-number">2</button>
-                  <button className="adminalarm-page-number">3</button>
-                </div>
-                <button className="adminalarm-pagination-btn">다음</button>
+                )}
+                <button 
+                  className="adminalarm-page-btn"
+                  onClick={() => {
+                    if (currentPage < totalPages - 1) {
+                      const newPage = currentPage + 1;
+                      setCurrentPage(newPage);
+                      fetchAlarms(newPage);
+                    }
+                  }}
+                  disabled={currentPage === totalPages - 1 || totalPages === 0}
+                >
+                  다음
+                </button>
               </div>
             </>
           )}

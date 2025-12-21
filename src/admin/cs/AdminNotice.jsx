@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./css/adminnotice.css";
 import AdminNoticeDetail from "./modal/AdminNoticeDetail";
 import AdminNoticeAdd from "./modal/AdminNoticeAdd";
-import { getNotices, deleteNotices } from "../../utils/adminNoticeService";
+import { getNotices, deleteNotices, searchNotices } from "../../utils/adminNoticeService";
 
 const AdminNotice = () => {
   const [selectedNotice, setSelectedNotice] = useState(null);
@@ -12,17 +12,44 @@ const AdminNotice = () => {
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedNotices, setSelectedNotices] = useState([]);
 
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // 필터 상태
+  const [filters, setFilters] = useState({
+    isPinned: null,
+    startDate: "",
+    endDate: "",
+    searchType: "all",
+    searchKeyword: "",
+  });
+
   // 공지사항 목록 조회
   useEffect(() => {
     fetchNotices();
   }, []);
 
-  const fetchNotices = async () => {
-    const result = await getNotices();
-    if (result.success) {
-      setNotices(result.data);
-    } else {
-      alert(result.error || "공지사항 목록 조회 실패");
+  const fetchNotices = async (page = 0) => {
+    try {
+      const result = await getNotices(page, pageSize);
+      if (result.success && result.data) {
+        setNotices(result.data.content || []);
+        setCurrentPage(result.data.number || 0);
+        setTotalPages(result.data.totalPages || 0);
+        setTotalElements(result.data.totalElements || 0);
+        setIsSearchMode(false);
+      } else {
+        setNotices([]);
+      }
+    } catch (error) {
+      console.error("공지사항 목록 조회 오류:", error);
+      setNotices([]);
     }
   };
 
@@ -59,10 +86,62 @@ const AdminNotice = () => {
       alert(result.data);
       setSelectedNotices([]);
       setShowCheckbox(false);
-      fetchNotices();
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        fetchNotices(currentPage);
+      }
     } else {
       alert(result.error);
     }
+  };
+
+  // 검색 내부 함수
+  const handleSearchInternal = async (page = 0) => {
+    try {
+      const searchParams = {
+        isPinned: filters.isPinned,
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+        searchTerm: filters.searchKeyword,
+        searchType: filters.searchType,
+      };
+
+      const result = await searchNotices(searchParams, page, pageSize);
+      if (result.success && result.data) {
+        setNotices(result.data.content || []);
+        setCurrentPage(result.data.number || 0);
+        setTotalPages(result.data.totalPages || 0);
+        setTotalElements(result.data.totalElements || 0);
+        setIsSearchMode(true);
+      } else {
+        setNotices([]);
+        alert(result.error || "공지사항 검색 실패");
+      }
+    } catch (error) {
+      console.error("공지사항 검색 오류:", error);
+      setNotices([]);
+      alert("공지사항 검색 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 검색 버튼 클릭
+  const handleSearch = () => {
+    setCurrentPage(0);
+    handleSearchInternal(0);
+  };
+
+  // 필터 초기화
+  const handleReset = () => {
+    setFilters({
+      isPinned: null,
+      startDate: "",
+      endDate: "",
+      searchType: "all",
+      searchKeyword: "",
+    });
+    setCurrentPage(0);
+    fetchNotices(0);
   };
 
   return (
@@ -76,9 +155,16 @@ const AdminNotice = () => {
                 type="date"
                 id="notice-date-start"
                 className="adminnotice-date-input"
+                value={filters.startDate}
+                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
               />
               <span className="adminnotice-date-separator">~</span>
-              <input type="date" className="adminnotice-date-input" />
+              <input 
+                type="date" 
+                className="adminnotice-date-input"
+                value={filters.endDate}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              />
             </div>
 
             <div className="adminnotice-filter-group">
@@ -86,8 +172,10 @@ const AdminNotice = () => {
                 <input
                   type="checkbox"
                   className="adminnotice-checkbox"
+                  checked={filters.isPinned === true}
+                  onChange={(e) => setFilters({ ...filters, isPinned: e.target.checked ? true : null })}
                 />
-                <span>고정공지 포함</span>
+                <span>고정공지만 보기</span>
               </label>
             </div>
           </div>
@@ -98,18 +186,24 @@ const AdminNotice = () => {
                 name="notice-option"
                 id="notice-option"
                 className="adminnotice-select-type"
+                value={filters.searchType}
+                onChange={(e) => setFilters({ ...filters, searchType: e.target.value })}
               >
                 <option value="all">전체</option>
                 <option value="title">제목</option>
-                <option value="writer">작성자</option>
-                <option value="editor">수정자</option>
+                <option value="content">내용</option>
+                <option value="regnm">작성자</option>
+                <option value="modnm">수정자</option>
               </select>
               <input
                 type="text"
                 className="adminnotice-input"
                 placeholder="검색어를 입력하세요"
+                value={filters.searchKeyword}
+                onChange={(e) => setFilters({ ...filters, searchKeyword: e.target.value })}
               />
-              <button className="adminnotice-search-btn">검색</button>
+              <button className="adminnotice-search-btn" onClick={handleSearch}>검색</button>
+              <button className="adminnotice-search-btn" onClick={handleReset}>초기화</button>
             </div>
           </div>
         </div>
@@ -117,7 +211,7 @@ const AdminNotice = () => {
         <div className="adminnotice-table-wrap">
           <div className="adminnotice-table-header">
             <div className="adminnotice-table-info">
-              총 <span className="adminnotice-count-bold">{notices.length}</span>건
+              총 <span className="adminnotice-count-bold">{totalElements}</span>건
             </div>
             <div className="adminnotice-table-actions">
               {showCheckbox && (
@@ -158,57 +252,96 @@ const AdminNotice = () => {
               </tr>
             </thead>
             <tbody>
-              {notices.map((notice, index) => (
-                <tr key={notice.noticeIdx}>
-                  {showCheckbox && (
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedNotices.includes(notice.noticeIdx)}
-                        onChange={() => handleCheckboxChange(notice.noticeIdx)}
-                      />
-                    </td>
-                  )}
-                  <td>{index + 1}</td>
-                  <td className="adminnotice-title">{notice.title}</td>
-                  <td>{notice.regNm}</td>
-                  <td>{notice.regDate}</td>
-                  <td>{notice.modNm || "-"}</td>
-                  <td>{notice.modDate || "-"}</td>
-                  <td>
-                    {notice.isPinned ? (
-                      <span className="adminnotice-status-pinned">고정</span>
-                    ) : (
-                      <span className="adminnotice-status-normal">일반</span>
+              {notices && notices.length > 0 ? (
+                notices.map((notice, index) => (
+                  <tr key={notice.noticeIdx}>
+                    {showCheckbox && (
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedNotices.includes(notice.noticeIdx)}
+                          onChange={() => handleCheckboxChange(notice.noticeIdx)}
+                        />
+                      </td>
                     )}
-                  </td>
-                  <td>
-                    <button
-                      className="adminnotice-btn adminnotice-btn-detail"
-                      onClick={() => {
-                        setSelectedNotice(notice.noticeIdx);
-                        setIsModalOpen(true);
-                      }}
-                    >
-                      상세
-                    </button>
+                    <td>{currentPage * pageSize + index + 1}</td>
+                    <td className="adminnotice-title">{notice.title}</td>
+                    <td>{notice.regNm}</td>
+                    <td>{notice.regDate}</td>
+                    <td>{notice.modNm || "-"}</td>
+                    <td>{notice.modDate || "-"}</td>
+                    <td>
+                      {notice.isPinned ? (
+                        <span className="adminnotice-status-pinned">고정</span>
+                      ) : (
+                        <span className="adminnotice-status-normal">일반</span>
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        className="adminnotice-btn adminnotice-btn-detail"
+                        onClick={() => {
+                          setSelectedNotice(notice.noticeIdx);
+                          setIsModalOpen(true);
+                        }}
+                      >
+                        상세
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={showCheckbox ? "9" : "8"} style={{ textAlign: "center" }}>
+                    등록된 공지사항이 없습니다.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
 
           {/* 페이지네이션 */}
           <div className="adminnotice-pagination">
-            <button className="adminnotice-pagination-btn">이전</button>
+            <button 
+              className="adminnotice-pagination-btn"
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : fetchNotices(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
             <div className="adminnotice-pagination-numbers">
-              <button className="adminnotice-page-number adminnotice-page-active">
-                1
-              </button>
-              <button className="adminnotice-page-number">2</button>
-              <button className="adminnotice-page-number">3</button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  className={`adminnotice-page-number ${currentPage === index ? 'adminnotice-page-active' : ''}`}
+                  onClick={() => {
+                    setCurrentPage(index);
+                    isSearchMode ? handleSearchInternal(index) : fetchNotices(index);
+                  }}
+                >
+                  {index + 1}
+                </button>
+              ))}
             </div>
-            <button className="adminnotice-pagination-btn">다음</button>
+            <button 
+              className="adminnotice-pagination-btn"
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : fetchNotices(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
           </div>
         </div>
       </div>
@@ -221,7 +354,13 @@ const AdminNotice = () => {
             setIsModalOpen(false);
             setSelectedNotice(null);
           }}
-          onUpdate={fetchNotices}
+          onUpdate={() => {
+            if (isSearchMode) {
+              handleSearchInternal(currentPage);
+            } else {
+              fetchNotices(currentPage);
+            }
+          }}
         />
       )}
 
@@ -229,7 +368,13 @@ const AdminNotice = () => {
       {isAddModalOpen && (
         <AdminNoticeAdd
           onClose={() => setIsAddModalOpen(false)}
-          onAdd={fetchNotices}
+          onAdd={() => {
+            if (isSearchMode) {
+              handleSearchInternal(currentPage);
+            } else {
+              fetchNotices(currentPage);
+            }
+          }}
         />
       )}
     </div>

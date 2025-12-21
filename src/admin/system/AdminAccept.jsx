@@ -154,13 +154,9 @@ const AdminAccept = () => {
         </div>
 
         <div className="adminaccept-pagination">
-          <button className="adminaccept-pagination-btn">이전</button>
-          <div className="adminaccept-pagination-numbers">
-            <button className="adminaccept-page-number adminaccept-page-active">
-              1
-            </button>
-          </div>
-          <button className="adminaccept-pagination-btn">다음</button>
+          <button className="adminaccept-page-btn" disabled>이전</button>
+          <button className="adminaccept-page-btn active">1</button>
+          <button className="adminaccept-page-btn" disabled>다음</button>
         </div>
       </div>
 

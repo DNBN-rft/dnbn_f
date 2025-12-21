@@ -313,7 +313,57 @@
   background-color: #d1fae5;
   color: #065f46;
 }
+/* 페이지네이션 */
+.adminquestion-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  padding: 20px 0;
+}
 
+.adminquestion-page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminquestion-page-btn:hover:not(:disabled):not(.active) {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.adminquestion-page-btn.active {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.adminquestion-page-btn:disabled {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.adminquestion-page-btn:disabled:hover {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
 /* 반응형 */
 @media (max-width: 1024px) {
   .adminquestion-container {

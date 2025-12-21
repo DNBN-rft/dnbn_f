@@ -5,13 +5,13 @@ import {
   deleteReviews,
   hideReview,
   unhideReview,
+  getReportedReviews,
 } from "../../utils/adminReviewService";
-import { apiGet } from "../../utils/apiClient";
 import { useNavigate } from "react-router-dom";
 
 const AdminReportedReview = () => {
   const navigator = useNavigate();
-  const [loading, setLoading] = useState("common");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +20,13 @@ const AdminReportedReview = () => {
   const [selectedReviews, setSelectedReviews] = useState([]);
   const [showCheckbox, setShowCheckbox] = useState(false);
 
-  // 필터 상태
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
+  // 필터 상태 (현재는 사용 안함, UI를 위해 유지)
   const [filters, setFilters] = useState({
     status: "statusall",
     rate: "rateall",
@@ -31,19 +37,23 @@ const AdminReportedReview = () => {
 
   // 리뷰 목록 조회
   useEffect(() => {
-    fetchReviews();
+    loadReviews();
   }, []);
 
-  const fetchReviews = async () => {
+  const loadReviews = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiGet("/admin/review/reportedReview");
-      if (!response.ok) {
-        throw new Error("리뷰 목록을 불러오는데 실패했습니다.");
+      const result = await getReportedReviews(page, pageSize);
+      if (result.success) {
+        setReviews(result.data.content);
+        setCurrentPage(result.data.number);
+        setTotalPages(result.data.totalPages);
+        setTotalElements(result.data.totalElements);
+      } else {
+        setError(result.error);
+        setReviews([]);
       }
-      const data = await response.json();
-      setReviews(data);
     } catch (err) {
       setError(err.message);
       console.error("리뷰 목록 조회 실패: ", err);
@@ -64,7 +74,7 @@ const AdminReportedReview = () => {
   };
 
   const handleUpdateSuccess = () => {
-    fetchReviews();
+    loadReviews(currentPage);
   };
 
   // 숨기기/보이기
@@ -74,7 +84,7 @@ const AdminReportedReview = () => {
       : await hideReview(reviewIdx);
     if (result.success) {
       alert(result.data);
-      fetchReviews();
+      loadReviews(currentPage);
     } else {
       alert(result.error);
     }
@@ -101,6 +111,12 @@ const AdminReportedReview = () => {
     }
   };
 
+  // 검색 함수 (현재는 비활성화)
+  const handleSearch = () => {
+    // TODO: 추후 검색 기능 구현 시 활성화
+    alert("검색 기능은 현재 준비 중입니다.");
+  };
+
   // 리뷰 삭제
   const handleDelete = async () => {
     if (selectedReviews.length === 0) {
@@ -121,70 +137,10 @@ const AdminReportedReview = () => {
       alert(result.data);
       setSelectedReviews([]);
       setShowCheckbox(false);
-      fetchReviews();
+      loadReviews(currentPage);
     } else {
       alert(result.error);
     }
-  };
-
-  // 필터 적용
-  const handleSearch = () => {
-    let result = [...reviews];
-
-    // 상태 필터
-    if (filters.status !== "statusall") {
-      if (filters.status === "normal") {
-        result = result.filter((r) => !r.isHidden);
-      } else if (filters.status === "hidden") {
-        result = result.filter((r) => r.isHidden);
-      }
-    }
-
-    // 평점 필터
-    if (filters.rate !== "rateall") {
-      result = result.filter((r) => r.reviewRate === parseInt(filters.rate));
-    }
-
-    // 기간 필터
-    if (filters.period !== "dayall") {
-      const now = new Date();
-      result = result.filter((r) => {
-        const reviewDate = new Date(r.reviewRegDateTime);
-        if (filters.period === "today") {
-          return reviewDate.toDateString() === now.toDateString();
-        } else if (filters.period === "week") {
-          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          return reviewDate >= weekAgo;
-        } else if (filters.period === "month") {
-          return (
-            reviewDate.getMonth() === now.getMonth() &&
-            reviewDate.getFullYear() === now.getFullYear()
-          );
-        }
-        return true;
-      });
-    }
-
-    // 검색어 필터
-    if (filters.searchKeyword) {
-      result = result.filter((r) => {
-        if (filters.searchType === "store") {
-          return r.storeNm.includes(filters.searchKeyword);
-        } else if (filters.searchType === "author") {
-          return r.custNm.includes(filters.searchKeyword);
-        } else if (filters.searchType === "content") {
-          return r.reviewContent.includes(filters.searchKeyword);
-        } else {
-          return (
-            r.storeNm.includes(filters.searchKeyword) ||
-            r.custNm.includes(filters.searchKeyword) ||
-            r.reviewContent.includes(filters.searchKeyword)
-          );
-        }
-      });
-    }
-
-    setReviews(result);
   };
 
   return (
@@ -296,7 +252,7 @@ const AdminReportedReview = () => {
         <div className="adminreportedreview-table-wrap">
           <div className="adminreportedreview-table-header">
             <div className="adminreportedreview-table-info">
-              총 <b>{reviews.length}</b>건
+              총 <b>{totalElements}</b>건
             </div>
             {showCheckbox && (
               <button
@@ -351,7 +307,7 @@ const AdminReportedReview = () => {
                 {reviews.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={showCheckbox ? "9" : "8"}
+                      colSpan={showCheckbox ? "10" : "9"}
                       style={{ textAlign: "center" }}
                     >
                       등록된 리뷰가 없습니다.
@@ -371,7 +327,7 @@ const AdminReportedReview = () => {
                           />
                         </td>
                       )}
-                      <td>{index + 1}</td>
+                      <td>{currentPage * pageSize + index + 1}</td>
                       <td>{review.storeNm}</td>
                       <td>{review.custNm}</td>
                       <td>{review.reviewRate}</td>
@@ -422,6 +378,48 @@ const AdminReportedReview = () => {
               </tbody>
             </table>
           )}
+
+          {/* 페이지네이션 */}
+          <div className="adminreportedreview-pagination">
+            <button 
+              className="adminreportedreview-page-btn"
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  loadReviews(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`adminreportedreview-page-btn ${currentPage === index ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  loadReviews(index);
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button 
+              className="adminreportedreview-page-btn"
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  loadReviews(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
+          </div>
         </div>
       </div>
 

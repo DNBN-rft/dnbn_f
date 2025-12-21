@@ -31,6 +31,16 @@ const AdminReport = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
   // 필터 상태
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -38,26 +48,38 @@ const AdminReport = () => {
   const [reportType, setReportType] = useState("");
   const [searchType, setSearchType] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+
   // 신고 목록 불러오기
-  const loadReports = async () => {
+  const loadReports = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getReportList();
-      setReports(data);
+      const data = await getReportList(page, pageSize);
+      if (data) {
+        setReports(data.content || []);
+        setCurrentPage(data.number || 0);
+        setTotalPages(data.totalPages || 0);
+        setTotalElements(data.totalElements || 0);
+        setIsSearchMode(false);
+      } else {
+        setReports([]);
+      }
     } catch (err) {
       setError("신고 목록을 불러오는데 실패했습니다.");
+      setReports([]);
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
+
   // 초기 로드
   useEffect(() => {
     loadReports();
   }, []);
-  // 검색 함수
-  const handleSearch = async () => {
+
+  // 검색 내부 함수
+  const handleSearchInternal = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
@@ -69,14 +91,41 @@ const AdminReport = () => {
         searchType: searchType || null,
         searchTerm: searchTerm || null,
       };
-      const data = await searchReports(searchParams);
-      setReports(data);
+      const data = await searchReports(searchParams, page, pageSize);
+      if (data) {
+        setReports(data.content || []);
+        setCurrentPage(data.number || 0);
+        setTotalPages(data.totalPages || 0);
+        setTotalElements(data.totalElements || 0);
+        setIsSearchMode(true);
+      } else {
+        setReports([]);
+      }
     } catch (err) {
       setError("검색에 실패했습니다.");
+      setReports([]);
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  // 검색 버튼 클릭
+  const handleSearch = () => {
+    setCurrentPage(0);
+    handleSearchInternal(0);
+  };
+
+  // 필터 초기화
+  const handleReset = () => {
+    setStartDate("");
+    setEndDate("");
+    setIsAnswered(false);
+    setReportType("");
+    setSearchType("");
+    setSearchTerm("");
+    setCurrentPage(0);
+    loadReports(0);
   };
   const handleDetailClick = (report) => {
     setSelectedReport(report);
@@ -86,7 +135,11 @@ const AdminReport = () => {
     setIsModalOpen(false);
     setSelectedReport(null);
     // 모달이 닫힐 때 목록 새로고침
-    loadReports();
+    if (isSearchMode) {
+      handleSearchInternal(currentPage);
+    } else {
+      loadReports(currentPage);
+    }
   };
   return (
     <div className="adminreport-container">
@@ -185,13 +238,19 @@ const AdminReport = () => {
               >
                 검색
               </button>
+              <button
+                className="adminreport-filter-search-btn"
+                onClick={handleReset}
+              >
+                초기화
+              </button>
             </div>
           </div>
         </div>
         {/* 테이블 제목 */}
         <div className="adminreport-table-header">
           <div className="adminreport-table-info">
-            총 <span className="adminreport-count-bold">{reports.length}</span>건
+            총 <span className="adminreport-count-bold">{totalElements}</span>건
           </div>
         </div>
         {/* 로딩 또는 에러 상태 */}
@@ -213,31 +272,87 @@ const AdminReport = () => {
               </tr>
             </thead>
             <tbody>
-              {reports.map((report, index) => (
-                <tr key={report.reportIdx}>
-                  <td>{index + 1}</td>
-                  <td>{report.reportType === 'PRODUCT' ? '상품' : '가맹점'}</td>
-                  <td>{report.reportRegNm}</td>
-                  <td className="adminreport-table-title-cell">{getReportReasonText(report.reportReason)}</td>
-                  <td>{report.reportRegDate}</td>
-                  <td>
-                    <span className={`adminreport-status ${report.reportStatus === 'COMPLETED' ? 'adminreport-status-complete' : 'adminreport-status-pending'}`}>
-                      {report.reportStatus === 'COMPLETED' ? '처리완료' : report.reportStatus === 'REJECTED' ? '반려' : '처리대기'}
-                    </span>
-                  </td>
-                  <td>{report.answerDate || '-'}</td>
-                  <td>
-                    <button
-                      className="adminreport-detail-btn"
-                      onClick={() => handleDetailClick(report)}
-                    >
-                      상세
-                    </button>
+              {reports && reports.length > 0 ? (
+                reports.map((report, index) => (
+                  <tr key={report.reportIdx}>
+                    <td>{currentPage * pageSize + index + 1}</td>
+                    <td>{report.reportType === 'PRODUCT' ? '상품' : '가맹점'}</td>
+                    <td>{report.reportRegNm}</td>
+                    <td className="adminreport-table-title-cell">{getReportReasonText(report.reportReason)}</td>
+                    <td>{report.reportRegDate}</td>
+                    <td>
+                      <span className={`adminreport-status ${report.reportStatus === 'COMPLETED' ? 'adminreport-status-complete' : 'adminreport-status-pending'}`}>
+                        {report.reportStatus === 'COMPLETED' ? '처리완료' : report.reportStatus === 'REJECTED' ? '반려' : '처리대기'}
+                      </span>
+                    </td>
+                    <td>{report.answerDate || '-'}</td>
+                    <td>
+                      <button
+                        className="adminreport-detail-btn"
+                        onClick={() => handleDetailClick(report)}
+                      >
+                        상세
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                    조회된 신고 내용이 없습니다.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
+        </div>
+
+        {/* 페이지네이션 */}
+        <div className="adminreport-pagination">
+          <button 
+            className="adminreport-page-btn"
+            onClick={() => {
+              if (currentPage > 0) {
+                const newPage = currentPage - 1;
+                setCurrentPage(newPage);
+                isSearchMode ? handleSearchInternal(newPage) : loadReports(newPage);
+              }
+            }}
+            disabled={currentPage === 0 || totalPages === 0}
+          >
+            이전
+          </button>
+          {totalPages > 0 ? (
+            [...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`adminreport-page-btn ${currentPage === index ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  isSearchMode ? handleSearchInternal(index) : loadReports(index);
+                }}
+              >
+                {index + 1}
+              </button>
+            ))
+          ) : (
+            <button className="adminreport-page-btn active">
+              1
+            </button>
+          )}
+          <button 
+            className="adminreport-page-btn"
+            onClick={() => {
+              if (currentPage < totalPages - 1) {
+                const newPage = currentPage + 1;
+                setCurrentPage(newPage);
+                isSearchMode ? handleSearchInternal(newPage) : loadReports(newPage);
+              }
+            }}
+            disabled={currentPage === totalPages - 1 || totalPages === 0}
+          >
+            다음
+          </button>
         </div>
       </div>
       {/* 신고 상세 모달 */}

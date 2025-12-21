@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import "./css/adminreview.css";
-import { apiGet } from "../../utils/apiClient";
 import AdminReviewDetail from "./modal/AdminReviewDetail";
 import {
   getReviews,
   hideReview,
   unhideReview,
   deleteReviews,
+  searchReviews,
 } from "../../utils/adminReviewService";
 import { useNavigate } from "react-router-dom";
 
 const AdminReview = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState("common");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +21,15 @@ const AdminReview = () => {
   const [selectedReviews, setSelectedReviews] = useState([]);
   const [showCheckbox, setShowCheckbox] = useState(false);
 
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
   // 필터 상태
   const [filters, setFilters] = useState({
     status: "statusall",
@@ -28,23 +37,30 @@ const AdminReview = () => {
     period: "dayall",
     searchType: "typeall",
     searchKeyword: "",
+    startDate: "",
+    endDate: "",
   });
 
   // 리뷰 목록 조회
   useEffect(() => {
-    fetchReviews();
+    loadReviews();
   }, []);
 
-  const fetchReviews = async () => {
+  const loadReviews = async (page = 0) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiGet("/admin/review/search");
-      if (!response.ok) {
-        throw new Error("리뷰 목록을 불러오는데 실패했습니다.");
+      const result = await getReviews(page, pageSize);
+      if (result.success) {
+        setReviews(result.data.content);
+        setCurrentPage(result.data.number);
+        setTotalPages(result.data.totalPages);
+        setTotalElements(result.data.totalElements);
+        setIsSearchMode(false);
+      } else {
+        setError(result.error);
+        setReviews([]);
       }
-      const data = await response.json();
-      setReviews(data);
     } catch (err) {
       setError(err.message);
       console.error("리뷰 목록 조회 실패: ", err);
@@ -65,7 +81,11 @@ const AdminReview = () => {
   };
 
   const handleUpdateSuccess = () => {
-    fetchReviews();
+    if (isSearchMode) {
+      handleSearchInternal(currentPage);
+    } else {
+      loadReviews(currentPage);
+    }
   };
 
   // 숨기기/보이기
@@ -75,7 +95,11 @@ const AdminReview = () => {
       : await hideReview(reviewIdx);
     if (result.success) {
       alert(result.data);
-      fetchReviews();
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadReviews(currentPage);
+      }
     } else {
       alert(result.error);
     }
@@ -122,70 +146,72 @@ const AdminReview = () => {
       alert(result.data);
       setSelectedReviews([]);
       setShowCheckbox(false);
-      fetchReviews();
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadReviews(currentPage);
+      }
     } else {
       alert(result.error);
     }
   };
 
-  // 필터 적용
-  const handleSearch = () => {
-    let result = [...reviews];
+  // 검색 내부 함수
+  const handleSearchInternal = async (page = 0) => {
+    const searchParams = {
+      isHidden: filters.status === "normal" ? false : 
+                filters.status === "hidden" ? true : null,
+      ratings: filters.rate !== "rateall" ? [parseInt(filters.rate)] : null,
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+      searchTerm: filters.searchKeyword,
+      searchType: filters.searchType === "typeall" ? "all" :
+                  filters.searchType === "store" ? "storenm" :
+                  filters.searchType === "author" ? "regnm" :
+                  filters.searchType === "content" ? "content" : "all",
+    };
 
-    // 상태 필터
-    if (filters.status !== "statusall") {
-      if (filters.status === "normal") {
-        result = result.filter((r) => !r.isHidden);
-      } else if (filters.status === "hidden") {
-        result = result.filter((r) => r.isHidden);
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await searchReviews(searchParams, page, pageSize);
+      if (result.success) {
+        setReviews(result.data.content);
+        setCurrentPage(result.data.number);
+        setTotalPages(result.data.totalPages);
+        setTotalElements(result.data.totalElements);
+        setIsSearchMode(true);
+      } else {
+        setError(result.error);
+        alert(result.error);
       }
+    } catch (err) {
+      setError(err.message);
+      alert(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // 평점 필터
-    if (filters.rate !== "rateall") {
-      result = result.filter((r) => r.reviewRate === parseInt(filters.rate));
-    }
+  // 검색 버튼 클릭
+  const handleSearch = () => {
+    setCurrentPage(0);
+    handleSearchInternal(0);
+  };
 
-    // 기간 필터
-    if (filters.period !== "dayall") {
-      const now = new Date();
-      result = result.filter((r) => {
-        const reviewDate = new Date(r.reviewRegDateTime);
-        if (filters.period === "today") {
-          return reviewDate.toDateString() === now.toDateString();
-        } else if (filters.period === "week") {
-          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          return reviewDate >= weekAgo;
-        } else if (filters.period === "month") {
-          return (
-            reviewDate.getMonth() === now.getMonth() &&
-            reviewDate.getFullYear() === now.getFullYear()
-          );
-        }
-        return true;
-      });
-    }
-
-    // 검색어 필터
-    if (filters.searchKeyword) {
-      result = result.filter((r) => {
-        if (filters.searchType === "store") {
-          return r.storeNm.includes(filters.searchKeyword);
-        } else if (filters.searchType === "author") {
-          return r.custNm.includes(filters.searchKeyword);
-        } else if (filters.searchType === "content") {
-          return r.reviewContent.includes(filters.searchKeyword);
-        } else {
-          return (
-            r.storeNm.includes(filters.searchKeyword) ||
-            r.custNm.includes(filters.searchKeyword) ||
-            r.reviewContent.includes(filters.searchKeyword)
-          );
-        }
-      });
-    }
-
-    setReviews(result);
+  // 필터 초기화
+  const handleReset = () => {
+    setFilters({
+      status: "statusall",
+      rate: "rateall",
+      period: "dayall",
+      searchType: "typeall",
+      searchKeyword: "",
+      startDate: "",
+      endDate: "",
+    });
+    setCurrentPage(0);
+    loadReviews(0);
   };
 
   return (
@@ -297,7 +323,7 @@ const AdminReview = () => {
         <div className="adminreview-table-wrap">
           <div className="adminreview-table-header">
             <div className="adminreview-table-info">
-              총 <b>{reviews.length}</b>건
+              총 <b>{totalElements}</b>건
             </div>
             {showCheckbox && (
               <button
@@ -371,7 +397,7 @@ const AdminReview = () => {
                           />
                         </td>
                       )}
-                      <td>{index + 1}</td>
+                      <td>{currentPage * pageSize + index + 1}</td>
                       <td>{review.storeNm}</td>
                       <td>{review.custNm}</td>
                       <td>{review.reviewRate}</td>
@@ -421,6 +447,48 @@ const AdminReview = () => {
               </tbody>
             </table>
           )}
+
+          {/* 페이지네이션 */}
+          <div className="adminreview-pagination">
+            <button 
+              className="adminreview-page-btn"
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadReviews(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
+            >
+              이전
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`adminreview-page-btn ${currentPage === index ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  isSearchMode ? handleSearchInternal(index) : loadReviews(index);
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button 
+              className="adminreview-page-btn"
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadReviews(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
+            >
+              다음
+            </button>
+          </div>
         </div>
       </div>
 

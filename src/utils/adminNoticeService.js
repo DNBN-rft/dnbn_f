@@ -5,11 +5,13 @@
 import { apiCall } from "./apiClient";
 
 /**
- * 모든 공지사항 목록 조회
+ * 모든 공지사항 목록 조회 (페이지네이션)
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
  */
-export const getNotices = async () => {
+export const getNotices = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall("/admin/notice", {
+    const response = await apiCall(`/admin/notice?page=${page}&size=${size}`, {
       method: "GET",
     });
 
@@ -169,6 +171,62 @@ export const deleteNotices = async (noticeDeleteList) => {
     }
   } catch (error) {
     console.error("공지사항 삭제 중 오류:", error);
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
+};
+
+/**
+ * 공지사항 검색 (페이지네이션)
+ * @param {object} searchParams - 검색 조건
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
+ */
+export const searchNotices = async (searchParams, page = 0, size = 10) => {
+  try {
+    const params = new URLSearchParams();
+    params.append('page', page);
+    params.append('size', size);
+    
+    if (searchParams.isPinned !== undefined && searchParams.isPinned !== null) {
+      params.append('isPinned', searchParams.isPinned);
+    }
+    if (searchParams.startDate) {
+      params.append('startDate', searchParams.startDate);
+    }
+    if (searchParams.endDate) {
+      params.append('endDate', searchParams.endDate);
+    }
+    if (searchParams.searchTerm) {
+      params.append('searchTerm', searchParams.searchTerm);
+    }
+    if (searchParams.searchType) {
+      params.append('searchType', searchParams.searchType);
+    }
+
+    const response = await apiCall(`/admin/notice/search?${params.toString()}`, {
+      method: "GET",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "공지사항 검색에 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    console.error("공지사항 검색 중 오류:", error);
     return {
       success: false,
       data: null,
