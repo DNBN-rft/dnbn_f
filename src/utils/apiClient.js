@@ -142,7 +142,7 @@ export const apiPost = async (endpoint, data = null, options = {}) => {
   return apiCall(endpoint, {
     ...options,
     method: "POST",
-    body: data ? JSON.stringify(data) : undefined,
+    body: data ? data : undefined,
   });
 };
 /**
@@ -152,7 +152,7 @@ export const apiPut = async (endpoint, data = null, options = {}) => {
   return apiCall(endpoint, {
     ...options,
     method: "PUT",
-    body: data ? JSON.stringify(data) : undefined,
+    body: data ? data : undefined,
   });
 };
 /**
