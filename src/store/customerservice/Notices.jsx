@@ -18,7 +18,7 @@ const Notices = () => {
     const loadNotices = async (page = 0) => {
         setLoading(true);
         try {
-            const response = await apiGet(`/notice?page=${page}&size=${pageSize}`);
+            const response = await apiGet(`/store/notice?page=${page}&size=${pageSize}`);
             if (response.ok) {
                 const data = await response.json();
                 setNotices(data.content || []);

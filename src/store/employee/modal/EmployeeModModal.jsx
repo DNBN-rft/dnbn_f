@@ -1,7 +1,9 @@
+import { apiPut } from "../../../utils/apiClient";
 import "./css/employeeregistermodal.css";
 import { useState } from "react";
 
 const EmployeeModModal = ({ onClose, member, refreshData }) => {
+  const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
   // 권한 메뉴 정의
   const authMenus = [
     { key: "product", label: "상품" },
@@ -92,7 +94,7 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
     e.preventDefault();
     
     const submitData = {
-      storeCode: "STO_00001", // 테스트용 하드코딩
+      storeCode: storeCode,
       memberNm: formData.memberNm,
       memberTelNo: formData.memberTelNo,
       memberEmail: formData.memberEmail,
@@ -102,13 +104,7 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
     };
     
     try {
-      const response = await fetch(`http://localhost:8080/api/member/detail/${member?.memberIdx}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submitData),
-      });
+      const response = await apiPut(`/store/member/detail/${member.memberId}`, submitData);
 
       if (!response.ok) {
         throw new Error("직원 정보 수정에 실패했습니다.");

@@ -105,6 +105,7 @@ export const apiCall = async (endpoint, options = {}) => {
         } catch (error) {
           processQueue(error);
           window.location.href = "/store/login";
+          console.error("토큰 갱신 중 오류 발생:", error);
           throw error;
         }
       } else {

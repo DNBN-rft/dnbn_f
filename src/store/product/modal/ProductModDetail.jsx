@@ -3,7 +3,6 @@ import "./css/productmoddetail.css";
 import { apiGet, apiPutFormData } from "../../../utils/apiClient";
 
 const ProductModDetail = ({ product, onClose, onSave }) => {
-  console.log("받은 product 데이터:", product);
 
   const [dragActive, setDragActive] = useState({
     store: false
@@ -246,7 +245,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
         }
       }
 
-      const response = await apiPutFormData(`/product/${product.productCode}`, formDataObj);
+      const response = await apiPutFormData(`/store/product/${product.productCode}`, formDataObj);
 
       if (response.ok) {
         alert("상품이 수정되었습니다.");
@@ -274,7 +273,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
         }
       });
     };
-  }, []);
+  }, [allImages]);
 
   return (
     <div className="productdetail-wrap">

@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../../../context/AuthContext";
 import { useAlarmList } from "../../../hooks/useAlarm";
 import { markAlarmAsRead } from "../../../utils/alarmService";
 import "./css/storealarmmodal.css";
@@ -8,11 +7,10 @@ import "./css/storealarmmodal.css";
 const StoreAlarmModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState("전체");
   const panelRef = useRef(null);
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const { data: alarmData = [], isLoading: loading } = useAlarmList(
-    user?.memberId
+    JSON.parse(localStorage.getItem("user")).memberId
   );
 
   const tabs = ["전체", "상품", "네고", "리뷰", "신고", "문의", "상품 제제"];

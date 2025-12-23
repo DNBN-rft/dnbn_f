@@ -97,3 +97,9 @@
     color: white;
     border-color: rgba(241, 129, 30, 1);
 }
+
+.question-detail-image {
+    margin-top: 10px;
+    max-width: 40%;
+    max-height: 40%;
+}

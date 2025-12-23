@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./css/productdetail.css";
 import ProductModDetail from "./ProductModDetail";
 import { apiGet, apiDelete } from "../../../utils/apiClient";
@@ -12,17 +12,16 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const loadProduct = async () => {
+  const loadProduct = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await apiGet(`/product/detail/${productCode}`);
+      const response = await apiGet(`/store/product/detail/${productCode}`);
 
       if (response.ok) {
         const data = await response.json();
         console.log("상품 상세 조회 응답:", data);
-
         setProduct(data);
       } else {
         setError("상품 정보를 불러오는데 실패했습니다.");
@@ -32,14 +31,14 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productCode]);
 
   useEffect(() => {
     loadProduct();
-  }, [productCode, refreshKey]);
+  }, [loadProduct, refreshKey]);
 
   const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   };
 
   // 삭제 처리
@@ -49,7 +48,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
     }
 
     try {
-      const response = await apiDelete(`/product/${productCode}/delete`);
+      const response = await apiDelete(`/store/product/${productCode}/delete`);
 
       if (response.ok) {
         alert("상품이 삭제되었습니다.");
@@ -118,28 +117,36 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
 
             <div className="productdetail-middle-content">
               <div className="productdetail-middle-content-info1">
-                <div className="productdetail-middle-content-info-title">할인 여부</div>
+                <div className="productdetail-middle-content-info-title">
+                  할인 여부
+                </div>
                 <div className="productdetail-middle-content-info-detail">
                   {product.isSale ? "예" : "아니오"}
                 </div>
               </div>
 
               <div className="productdetail-middle-content-info2">
-                <div className="productdetail-middle-content-info-title">네고 여부</div>
+                <div className="productdetail-middle-content-info-title">
+                  네고 여부
+                </div>
                 <div className="productdetail-middle-content-info-detail">
                   {product.isNego ? "예" : "아니오"}
                 </div>
               </div>
 
               <div className="productdetail-middle-content-info3">
-                <div className="productdetail-middle-content-info-title">상품구분</div>
+                <div className="productdetail-middle-content-info-title">
+                  상품구분
+                </div>
                 <div className="productdetail-middle-content-info-detail">
                   {product.isAdult ? "성인" : "일반"}
                 </div>
               </div>
 
               <div className="productdetail-middle-content-info4">
-                <div className="productdetail-middle-content-info-title">상품타입</div>
+                <div className="productdetail-middle-content-info-title">
+                  상품타입
+                </div>
                 <div className="productdetail-middle-content-info-detail">
                   {product.isStock ? "서비스" : "일반"}
                 </div>
@@ -147,7 +154,9 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
             </div>
 
             <div className="productdetail-description">
-              <div className="productdetail-description-title">상품 상세설명</div>
+              <div className="productdetail-description-title">
+                상품 상세설명
+              </div>
               <div className="productdetail-description-content">
                 {product.productDetailDescription}
               </div>
@@ -178,19 +187,26 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
                 className="productdetail-btn productdetail-btn-edit"
                 onClick={() => setIsModOpen(true)}
                 disabled={product.productState === "판매 제재"}
-                style={product.productState === "판매 제재" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                style={
+                  product.productState === "판매 제재"
+                    ? { opacity: 0.5, cursor: "not-allowed" }
+                    : {}
+                }
               >
                 수정
               </button>
 
-              <button 
+              <button
                 className="productdetail-btn productdetail-btn-delete"
                 onClick={handleDelete}
               >
                 삭제
               </button>
 
-              <button className="productdetail-btn productdetail-btn-close" onClick={onClose}>
+              <button
+                className="productdetail-btn productdetail-btn-close"
+                onClick={onClose}
+              >
                 닫기
               </button>
             </div>
@@ -203,7 +219,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
           product={product}
           onClose={() => setIsModOpen(false)}
           onSave={() => {
-            handleRefresh(); 
+            handleRefresh();
             setIsModOpen(false);
             if (onRefresh) {
               onRefresh(); // 목록도 새로고침

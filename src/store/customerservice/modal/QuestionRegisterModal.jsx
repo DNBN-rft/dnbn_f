@@ -1,6 +1,5 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { apiPostFormData } from "../../../utils/apiClient";
-import { AuthContext } from "../../../context/AuthContext";
 import "./css/questionregistermodal.css";
 
 const QuestionRegisterModal = ({ onClose, onSuccess }) => {
@@ -12,8 +11,7 @@ const QuestionRegisterModal = ({ onClose, onSuccess }) => {
     const [imagePreviews, setImagePreviews] = useState([]);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { user } = useContext(AuthContext);
-
+    const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -79,7 +77,7 @@ const QuestionRegisterModal = ({ onClose, onSuccess }) => {
         setLoading(true);
         try {
             const formDataToSend = new FormData();
-            formDataToSend.append("storeCode", user.storeCode);
+            formDataToSend.append("storeCode", storeCode);
             formDataToSend.append("questionRequestType", formData.questionRequestType);
             formDataToSend.append("questionTitle", formData.questionTitle);
             formDataToSend.append("questionContent", formData.questionContent);
@@ -90,7 +88,8 @@ const QuestionRegisterModal = ({ onClose, onSuccess }) => {
                 });
             }
             
-            const response = await apiPostFormData("/question/store", formDataToSend);            if (response.ok) {
+            const response = await apiPostFormData(`/store/question`, formDataToSend);
+            if (response.ok) {
                 alert("문의가 등록되었습니다.");
                 onSuccess();
             } else {

@@ -11,7 +11,7 @@ const QuestionDetailModal = ({ onClose, id }) => {
         const loadQuestionDetail = async () => {
             setLoading(true);
             try {
-                const response = await apiGet(`/question/detail/${id}`);
+                const response = await apiGet(`/store/question/detail/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     setQuestion(data);

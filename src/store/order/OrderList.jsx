@@ -88,7 +88,7 @@ const OrderList = () => {
       
       const storeCode = JSON.parse(userData).storeCode;
       
-      const response = await fetch(`http://localhost:8080/api/order/list/${storeCode}/excel`, {
+      const response = await fetch(`http://localhost:8080/api/store/order/list/${storeCode}/excel`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

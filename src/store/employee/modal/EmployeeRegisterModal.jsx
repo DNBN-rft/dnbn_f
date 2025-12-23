@@ -1,3 +1,4 @@
+import { apiPost } from "../../../utils/apiClient";
 import "./css/employeeregistermodal.css";
 import { useState } from "react";
 
@@ -214,13 +215,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/member/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(submitData),
-            });
+            const response = await apiPost("/store/member/register", submitData);
 
             if (!response.ok) {
                 throw new Error("직원 등록에 실패했습니다.");

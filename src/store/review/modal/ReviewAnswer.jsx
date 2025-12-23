@@ -1,3 +1,4 @@
+import { apiPut } from "../../../utils/apiClient";
 import "./css/reviewanswer.css"
 import { useState } from "react";
 
@@ -15,14 +16,8 @@ const ReviewAnswer = ({ onClose, review, refreshData }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://localhost:8080/api/review/answer/${review.reviewIdx}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    reviewAnswerContent: answerContent
-                }),
+            const response = await apiPut(`/store/review/answer/${review.reviewIdx}`, {
+                reviewAnswerContent: answerContent
             });
 
             if (!response.ok) {

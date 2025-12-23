@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import "./css/adminreportedreview.css";
+import "./css/adminreview.css";
 import AdminReviewDetail from "./modal/AdminReviewDetail";
 import {
   deleteReviews,
   hideReview,
   unhideReview,
-  getReportedReviews,
+  searchReviews,
 } from "../../utils/adminReviewService";
+import { apiGet } from "../../utils/apiClient";
 import { useNavigate } from "react-router-dom";
 
 const AdminReportedReview = () => {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -26,13 +27,18 @@ const AdminReportedReview = () => {
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
-  // 필터 상태 (현재는 사용 안함, UI를 위해 유지)
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // 필터 상태
   const [filters, setFilters] = useState({
     status: "statusall",
     rate: "rateall",
     period: "dayall",
     searchType: "typeall",
     searchKeyword: "",
+    startDate: "",
+    endDate: "",
   });
 
   // 리뷰 목록 조회
@@ -44,16 +50,16 @@ const AdminReportedReview = () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await getReportedReviews(page, pageSize);
-      if (result.success) {
-        setReviews(result.data.content);
-        setCurrentPage(result.data.number);
-        setTotalPages(result.data.totalPages);
-        setTotalElements(result.data.totalElements);
-      } else {
-        setError(result.error);
-        setReviews([]);
+      const response = await apiGet(`/admin/review/reportedReview?page=${page}&size=${pageSize}`);
+      if (!response.ok) {
+        throw new Error("리뷰 목록을 불러오는데 실패했습니다.");
       }
+      const data = await response.json();
+      setReviews(data.content || []);
+      setCurrentPage(data.number || 0);
+      setTotalPages(data.totalPages || 0);
+      setTotalElements(data.totalElements || 0);
+      setIsSearchMode(false);
     } catch (err) {
       setError(err.message);
       console.error("리뷰 목록 조회 실패: ", err);
@@ -74,7 +80,11 @@ const AdminReportedReview = () => {
   };
 
   const handleUpdateSuccess = () => {
-    loadReviews(currentPage);
+    if (isSearchMode) {
+      handleSearchInternal(currentPage);
+    } else {
+      loadReviews(currentPage);
+    }
   };
 
   // 숨기기/보이기
@@ -84,7 +94,11 @@ const AdminReportedReview = () => {
       : await hideReview(reviewIdx);
     if (result.success) {
       alert(result.data);
-      loadReviews(currentPage);
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadReviews(currentPage);
+      }
     } else {
       alert(result.error);
     }
@@ -111,12 +125,6 @@ const AdminReportedReview = () => {
     }
   };
 
-  // 검색 함수 (현재는 비활성화)
-  const handleSearch = () => {
-    // TODO: 추후 검색 기능 구현 시 활성화
-    alert("검색 기능은 현재 준비 중입니다.");
-  };
-
   // 리뷰 삭제
   const handleDelete = async () => {
     if (selectedReviews.length === 0) {
@@ -137,37 +145,100 @@ const AdminReportedReview = () => {
       alert(result.data);
       setSelectedReviews([]);
       setShowCheckbox(false);
-      loadReviews(currentPage);
+      if (isSearchMode) {
+        handleSearchInternal(currentPage);
+      } else {
+        loadReviews(currentPage);
+      }
     } else {
       alert(result.error);
     }
   };
 
+  // 검색 내부 함수
+  const handleSearchInternal = async (page = 0) => {
+    const searchParams = {
+      isHidden: filters.status === "normal" ? false : 
+                filters.status === "hidden" ? true : null,
+      ratings: filters.rate !== "rateall" ? [parseInt(filters.rate)] : null,
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+      searchTerm: filters.searchKeyword,
+      searchType: filters.searchType === "typeall" ? "all" :
+                  filters.searchType === "store" ? "storenm" :
+                  filters.searchType === "author" ? "regnm" :
+                  filters.searchType === "content" ? "content" : "all",
+      isReported: true, // 신고된 리뷰만 조회
+    };
+
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await searchReviews(searchParams, page, pageSize);
+      if (result.success) {
+        setReviews(result.data.content || []);
+        setCurrentPage(result.data.number || 0);
+        setTotalPages(result.data.totalPages || 0);
+        setTotalElements(result.data.totalElements || 0);
+        setIsSearchMode(true);
+      } else {
+        setError(result.error);
+        alert(result.error);
+      }
+    } catch (err) {
+      setError(err.message);
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 검색 버튼 클릭
+  const handleSearch = () => {
+    setCurrentPage(0);
+    handleSearchInternal(0);
+  };
+
+  // 필터 초기화
+  const handleReset = () => {
+    setFilters({
+      status: "statusall",
+      rate: "rateall",
+      period: "dayall",
+      searchType: "typeall",
+      searchKeyword: "",
+      startDate: "",
+      endDate: "",
+    });
+    setCurrentPage(0);
+    loadReviews(0);
+  };
+
   return (
-    <div className="adminreportedreview-container">
-      <div className="adminreportedreview-wrap">
+    <div className="adminreview-container">
+      <div className="adminreview-wrap">
         {/* 탭 네비게이션 */}
-        <div className="adminreportedreview-tab-navigation">
+        <div className="adminreview-tab-navigation">
           <button
-            className="adminreportedreview-tab-btn"
+            className="adminreview-tab-btn"
             onClick={() => {
-              navigator("/admin/review");
+              navigate("/admin/review");
             }}
           >
             리뷰 목록
           </button>
-          <button className="adminreportedreview-tab-btn adminreportedreview-tab-active">
+          <button className="adminreview-tab-btn adminreview-tab-active">
             신고 누적 리뷰 목록
           </button>
         </div>
-        <div className="adminreportedreview-filter-wrap">
-          <div className="adminreportedreview-filter-row">
-            <div className="adminreportedreview-filter-group">
+        <div className="adminreview-filter-wrap">
+          <div className="adminreview-filter-row">
+            <div className="adminreview-filter-group">
               <label htmlFor="review-status">상태</label>
               <select
                 name="review-status"
                 id="review-status"
-                className="adminreportedreview-select"
+                className="adminreview-select"
                 value={filters.status}
                 onChange={(e) =>
                   setFilters({ ...filters, status: e.target.value })
@@ -179,12 +250,12 @@ const AdminReportedReview = () => {
               </select>
             </div>
 
-            <div className="adminreportedreview-filter-group">
+            <div className="adminreview-filter-group">
               <label htmlFor="review-rate">평점</label>
               <select
                 name="review-rate"
                 id="review-rate"
-                className="adminreportedreview-select"
+                className="adminreview-select"
                 value={filters.rate}
                 onChange={(e) =>
                   setFilters({ ...filters, rate: e.target.value })
@@ -199,12 +270,12 @@ const AdminReportedReview = () => {
               </select>
             </div>
 
-            <div className="adminreportedreview-filter-group">
+            <div className="adminreview-filter-group">
               <label htmlFor="report-today">기간</label>
               <select
                 name="report-today"
                 id="report-today"
-                className="adminreportedreview-select"
+                className="adminreview-select"
                 value={filters.period}
                 onChange={(e) =>
                   setFilters({ ...filters, period: e.target.value })
@@ -218,12 +289,12 @@ const AdminReportedReview = () => {
             </div>
           </div>
 
-          <div className="adminreportedreview-filter-row adminreportedreview-search-row">
-            <div className="adminreportedreview-search-group">
+          <div className="adminreview-filter-row adminreview-search-row">
+            <div className="adminreview-search-group">
               <select
                 name="type"
                 id="type"
-                className="adminreportedreview-select-type"
+                className="adminreview-select-type"
                 value={filters.searchType}
                 onChange={(e) =>
                   setFilters({ ...filters, searchType: e.target.value })
@@ -236,34 +307,34 @@ const AdminReportedReview = () => {
               </select>
               <input
                 type="text"
-                className="adminreportedreview-input"
+                className="adminreview-input"
                 placeholder="검색어를 입력하세요"
                 value={filters.searchKeyword}
                 onChange={(e) =>
                   setFilters({ ...filters, searchKeyword: e.target.value })
                 }
               />
-              <button className="adminreportedreview-search-btn" onClick={handleSearch}>
+              <button className="adminreview-search-btn" onClick={handleSearch}>
                 검색
               </button>
             </div>
           </div>
         </div>
-        <div className="adminreportedreview-table-wrap">
-          <div className="adminreportedreview-table-header">
-            <div className="adminreportedreview-table-info">
+        <div className="adminreview-table-wrap">
+          <div className="adminreview-table-header">
+            <div className="adminreview-table-info">
               총 <b>{totalElements}</b>건
             </div>
             {showCheckbox && (
               <button
-                className="adminreportedreview-btn adminreportedreview-btn-delete-confirm"
+                className="adminreview-btn adminreview-btn-delete-confirm"
                 onClick={handleDelete}
               >
                 선택 삭제
               </button>
             )}
             <button
-              className="adminreportedreview-btn adminreportedreview-btn-delete-mode"
+              className="adminreview-btn adminreview-btn-delete-mode"
               onClick={() => {
                 setShowCheckbox(!showCheckbox);
                 setSelectedReviews([]);
@@ -273,11 +344,11 @@ const AdminReportedReview = () => {
             </button>
           </div>
           {loading ? (
-            <div className="adminreportedreview-loading">로딩 중</div>
+            <div className="adminreview-loading">로딩 중</div>
           ) : error ? (
-            <div className="adminreportedreview-error">{error}</div>
+            <div className="adminreview-error">{error}</div>
           ) : (
-            <table className="adminreportedreview-table">
+            <table className="adminreview-table">
               <thead>
                 <tr>
                   {showCheckbox && (
@@ -331,7 +402,7 @@ const AdminReportedReview = () => {
                       <td>{review.storeNm}</td>
                       <td>{review.custNm}</td>
                       <td>{review.reviewRate}</td>
-                      <td className="adminreportedreview-content">
+                      <td className="adminreview-content">
                         {review.reviewContent}
                       </td>
                       <td>
@@ -342,8 +413,8 @@ const AdminReportedReview = () => {
                       <td
                         className={
                           review.isHidden
-                            ? "adminreportedreview-status-hidden"
-                            : "adminreportedreview-status-normal"
+                            ? "adminreview-status-hidden"
+                            : "adminreview-status-normal"
                         }
                       >
                         {review.isHidden ? "숨김" : "정상"}
@@ -351,16 +422,16 @@ const AdminReportedReview = () => {
                       <td>{review.reportedCnt}</td>
                       <td>
                         <button
-                          className="adminreportedreview-btn adminreportedreview-btn-detail"
+                          className="adminreview-btn adminreview-btn-detail"
                           onClick={() => handleDetailClick(review.reviewIdx)}
                         >
                           상세
                         </button>
                         <button
-                          className={`adminreportedreview-btn ${
+                          className={`adminreview-btn ${
                             review.isHidden
-                              ? "adminreportedreview-btn-show"
-                              : "adminreportedreview-btn-hide"
+                              ? "adminreview-btn-show"
+                              : "adminreview-btn-hide"
                           }`}
                           onClick={() =>
                             handleToggleHidden(
@@ -380,14 +451,14 @@ const AdminReportedReview = () => {
           )}
 
           {/* 페이지네이션 */}
-          <div className="adminreportedreview-pagination">
+          <div className="adminreview-pagination">
             <button 
-              className="adminreportedreview-page-btn"
+              className="adminreview-page-btn"
               onClick={() => {
                 if (currentPage > 0) {
                   const newPage = currentPage - 1;
                   setCurrentPage(newPage);
-                  loadReviews(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadReviews(newPage);
                 }
               }}
               disabled={currentPage === 0}
@@ -397,22 +468,22 @@ const AdminReportedReview = () => {
             {[...Array(totalPages)].map((_, index) => (
               <button
                 key={index}
-                className={`adminreportedreview-page-btn ${currentPage === index ? 'active' : ''}`}
+                className={`adminreview-page-btn ${currentPage === index ? 'active' : ''}`}
                 onClick={() => {
                   setCurrentPage(index);
-                  loadReviews(index);
+                  isSearchMode ? handleSearchInternal(index) : loadReviews(index);
                 }}
               >
                 {index + 1}
               </button>
             ))}
             <button 
-              className="adminreportedreview-page-btn"
+              className="adminreview-page-btn"
               onClick={() => {
                 if (currentPage < totalPages - 1) {
                   const newPage = currentPage + 1;
                   setCurrentPage(newPage);
-                  loadReviews(newPage);
+                  isSearchMode ? handleSearchInternal(newPage) : loadReviews(newPage);
                 }
               }}
               disabled={currentPage === totalPages - 1}

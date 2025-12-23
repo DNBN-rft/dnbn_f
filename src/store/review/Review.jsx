@@ -34,7 +34,7 @@ const Review = () => {
       const userInfo = JSON.parse(localStorage.getItem("user"));
       const storeCode = userInfo.storeCode;
 
-      const response = await apiGet(`/review/view/${storeCode}?page=${page}&size=${pageSize}`);
+      const response = await apiGet(`/store/review/view/${storeCode}?page=${page}&size=${pageSize}`);
       const data = await response.json();
       
       if (response.ok) {

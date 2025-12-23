@@ -9,7 +9,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endDateTime, setEndDateTime] = useState("");
-    const [loading, setLoading] = useState(false);
 
     // 할인률 변경 시 할인가 자동 계산
     const handleDiscountRateChange = (e) => {
@@ -90,8 +89,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
             return;
         }
 
-        setLoading(true);
-
         try {
             // startDateTime을 ISO 형식으로 변환
             const startDateTime = `${startDate}T${startTime}:00`;
@@ -106,7 +103,7 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
 
             console.log("할인 등록 요청:", requestData);
 
-            const response = await apiPost(`/sale/${productCode}`, requestData);
+            const response = await apiPost(`/store/sale/${productCode}`, requestData);
 
             if (response.ok) {
                 alert("할인이 성공적으로 등록되었습니다.");
@@ -121,8 +118,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
         } catch (err) {
             console.error("할인 등록 실패:", err);
             alert("할인 등록 중 오류가 발생했습니다.");
-        } finally {
-            setLoading(false);
         }
     };
 

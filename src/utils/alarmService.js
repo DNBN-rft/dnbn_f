@@ -4,6 +4,8 @@ import { apiCall } from "./apiClient";
  * 알림 관련 API 서비스
  */
 
+const BASE_URL = "http://localhost:8080/api";
+
 /**
  * 사용자의 알림 목록을 조회합니다
  * @param {number} memberId - 회원 ID
@@ -36,9 +38,12 @@ export const fetchUnreadAlarmCount = async (memberId) => {
     throw new Error("memberId가 필요합니다.");
   }
 
-  const response = await apiCall(`/store/alarm/unread-count?memberId=${memberId}`, {
-    method: "GET",
-  });
+  const response = await apiCall(
+    `/store/alarm/unread-count?memberId=${memberId}`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("읽지 않은 알림 개수를 불러오는데 실패했습니다.");
@@ -58,9 +63,12 @@ export const markAlarmAsRead = async (alarmIdx) => {
     throw new Error("alarmIdx가 필요합니다.");
   }
 
-  const response = await apiCall(`/store/alarm/read?storeAlarmIdx=${alarmIdx}`, {
-    method: "PUT",
-  });
+  const response = await apiCall(
+    `/store/alarm/read?storeAlarmIdx=${alarmIdx}`,
+    {
+      method: "PUT",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("알림을 읽음 처리하는데 실패했습니다.");
@@ -93,13 +101,75 @@ export const markAllAlarmsAsRead = async (memberId) => {
  * @returns {Promise<Object>} 페이지네이션된 알림 목록
  */
 export const getAdminStoreAlarms = async (page = 0, size = 10) => {
-  const response = await apiCall(`/admin/alarm/store?page=${page}&size=${size}`, {
-    method: "GET",
-  });
+  const response = await apiCall(
+    `/admin/alarm/store?page=${page}&size=${size}`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("알림 목록을 불러오는데 실패했습니다.");
   }
 
   return await response.json();
+};
+
+/**
+ * 관리자 스토어 알람 검색 (페이지네이션)
+ * @param {object} searchParams - 검색 조건
+ * @param {number} page - 페이지 번호 (0부터 시작)
+ * @param {number} size - 페이지 크기
+ */
+export const searchAlrams = async (searchParams, page = 0, size = 10) => {
+  try {
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("size", size);
+
+    if (searchParams.startDate) {
+      params.append("startDate", searchParams.startDate);
+    }
+    if (searchParams.endDate) {
+      params.append("endDate", searchParams.endDate);
+    }
+    if (searchParams.alarmType && searchParams.alarmType !== "all") {
+      params.append("alarmType", searchParams.alarmType);
+    }
+    if (searchParams.searchType) {
+      params.append("searchType", searchParams.searchType);
+    }
+    if (searchParams.searchTerm) {
+      params.append("searchTerm", searchParams.searchTerm);
+    }
+
+    const response = await fetch(
+      `${BASE_URL}/admin/alarm/search-store?${params.toString()}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "알람 검색에 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
 };

@@ -13,8 +13,9 @@ const WithdrawalPasswordModal = ({ onClose, onPasswordVerified, storeIdx }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8080/api/store/verify-password`, {
+      const response = await fetch(`http://localhost:8080/api/store/password`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
@@ -43,7 +44,7 @@ const WithdrawalPasswordModal = ({ onClose, onPasswordVerified, storeIdx }) => {
   };
 
   return (
-    <div className="withdrawal-password-modal-overlay" onClick={onClose}>
+    <div className="withdrawal-password-modal-overlay">
       <div className="withdrawal-password-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="withdrawal-password-modal-header">
           <h2>비밀번호 확인</h2>

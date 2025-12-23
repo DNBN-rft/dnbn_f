@@ -1,8 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useCallback } from "react";
 import QuestionRegisterModal from "./modal/QuestionRegisterModal";
 import QuestionDetailModal from "./modal/QuestionDetailModal";
 import { apiGet } from "../../utils/apiClient";
-import { AuthContext } from "../../context/AuthContext";
 import "./css/questions.css";
 
 const Questions = () => {
@@ -11,37 +10,42 @@ const Questions = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useContext(AuthContext);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 10;
+  const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
+
+  const loadQuestions = useCallback(
+    async (page = 0) => {
+      setLoading(true);
+      try {
+        const response = await apiGet(
+          `/store/question/${storeCode}?page=${page}&size=${pageSize}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setQuestions(data.content || []);
+          setCurrentPage(data.number);
+          setTotalPages(data.totalPages);
+        } else {
+          setQuestions([]);
+        }
+      } catch (err) {
+        setQuestions([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [storeCode, pageSize]
+  );
 
   useEffect(() => {
-    if (user?.storeCode) {
+    if (storeCode) {
       loadQuestions(0);
     }
-  }, [user]);
-
-  const loadQuestions = async (page = 0) => {
-    setLoading(true);
-    try {
-      const response = await apiGet(`/question/${user.storeCode}?page=${page}&size=${pageSize}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        setQuestions(data.content || []);
-        setCurrentPage(data.number);
-        setTotalPages(data.totalPages);
-      } else {
-        setQuestions([]);
-      }
-    } catch (err) {
-      setQuestions([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [storeCode, loadQuestions]);
 
   const formatDate = (dateTime) => {
     if (!dateTime) return "-";
@@ -96,7 +100,9 @@ const Questions = () => {
                 >
                   <div className="questions-item-header">
                     <div className="questions-item-info">
-                      <span className="questions-item-no">No. {currentPage * pageSize + idx + 1}</span>
+                      <span className="questions-item-no">
+                        No. {currentPage * pageSize + idx + 1}
+                      </span>
                       <span
                         className={`questions-item-status ${
                           q.isAnswered
@@ -121,7 +127,7 @@ const Questions = () => {
         {!loading && questions.length > 0 && (
           <div className="questions-footer">
             <div className="questions-pagination">
-              <button 
+              <button
                 className="questions-page"
                 onClick={() => loadQuestions(currentPage - 1)}
                 disabled={currentPage === 0}
@@ -131,13 +137,15 @@ const Questions = () => {
               {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={index}
-                  className={`questions-page ${currentPage === index ? 'questions-page-active' : ''}`}
+                  className={`questions-page ${
+                    currentPage === index ? "questions-page-active" : ""
+                  }`}
                   onClick={() => loadQuestions(index)}
                 >
                   {index + 1}
                 </button>
               ))}
-              <button 
+              <button
                 className="questions-page"
                 onClick={() => loadQuestions(currentPage + 1)}
                 disabled={currentPage === totalPages - 1}

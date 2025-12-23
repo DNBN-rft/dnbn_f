@@ -8,14 +8,14 @@ import { apiGet, apiPost } from "../../utils/apiClient";
 
 const ProductManage = () => {
   const location = useLocation();
-  const [searchField, setSearchField] = useState("ALL");
+  const [searchField, setSearchField] = useState("productNm");
   const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [statusFilter, setStatusFilter] = useState("전체");
+  // const [statusFilter, setStatusFilter] = useState("전체");
 
   const [products, setProducts] = useState([]);
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState(new Set());
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState(new Map());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -84,18 +84,17 @@ const ProductManage = () => {
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (searchText) params.append("keyword", searchText);
+      if (searchText) params.append("searchTerm", searchText);
       params.append("searchType", searchField);
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
       params.append("page", page);
       params.append("size", pageSize);
 
-      const response = await apiGet(`/product/search?${params.toString()}`);
+      const response = await apiGet(`/store/product/search?${params.toString()}`);
       const data = await response.json();
       
       if (response.ok) {
-        // 페이지네이션 정보 업데이트 (검색 결과도 페이징되는 경우)
         if (data.content) {
           setCurrentPage(data.number);
           setTotalPages(data.totalPages);
@@ -151,19 +150,19 @@ const ProductManage = () => {
   }, [location, products]);
 
   const handleReset = () => {
-    setSearchField("SALE_NUMBER");
+    setSearchField("productNm");
     setSearchText("");
     setStartDate("");
     setEndDate("");
-    setStatusFilter("전체");
-    setSelectedCheckboxes(new Set());
+    // setStatusFilter("전체");
+    setSelectedCheckboxes(new Map());
     setCurrentPage(0);
-    loadProducts(0); // 초기화 시 첫 페이지부터 로드
+    loadProducts(0);
   };
 
   const handleSearch = () => {
     setCurrentPage(0);
-    searchProducts(0); // 검색 시 첫 페이지부터 시작
+    searchProducts(0);
   };
 
   // 상품 클릭: 모달이 열려 있으면 열지 않음
@@ -180,30 +179,38 @@ const ProductManage = () => {
     setIsSaleModalOpen(true);
   };
 
-  // 체크박스 전체선택
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedCheckboxes(new Set(products.map(p => p.code)));
+      const newMap = new Map();
+      products.forEach(p => {
+        newMap.set(p.code, { productCode: p.code, isSale: p.sale === "할인상품" });
+      });
+      setSelectedCheckboxes(newMap);
     } else {
-      setSelectedCheckboxes(new Set());
+      setSelectedCheckboxes(new Map());
     }
   };
 
-  // 개별 체크박스
-  const handleCheckboxChange = (productCode) => {
-    const newSet = new Set(selectedCheckboxes);
-    if (newSet.has(productCode)) {
-      newSet.delete(productCode);
+  const handleCheckboxChange = (productCode, isSale) => {
+    const newMap = new Map(selectedCheckboxes);
+    if (newMap.has(productCode)) {
+      newMap.delete(productCode);
     } else {
-      newSet.add(productCode);
+      newMap.set(productCode, { productCode, isSale });
     }
-    setSelectedCheckboxes(newSet);
+    setSelectedCheckboxes(newMap);
   };
 
-  // 선택된 상품 삭제
   const handleDeleteSelected = async () => {
     if (selectedCheckboxes.size === 0) {
       alert("삭제할 상품을 선택해주세요.");
+      return;
+    }
+
+    // 할인상품이 포함되어 있는지 체크
+    const hasDiscountedProduct = Array.from(selectedCheckboxes.values()).some(item => item.isSale === true);
+    if (hasDiscountedProduct) {
+      alert("할인이 진행중인 상품이 있습니다.");
       return;
     }
 
@@ -213,12 +220,12 @@ const ProductManage = () => {
 
     try {
       const response = await apiPost("/product/delete", {
-        storeCodes: Array.from(selectedCheckboxes)
+        storeCodes: Array.from(selectedCheckboxes.keys())
       });
 
       if (response.ok) {
         alert("상품이 삭제되었습니다.");
-        setSelectedCheckboxes(new Set());
+        setSelectedCheckboxes(new Map());
         loadProducts();
       } else {
         alert("상품 삭제에 실패했습니다.");
@@ -231,13 +238,7 @@ const ProductManage = () => {
 
   const excelDownload = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/store/product/excel", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include"
-      });
+      const response = await apiPost("/store/product/excel");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -297,10 +298,8 @@ const ProductManage = () => {
               value={searchField}
               onChange={(e) => setSearchField(e.target.value)}
             >
-              <option value="ALL">전체</option>
-              <option value="SALE_NUMBER">판매번호</option>
-              <option value="PRONAME">상품명</option>
-              <option value="PROCODE">상품코드</option>
+              <option value="productNm">상품명</option>
+              <option value="regNm">등록자</option>
             </select>
             <input
               type="text"
@@ -317,11 +316,11 @@ const ProductManage = () => {
         </div>
       </div>
 
-      {/* 서브필터 */}
       <div className="product-sub">
         <div className="product-sub-inner">
           <div className="productmanage-status-and-actions">
-            <label>판매상태</label>
+            {/*추후 기능 구현 예정 */}
+            {/* <label>판매상태</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -332,7 +331,7 @@ const ProductManage = () => {
               <option value="ON_SALE">판매중</option>
               <option value="ENDED">판매중지</option>
               <option value="REJECTED">제재상품</option>
-            </select>
+            </select> */}
           </div>
 
           <div className="product-actions">
@@ -346,7 +345,6 @@ const ProductManage = () => {
         </div>
       </div>
 
-      {/* 상품 테이블 */}
       <div className="product-table-wrap">
         <table className="product-table">
           <thead>
@@ -376,7 +374,7 @@ const ProductManage = () => {
                     <input 
                       type="checkbox" 
                       checked={selectedCheckboxes.has(p.code)}
-                      onChange={() => handleCheckboxChange(p.code)}
+                      onChange={() => handleCheckboxChange(p.code, p.sale === "할인상품")}
                     />
                   </td>
                   <td className="product-product-info">
@@ -413,7 +411,6 @@ const ProductManage = () => {
           </tbody>
         </table>
 
-        {/* 페이지네이션 */}
         <div className="product-footer">
           <div className="product-count">
             전체 {totalElements}개 상품
@@ -462,7 +459,6 @@ const ProductManage = () => {
         </div>
       </div>
 
-      {/* 모달 */}
       {isDetailModalOpen && selectedProduct && (
         <ProductDetail
           productCode={selectedProduct}

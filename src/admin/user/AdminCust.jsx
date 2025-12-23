@@ -1,151 +1,64 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./css/admincust.css";
 import CustInfoModal from "./modal/CustInfoModal";
-
-// Mock 권한 데이터
-const mockAuthList = [
-  {
-    id: "auth-001",
-    name: "사용자 기본 권한",
-    description: "일반 사용자용 기본 권한입니다.",
-    menus: [
-      "store-membership",
-      "store-mypage",
-      "store-order",
-      "store-product",
-      "store-review",
-      "store-notice",
-      "store-question"
-    ]
-  },
-  {
-    id: "auth-002",
-    name: "프리미엄 사용자",
-    description: "프리미엄 기능을 사용할 수 있는 사용자 권한입니다.",
-    menus: [
-      "store-membership",
-      "store-mypage",
-      "store-order",
-      "store-negotiation",
-      "store-static",
-      "store-product",
-      "store-sale",
-      "store-review",
-      "store-employee",
-      "store-notice",
-      "store-question",
-      "store-subscription"
-    ]
-  },
-  {
-    id: "auth-003",
-    name: "관리자",
-    description: "모든 관리 기능에 접근할 수 있는 관리자 권한입니다.",
-    menus: [
-      "admin-main",
-      "admin-manager",
-      "admin-user",
-      "admin-store",
-      "admin-product",
-      "admin-review",
-      "admin-employee",
-      "admin-notice",
-      "admin-question",
-      "admin-report",
-      "admin-alarm",
-      "admin-push",
-      "admin-category",
-      "admin-region",
-      "admin-plan",
-      "admin-accept",
-      "admin-auth",
-      "admin-category-manage"
-    ]
-  }
-];
-
-// Mock 고객 데이터
-const mockCustomerData = [
-  {
-    id: 1,
-    userId: "user123",
-    userName: "홍길동",
-    phone: "010-1234-5678",
-    email: "hong@example.com",
-    loginType: "카카오",
-    joinDate: "2023-01-15",
-    status: "정지",
-    socialId: "kakao_123456",
-    gender: "남",
-    birthYear: "1990",
-    userCode: "UC001",
-    authId: "auth-001",
-    accessibleMenus: [
-      "store-membership",
-      "store-mypage",
-      "store-order",
-      "store-product"
-    ]
-  },
-  {
-    id: 2,
-    userId: "user456",
-    userName: "김철수",
-    phone: "010-2345-6789",
-    email: "kim@example.com",
-    loginType: "카카오",
-    joinDate: "2023-02-20",
-    status: "활성",
-    socialId: "kakao_789012",
-    gender: "남",
-    birthYear: "1985",
-    userCode: "UC002",
-    authId: "auth-002",
-    accessibleMenus: [
-      "store-membership",
-      "store-mypage",
-      "store-order",
-      "store-negotiation",
-      "store-static",
-      "store-product",
-      "store-sale",
-      "store-review"
-    ]
-  },
-  {
-    id: 3,
-    userId: "user789",
-    userName: "이영희",
-    phone: "010-3456-7890",
-    email: "lee@example.com",
-    loginType: "네이버",
-    joinDate: "2023-03-10",
-    status: "휴면",
-    socialId: "naver_345678",
-    gender: "여",
-    birthYear: "1995",
-    userCode: "UC003",
-    authId: "auth-003",
-    accessibleMenus: [
-      "admin-main",
-      "admin-user",
-      "admin-store",
-      "admin-product",
-      "admin-notice",
-      "admin-question"
-    ]
-  },
-];
+import { getCusts, getCustDetail, updateCust, deleteCusts, searchCusts } from "../../utils/adminCustService";
 
 const AdminCust = () => {
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  
   const [searchType, setSearchType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [custStatus, setCustStatus] = useState("all");
+  const [loginType, setLoginType] = useState("all");
+  const [isSearching, setIsSearching] = useState(false);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedIds, setSelectedIds] = useState(new Set());
 
-  const handleDetailClick = (customer) => {
-    setSelectedCustomer(customer);
-    setIsModalOpen(true);
+  // 고객 목록 조회
+  const fetchCustomers = useCallback(async (pageNum = 0) => {
+  try {
+    setLoading(true);
+    setError(null);
+    
+    const data = await getCusts(pageNum, pageSize);
+    
+    setCustomers(data.content);
+    setTotalElements(data.totalElements);
+    setTotalPages(data.totalPages);
+    setPage(pageNum);
+  } catch (err) {
+    setError(err.message || "고객 목록을 불러오는데 실패했습니다.");
+    console.error("고객 목록 조회 오류:", err);
+  } finally {
+    setLoading(false);
+  }
+}, [pageSize]);
+
+
+useEffect(() => {
+  fetchCustomers(0);
+}, [fetchCustomers]);
+
+  const handleDetailClick = async (customer) => {
+    try {
+      setLoading(true);
+      const detailData = await getCustDetail(customer.custCode);
+      setSelectedCustomer(detailData);
+      setIsModalOpen(true);
+    } catch (err) {
+      setError(err.message);
+      console.error("고객 상세 조회 오류:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCloseModal = () => {
@@ -153,14 +66,140 @@ const AdminCust = () => {
     setSelectedCustomer(null);
   };
 
-  const handleUpdateCustomer = (updatedData) => {
-    console.log("고객 정보 업데이트:", updatedData);
-    // 실제 업데이트 로직 구현
+  const handleUpdateCustomer = async (updatedData) => {
+    try {
+      setLoading(true);
+      
+      // 필수 필드 검증
+      if (!updatedData.custGender) {
+        alert("성별이 올바르지 않습니다.");
+        setLoading(false);
+        return;
+      }
+
+      const modRequest = {
+        custNm: updatedData.custNm || "",
+        custGender: updatedData.custGender,
+        custBirthYear: updatedData.custBirthYear || "",
+        custTelNo: updatedData.custTelNo || "",
+        custState: updatedData.custState || "ACTIVE",
+        custMenuAuth: updatedData.custMenuAuth || "",
+      };
+      
+      console.log("수정 요청 데이터:", modRequest);
+      
+      await updateCust(selectedCustomer.custCode, modRequest);
+      setIsModalOpen(false);
+      setSelectedCustomer(null);
+      await fetchCustomers(page);
+      alert("고객 정보가 수정되었습니다.");
+    } catch (err) {
+      setError(err.message);
+      alert("고객 정보 수정 실패: " + err.message);
+      console.error("고객 정보 수정 오류:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectCustomer = (custCode) => {
+    const newSelectedIds = new Set(selectedIds);
+    if (newSelectedIds.has(custCode)) {
+      newSelectedIds.delete(custCode);
+    } else {
+      newSelectedIds.add(custCode);
+    }
+    setSelectedIds(newSelectedIds);
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allIds = new Set(customers.map(c => c.custCode));
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleDeleteCustomers = async () => {
+    if (selectedIds.size === 0) {
+      alert("삭제할 고객을 선택해주세요.");
+      return;
+    }
+
+    if (!window.confirm(`선택된 ${selectedIds.size}명의 고객을 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await deleteCusts(Array.from(selectedIds));
+      setSelectedIds(new Set());
+      await fetchCustomers(0);
+      alert("고객이 삭제되었습니다.");
+    } catch (err) {
+      setError(err.message);
+      alert("고객 삭제 실패: " + err.message);
+      console.error("고객 삭제 오류:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setIsSearching(true);
+
+      const searchParams = {
+        custState: custStatus === "all" ? null : custStatus,
+        loginType: loginType === "all" ? null : loginType,
+        searchType: searchType === "all" ? "all" : searchType,
+        searchTerm: searchTerm.trim(),
+      };
+
+      const results = await searchCusts(searchParams);
+      setCustomers(results);
+      setTotalElements(results.length);
+      setTotalPages(1);
+      setPage(0);
+    } catch (err) {
+      setError(err.message);
+      alert("검색 실패: " + err.message);
+      console.error("검색 오류:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetSearch = async () => {
+    setSearchTerm("");
+    setSearchType("all");
+    setCustStatus("all");
+    setLoginType("all");
+    setIsSearching(false);
+    setSelectedIds(new Set());
+    await fetchCustomers(0);
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 0) {
+      fetchCustomers(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages - 1) {
+      fetchCustomers(page + 1);
+    }
   };
 
   return (
     <div className="admincust-container">
       <div className="admincust-wrap">
+        {error && <div className="admincust-error-message">{error}</div>}
+
         <div className="admincust-filter-wrap">
           <div className="admincust-filter-row">
             <div className="admincust-filter-group">
@@ -169,11 +208,13 @@ const AdminCust = () => {
                 name="cust-status"
                 id="cust-status"
                 className="admincust-select"
+                value={custStatus}
+                onChange={(e) => setCustStatus(e.target.value)}
               >
                 <option value="all">전체</option>
-                <option value="active">활성</option>
-                <option value="dormant">휴면</option>
-                <option value="suspended">정지</option>
+                <option value="ACTIVE">활성</option>
+                <option value="WITHDRAWAL">탈퇴</option>
+                <option value="SUSPENDED">정지</option>
               </select>
             </div>
 
@@ -183,12 +224,12 @@ const AdminCust = () => {
                 name="login-type"
                 id="login-type"
                 className="admincust-select"
+                value={loginType}
+                onChange={(e) => setLoginType(e.target.value)}
               >
                 <option value="all">전체</option>
-                <option value="normal">일반</option>
                 <option value="kakao">카카오</option>
                 <option value="naver">네이버</option>
-                <option value="google">구글</option>
               </select>
             </div>
           </div>
@@ -203,10 +244,9 @@ const AdminCust = () => {
                 onChange={(e) => setSearchType(e.target.value)}
               >
                 <option value="all">전체</option>
-                <option value="userId">아이디</option>
-                <option value="userName">이름</option>
-                <option value="phone">연락처</option>
-                <option value="email">이메일</option>
+                <option value="custcode">사용자코드</option>
+                <option value="custnm">이름</option>
+                <option value="custtelno">연락처</option>
               </select>
               <input
                 type="text"
@@ -215,7 +255,12 @@ const AdminCust = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button className="admincust-search-btn">검색</button>
+              <button className="admincust-search-btn" onClick={handleSearch}>검색</button>
+              {isSearching && (
+                <button className="admincust-search-btn admincust-search-reset" onClick={handleResetSearch}>
+                  초기화
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -223,70 +268,131 @@ const AdminCust = () => {
         <div className="admincust-table-wrap">
           <div className="admincust-table-header">
             <div className="admincust-table-info">
-              총 <span className="admincust-count">{mockCustomerData.length}</span>건
+              총 <span className="admincust-count">{totalElements}</span>건
             </div>
+            {selectedIds.size > 0 && (
+              <button className="admincust-btn admincust-btn-delete" onClick={handleDeleteCustomers}>
+                삭제 ({selectedIds.size})
+              </button>
+            )}
           </div>
 
-          <table className="admincust-table">
-            <thead>
-              <tr>
-                <th>번호</th>
-                <th>아이디</th>
-                <th>사용자코드</th>
-                <th>이름</th>
-                <th>연락처</th>
-                <th>이메일</th>
-                <th>로그인 타입</th>
-                <th>가입일</th>
-                <th>상태</th>
-                <th>관리</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockCustomerData.map((customer) => {
-                const getStatusClass = () => {
-                  if (customer.status === "활성") return "admincust-status-active";
-                  if (customer.status === "정지") return "admincust-status-suspended";
-                  return "";
-                };
+          {loading ? (
+            <div className="admincust-loading">로딩 중...</div>
+          ) : (
+            <table className="admincust-table">
+              <thead>
+                <tr>
+                  <th>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.size === customers.length && customers.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
+                  <th>번호</th>
+                  <th>아이디</th>
+                  <th>사용자코드</th>
+                  <th>이름</th>
+                  <th>연락처</th>
+                  <th>로그인 타입</th>
+                  <th>가입일</th>
+                  <th>상태</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customers.length > 0 ? (
+                  customers.map((customer, index) => {
+                    const getStatusClass = (status) => {
+                      if (status === "ACTIVE") return "admincust-status-active";
+                      if (status === "SUSPENDED") return "admincust-status-suspended";
+                      if (status === "WITHDRAWAL") return "admincust-status-withdrawal";
+                      return "";
+                    };
 
-                return (
-                  <tr key={customer.id}>
-                    <td>{customer.id}</td>
-                    <td>{customer.userId}</td>
-                    <td>{customer.userCode}</td>
-                    <td>{customer.userName}</td>
-                    <td>{customer.phone}</td>
-                    <td>{customer.email}</td>
-                    <td>{customer.loginType}</td>
-                    <td>{customer.joinDate}</td>
-                    <td className={getStatusClass()}>
-                      {customer.status}
-                    </td>
-                    <td>
-                      <button 
-                        className="admincust-btn admincust-btn-detail"
-                        onClick={() => handleDetailClick(customer)}
-                      >
-                        상세
-                      </button>
+                    const getStatusLabel = (status) => {
+                      if (status === "ACTIVE") return "활성";
+                      if (status === "SUSPENDED") return "정지";
+                      if (status === "WITHDRAWAL") return "탈퇴";
+                      return status;
+                    };
+
+                    const formatDate = (dateString) => {
+                      if (!dateString) return "-";
+                      return new Date(dateString).toLocaleDateString("ko-KR");
+                    };
+
+                    return (
+                      <tr key={customer.custCode}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(customer.custCode)}
+                            onChange={() => handleSelectCustomer(customer.custCode)}
+                          />
+                        </td>
+                        <td>{page * pageSize + index + 1}</td>
+                        <td>{customer.custSocialId || "-"}</td>
+                        <td>{customer.custCode}</td>
+                        <td>{customer.custNm}</td>
+                        <td>{customer.custTelNo}</td>
+                        <td>{customer.custLoginType}</td>
+                        <td>{formatDate(customer.custSignInDate)}</td>
+                        <td className={getStatusClass(customer.custState)}>
+                          {getStatusLabel(customer.custState)}
+                        </td>
+                        <td>
+                          <button
+                            className="admincust-btn admincust-btn-detail"
+                            onClick={() => handleDetailClick(customer)}
+                          >
+                            상세
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="10" className="admincust-no-data">
+                      고객 정보가 없습니다.
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          )}
 
           <div className="admincust-pagination">
-            <button className="admincust-pagination-btn">이전</button>
+            <button
+              className="admincust-pagination-btn"
+              onClick={handlePreviousPage}
+              disabled={page === 0}
+            >
+              이전
+            </button>
             <div className="admincust-pagination-numbers">
-              <button className="admincust-page-number admincust-page-active">
-                1
-              </button>
-              <button className="admincust-page-number">2</button>
-              <button className="admincust-page-number">3</button>
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                const pageNum = Math.max(0, page - 2) + i;
+                return (
+                  <button
+                    key={pageNum}
+                    className={`admincust-page-number ${pageNum === page ? "admincust-page-active" : ""}`}
+                    onClick={() => fetchCustomers(pageNum)}
+                  >
+                    {pageNum + 1}
+                  </button>
+                );
+              })}
             </div>
-            <button className="admincust-pagination-btn">다음</button>
+            <button
+              className="admincust-pagination-btn"
+              onClick={handleNextPage}
+              disabled={page === totalPages - 1}
+            >
+              다음
+            </button>
           </div>
         </div>
       </div>
@@ -294,7 +400,6 @@ const AdminCust = () => {
       {isModalOpen && selectedCustomer && (
         <CustInfoModal
           customerData={selectedCustomer}
-          authList={mockAuthList}
           onClose={handleCloseModal}
           onUpdate={handleUpdateCustomer}
         />

@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAdminStoreAlarms } from "../../utils/alarmService";
+import { getAdminStoreAlarms, searchAlrams } from "../../utils/alarmService";
 import "./css/adminalarm.css";
+
 const AdminAlarm = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("store"); // 'store' or 'cust'
   const [alarms, setAlarms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -21,36 +22,42 @@ const AdminAlarm = () => {
   const [alarmType, setAlarmType] = useState("all");
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
+
+  // 검색 여부 플래그
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
   // 알림 목록 조회
-  useEffect(() => {
-    if (activeTab === "store") {
-      fetchAlarms(0);
-    }
-  }, [activeTab]);
-  const fetchAlarms = async (page = 0) => {
-    setLoading(true);
-    setError(null);
-    try {
-      if (activeTab === "store") {
-        const data = await getAdminStoreAlarms(page, pageSize);
-        setAlarms(data.content || []);
-        setCurrentPage(data.number || 0);
-        setTotalPages(data.totalPages || 0);
-        setTotalElements(data.totalElements || 0);
-      } else {
-        // CustAlarm은 아직 구현되지 않음
-        setAlarms([]);
-        setTotalElements(0);
-        setTotalPages(0);
-      }
-    } catch (err) {
-      setError(err.message);
-      console.error("알림 목록 조회 실패:", err);
+  const fetchAlarms = useCallback(async (page = 0) => {
+  setLoading(true);
+  setError(null);
+
+  try {
+    if (activeTab !== "store") {
       setAlarms([]);
-    } finally {
-      setLoading(false);
+      setTotalElements(0);
+      setTotalPages(0);
+      return;
     }
-  };
+
+    const data = await getAdminStoreAlarms(page, pageSize);
+    
+    setAlarms(data.content || []);
+    setCurrentPage(data.number || 0);
+    setTotalPages(data.totalPages || 0);
+    setTotalElements(data.totalElements || 0);
+  } catch (err) {
+    setError(err.message || "알림 목록 조회에 실패했습니다.");
+    console.error("알림 목록 조회 실패:", err);
+    setAlarms([]);
+  } finally {
+    setLoading(false);
+  }
+}, [activeTab, pageSize]);
+
+
+useEffect(() => {
+  fetchAlarms(0);
+}, [fetchAlarms]);
   // 알림 타입 한글 변환
   const getAlarmTypeLabel = (type) => {
     const typeMap = {
@@ -60,7 +67,7 @@ const AdminAlarm = () => {
       REPORT_REVIEW: "리뷰 신고",
       REVIEW: "리뷰",
       QUESTION: "문의",
-      ORDER: "주문"
+      ORDER: "주문",
     };
     return typeMap[type] || type;
   };
@@ -76,11 +83,58 @@ const AdminAlarm = () => {
       minute: "2-digit",
     });
   };
-  // 검색 처리
+
+  const handleSearchInternal = async (page = 0) => {
+    const searchParams = {
+      startDate: startDate,
+      endDate: endDate,
+      alarmType:
+        alarmType === "NEGO"
+          ? "NEGO"
+          : alarmType === "REPORT_PRODUCT"
+          ? "REPORT_PRODUCT"
+          : alarmType === "REPORT_STORE"
+          ? "REPORT_STORE"
+          : alarmType === "REPORT_REVIEW"
+          ? "REPORT_REVIEW"
+          : alarmType === "REVIEW"
+          ? "REVIEW"
+          : alarmType === "QUESTION"
+          ? "QUESTION"
+          : alarmType === "ORDER"
+          ? "ORDER"
+          : "all",
+      searchTerm: searchKeyword,
+      searchType: searchType === "content" ? "content" : "all",
+    };
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await searchAlrams(searchParams, page, pageSize);
+      if (result.success) {
+        setAlarms(result.data.content);
+        setCurrentPage(result.data.number);
+        setTotalPages(result.data.totalPages);
+        setTotalElements(result.data.totalElements);
+        setIsSearchMode(true);
+      } else {
+        setError(result.error);
+        alert(result.error);
+      }
+    } catch (err) {
+      setError(err.message);
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 검색 버튼
   const handleSearch = () => {
-    // TODO: 필터링 로직은 향후 백엔드 구현 후 추가
     setCurrentPage(0);
-    fetchAlarms(0);
+    handleSearchInternal(0);
   };
   // 페이지 이동 - AlarmType에 따라 적절한 페이지로 이동
   const handleNavigate = (alarm) => {
@@ -92,8 +146,8 @@ const AdminAlarm = () => {
         navigate("/admin/order", {
           state: {
             openModal: true,
-            orderCode: alarm.alarmLink
-          }
+            orderCode: alarm.alarmLink,
+          },
         });
         break;
       case "REVIEW":
@@ -101,8 +155,8 @@ const AdminAlarm = () => {
         navigate("/admin/review", {
           state: {
             openModal: true,
-            reviewIdx: alarm.alarmLink
-          }
+            reviewIdx: alarm.alarmLink,
+          },
         });
         break;
       case "REPORT_PRODUCT":
@@ -111,8 +165,8 @@ const AdminAlarm = () => {
           state: {
             openModal: true,
             productCode: alarm.alarmLink,
-            reportType: "PRODUCT"
-          }
+            reportType: "PRODUCT",
+          },
         });
         break;
       case "REPORT_REVIEW":
@@ -121,8 +175,8 @@ const AdminAlarm = () => {
           state: {
             openModal: true,
             reviewIdx: alarm.alarmLink,
-            reportType: "REVIEW"
-          }
+            reportType: "REVIEW",
+          },
         });
         break;
       case "REPORT_STORE":
@@ -131,8 +185,8 @@ const AdminAlarm = () => {
           state: {
             openModal: true,
             storeCode: alarm.alarmLink,
-            reportType: "STORE"
-          }
+            reportType: "STORE",
+          },
         });
         break;
       case "NEGO":
@@ -140,8 +194,8 @@ const AdminAlarm = () => {
         navigate("/admin/negotiation", {
           state: {
             openModal: true,
-            negoId: alarm.alarmLink
-          }
+            negoId: alarm.alarmLink,
+          },
         });
         break;
       case "QUESTION":
@@ -149,8 +203,8 @@ const AdminAlarm = () => {
         navigate("/admin/question", {
           state: {
             openModal: true,
-            questionIdx: alarm.alarmLink
-          }
+            questionIdx: alarm.alarmLink,
+          },
         });
         break;
       default:
@@ -165,13 +219,17 @@ const AdminAlarm = () => {
         {/* 탭 네비게이션 */}
         <div className="adminalarm-tab-navigation">
           <button
-            className={`adminalarm-tab-btn ${activeTab === "store" ? "adminalarm-tab-active" : ""}`}
+            className={`adminalarm-tab-btn ${
+              activeTab === "store" ? "adminalarm-tab-active" : ""
+            }`}
             onClick={() => setActiveTab("store")}
           >
             가맹점 알림
           </button>
           <button
-            className={`adminalarm-tab-btn ${activeTab === "cust" ? "adminalarm-tab-active" : ""}`}
+            className={`adminalarm-tab-btn ${
+              activeTab === "cust" ? "adminalarm-tab-active" : ""
+            }`}
             onClick={() => setActiveTab("cust")}
           >
             일반사용자 알림
@@ -236,7 +294,9 @@ const AdminAlarm = () => {
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               />
-              <button className="adminalarm-search-btn" onClick={handleSearch}>검색</button>
+              <button className="adminalarm-search-btn" onClick={handleSearch}>
+                검색
+              </button>
             </div>
           </div>
         </div>
@@ -268,7 +328,14 @@ const AdminAlarm = () => {
                 <tbody>
                   {alarms.length === 0 ? (
                     <tr>
-                      <td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                      <td
+                        colSpan="8"
+                        style={{
+                          textAlign: "center",
+                          padding: "40px",
+                          color: "#6b7280",
+                        }}
+                      >
                         조회된 알림이 없습니다.
                       </td>
                     </tr>
@@ -279,7 +346,9 @@ const AdminAlarm = () => {
                         <td>{alarm.storeNm || "-"}</td>
                         <td>{alarm.memberId || "-"}</td>
                         <td>{getAlarmTypeLabel(alarm.alarmType)}</td>
-                        <td className="adminalarm-content-cell">{alarm.content}</td>
+                        <td className="adminalarm-content-cell">
+                          {alarm.content}
+                        </td>
                         <td>{formatDateTime(alarm.sendDateTime)}</td>
                         <td>{formatDateTime(alarm.readDateTime)}</td>
                         <td>
@@ -297,7 +366,7 @@ const AdminAlarm = () => {
                 </tbody>
               </table>
               <div className="adminalarm-pagination">
-                <button 
+                <button
                   className="adminalarm-page-btn"
                   onClick={() => {
                     if (currentPage > 0) {
@@ -314,7 +383,9 @@ const AdminAlarm = () => {
                   [...Array(totalPages)].map((_, index) => (
                     <button
                       key={index}
-                      className={`adminalarm-page-btn ${currentPage === index ? 'active' : ''}`}
+                      className={`adminalarm-page-btn ${
+                        currentPage === index ? "active" : ""
+                      }`}
                       onClick={() => {
                         setCurrentPage(index);
                         fetchAlarms(index);
@@ -324,11 +395,9 @@ const AdminAlarm = () => {
                     </button>
                   ))
                 ) : (
-                  <button className="adminalarm-page-btn active">
-                    1
-                  </button>
+                  <button className="adminalarm-page-btn active">1</button>
                 )}
-                <button 
+                <button
                   className="adminalarm-page-btn"
                   onClick={() => {
                     if (currentPage < totalPages - 1) {

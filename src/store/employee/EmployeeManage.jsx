@@ -2,13 +2,13 @@ import "./css/employeemanage.css";
 import {useEffect, useState} from "react";
 import EmployeeRegisterModal from "./modal/EmployeeRegisterModal";
 import EmployeeModModal from "./modal/EmployeeModModal";
+import { apiDelete, apiGet } from "../../utils/apiClient";
 
 const EmployeeManage = () => {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [isModModalOpen, setIsModModalOpen] = useState(false);
   const [memberData, setMemberData] = useState([]);
-  const [lastModified, setLastModified] = useState(new Date());
 
   // 직원 데이터 새로고침 함수
   const fetchMemberData = async () => {
@@ -16,20 +16,13 @@ const EmployeeManage = () => {
       const userInfo = localStorage.getItem("user");
       const storeCode = JSON.parse(userInfo).storeCode;
 
-      const response = await fetch (`http://localhost:8080/api/store/member/view/${storeCode}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await apiGet(`/store/member/view/${storeCode}`);
 
       if (!response.ok) {
         throw new Error("네트워크 응답에 문제가 있습니다.");
       }
       const data = await response.json();
       setMemberData(data);
-      setLastModified(new Date());
     } catch (error) {
       console.error("직원 데이터 조회 실패:", error);
     }
@@ -58,13 +51,7 @@ const EmployeeManage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/store/member/${member.memberId}`, {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await apiDelete(`/store/member/${member.memberId}`);
 
       if (response.ok) {
         alert("직원이 성공적으로 삭제되었습니다.");

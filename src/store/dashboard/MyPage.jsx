@@ -51,7 +51,7 @@ const MyPage = () => {
     };
 
     fetchUserData();
-  }, [])
+  }, []);
 
   return (
     <div className="mypage-wrap">
@@ -68,12 +68,12 @@ const MyPage = () => {
           <div className="mypage-top-content-name-wrap">
             <div className="mypage-top-content-name-contain">
               <div className="mypage-top-content-name">{storeData.storeNm}</div>
-              <div className="mypage-top-content-confirmtag">{storeData.approved ? "승인" : "미승인"}</div>
+              <div className="mypage-top-content-confirmtag">{storeData.approvalStatus === 'APPROVED' ? "승인" : "미승인"}</div>
             </div>
             <div className="mypage-top-content-btn-group">
               <button 
                 className="mypage-top-content-btn mypage-top-content-edit-btn"
-                onClick={() => navigate('/edit')}
+                onClick={() => navigate('/store/edit')}
               >
                 수정
               </button>
@@ -138,7 +138,7 @@ const MyPage = () => {
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">주소</div>
                     <div className="mypage-middle-content-subcontent">
-                      {storeData.StoreAddr} {storeData.StoreAddrDetail}
+                      {storeData.storeAddr} {storeData.storeAddrDetail}
                     </div>
                   </div>
                   <div className="mypage-middle-content-info">
@@ -155,19 +155,19 @@ const MyPage = () => {
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">은행명</div>
                     <div className="mypage-middle-content-subcontent">
-                      {storeData.BankNm}
+                      {storeData.bankNm}
                     </div>
                   </div>
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">계좌번호</div>
                     <div className="mypage-middle-content-subcontent">
-                      {storeData.StoreAccNo}
+                      {storeData.storeAccNo}
                     </div>
                   </div>
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">예금주</div>
                     <div className="mypage-middle-content-subcontent">
-                      {storeData.OwnerNm}
+                      {storeData.ownerNm}
                     </div>
                   </div>
                 </div>
@@ -183,7 +183,7 @@ const MyPage = () => {
                         사업자명
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.BizNm}
+                        {storeData.bizNm}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
@@ -191,13 +191,13 @@ const MyPage = () => {
                         사업자번호
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.BizNo}
+                        {storeData.bizNo}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
                       <div className="mypage-middle-content-subtitle">대표</div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.OwnerNm}
+                        {storeData.ownerNm}
                       </div>
                       </div>
                     <div className="mypage-middle-content-info">
@@ -205,7 +205,7 @@ const MyPage = () => {
                         대표 연락처
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.OwnerTelNo}
+                        {storeData.ownerTelNo}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
@@ -213,15 +213,15 @@ const MyPage = () => {
                         가맹점 유형
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.StoreType}
+                        {storeData.storeType}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
                       <div className="mypage-middle-content-subtitle">
-                        등록 신청일
+                        사업자 등록일
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.RequestedDateTime ? new Date(storeData.RequestedDateTime).toLocaleDateString('ko-KR') : '-'}
+                        {storeData.requestedDateTime ? new Date(storeData.requestedDateTime).toLocaleDateString('ko-KR') : '-'}
                       </div>
                     </div>
                   </div>
@@ -232,13 +232,13 @@ const MyPage = () => {
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">개업일</div>
                     <div className="mypage-middle-content-subcontent">
-                      {storeData.StoreOpenDate}
+                      {storeData.storeOpenDate && storeData.storeOpenDate.length > 0 ? storeData.storeOpenDate.join(', ') : '-'}
                     </div>
                   </div>
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">오픈시간</div>
                     <div className="mypage-middle-content-subcontent">
-                      {storeData.StoreOpenTime} ~ {storeData.StoreCloseTime}
+                      {storeData.storeOpenTime} ~ {storeData.storeCloseTime}
                     </div>
                   </div>
                   <div className="mypage-middle-content-info">
@@ -263,7 +263,7 @@ const MyPage = () => {
                         활성 멤버쉽 정보
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.PlanNm}
+                        {storeData.planNm}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
@@ -271,7 +271,7 @@ const MyPage = () => {
                         구독 시작일
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.MembershipStartDate ? new Date(storeData.MembershipStartDate).toLocaleDateString('ko-KR') : '-'}
+                        {storeData.membershipStartDate ? new Date(storeData.membershipStartDate).toLocaleDateString('ko-KR') : '-'}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
@@ -279,7 +279,7 @@ const MyPage = () => {
                         다음 결제일
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.NextBillingDate ? new Date(storeData.NextBillingDate).toLocaleDateString('ko-KR') : '-'}
+                        {storeData.nextBillingDate ? new Date(storeData.nextBillingDate).toLocaleDateString('ko-KR') : '-'}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
@@ -287,7 +287,7 @@ const MyPage = () => {
                         결제 금액
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        월 {storeData.PlanPrice?.toLocaleString()}원
+                        월 {storeData.planPrice?.toLocaleString()}원
                       </div>
                     </div>
                   </div>
@@ -311,14 +311,14 @@ const MyPage = () => {
                       </thead>
 
                       <tbody>
-                        {storeData.MembershipInfo && storeData.MembershipInfo.length > 0 ? (
-                          storeData.MembershipInfo.map((membership, index) => (
+                        {storeData.membershipInfo && storeData.membershipInfo.length > 0 ? (
+                          storeData.membershipInfo.map((membership, index) => (
                             <tr key={index}>
-                              <td>{formatDate(membership.MembershipStartDate)} ~ {formatDate(membership.MembershipEndDate)}</td>
-                              <td>{membership.PlanNm || '-'}</td>
-                              <td>{membership.PlanType || '-'}</td>
-                              <td>₩{membership.PlanPrice?.toLocaleString() || 0}</td>
-                              <td>{formatDate(membership.PaymentDateTime)}</td>
+                              <td>{formatDate(membership.membershipStartDate)} ~ {formatDate(membership.membershipEndDate)}</td>
+                              <td>{membership.planNm || '-'}</td>
+                              <td>{membership.planType || '-'}</td>
+                              <td>₩{membership.planPrice?.toLocaleString() || 0}</td>
+                              <td>{formatDate(membership.paymentDateTime)}</td>
                             </tr>
                           ))
                         ) : (
@@ -344,7 +344,7 @@ const MyPage = () => {
             setShowPasswordModal(false);
             setShowConfirmModal(true);
           }}
-          storeIdx={storeData?.storeIdx || 1}
+          storeCode={storeData?.storeCode || 1}
         />
       )}
 
@@ -352,7 +352,7 @@ const MyPage = () => {
       {showConfirmModal && (
         <WithdrawalConfirmModal
           onClose={() => setShowConfirmModal(false)}
-          storeIdx={storeData?.storeIdx || 1}
+          storeCode={storeData?.storeCode || 1}
         />
       )}
     </div>

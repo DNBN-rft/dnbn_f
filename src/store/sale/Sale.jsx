@@ -18,7 +18,7 @@ const Sale = () => {
     const loadSales = async (page = 0) => {
         setLoading(true);
         try {
-            const response = await apiGet(`/sale?page=${page}&size=${pageSize}`);
+            const response = await apiGet(`/store/sale?page=${page}&size=${pageSize}`);
             if (response.ok) {
                 const data = await response.json();
                 setSales(data.content || []);
@@ -35,17 +35,16 @@ const Sale = () => {
         }
     };
 
-    const handleCancelSale = async (productCode) => {
+    const handleCancelSale = async (saleIdx) => {
         if (!window.confirm("할인을 취소하시겠습니까?")) {
             return;
         }
 
         try {
-            const response = await apiDelete(`/sale/${productCode}`);
+            const response = await apiDelete(`/store/sale/${saleIdx}`);
             if (response.ok) {
                 alert("할인이 취소되었습니다.");
-                // 즉시 해당 항목을 목록에서 제거
-                setSales(prevSales => prevSales.filter(sale => sale.productCode !== productCode));
+                setSales(prevSales => prevSales.filter(sale => sale.saleIdx !== saleIdx));
             } else {
                 const errorData = await response.json();
                 alert(errorData.message || "할인 취소에 실패했습니다.");
@@ -183,7 +182,7 @@ const Sale = () => {
                                     <td className="sale-manage">
                                         <button 
                                             className="sale-cancel-btn"
-                                            onClick={() => handleCancelSale(sale.productCode)}
+                                            onClick={() => handleCancelSale(sale.saleIdx)}
                                             disabled={sale.saleStatus === "할인 취소" || sale.saleStatus === "할인 완료"}
                                         >
                                             취소

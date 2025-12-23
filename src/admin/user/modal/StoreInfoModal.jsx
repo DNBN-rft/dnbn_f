@@ -65,6 +65,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
     storeOpenDate: storeData?.storeOpenDate || [],
     storeOpenTime: storeData?.storeOpenTime || "",
     storeCloseTime: storeData?.storeCloseTime || "",
+    storeApproved: storeData?.approvalStatus || "",
   });
 
   const [subscriptionForm, setSubscriptionForm] = useState({
@@ -235,9 +236,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
         const pwResult = await modMemberPassword(storeData.storeCode, {
           newPassword: memberForm.newPassword,
         });
-        if (pwResult.success) {
-          alert("비밀번호도 변경되었습니다.");
-        } else {
+        if (!pwResult.success) {
           alert("비밀번호 변경 실패: " + pwResult.error);
         }
       }
@@ -489,10 +488,10 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
               <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">승인 상태</label>
                 <div className="storeinfomodal-approval-container">
-                  <span className={`storeinfomodal-approval-status ${storeData?.isApproved ? 'storeinfomodal-approval-approved' : 'storeinfomodal-approval-pending'}`}>
-                    {storeData?.isApproved ? "승인" : "대기중"}
+                  <span className={`storeinfomodal-approval-status ${storeData?.approvalStatus === "PENDING" ? 'storeinfomodal-approval-approved' : 'storeinfomodal-approval-pending'}`}>
+                    {storeData?.approvalStatus === "APPROVED" ? "승인" : storeData?.approvalStatus === "PENDING" ? "대기중" : "거절"}
                   </span>
-                  {!storeData?.isApproved && (
+                  {storeData?.approvalStatus === "PENDING" && (
                     <button
                       className="storeinfomodal-approval-btn storeinfomodal-approve-btn"
                       onClick={handleApprove}

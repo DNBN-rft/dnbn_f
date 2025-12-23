@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./css/passwordchangemodal.css";
+import { apiPost, apiPut } from "../../../utils/apiClient";
 
 const PasswordChangeModal = ({ onClose, storeIdx }) => {
   const [step, setStep] = useState(1); // 1: 현재 비밀번호 확인, 2: 새 비밀번호 입력
@@ -14,17 +15,8 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
     setError("");
 
     try {
-      // TODO: 실제 API 엔드포인트로 교체 필요
-      const response = await fetch(`http://localhost:8080/api/store/verify-password`, {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          storeIdx: storeIdx,
-          password: currentPassword,
-        }),
-      });
+      // PasswordRequest DTO로 비밀번호 확인 API 호출
+      const response = await apiPost(`/store/password`, { password: currentPassword });
 
       if (!response.ok) {
         setError("현재 비밀번호가 일치하지 않습니다.");
@@ -62,18 +54,7 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
     }
 
     try {
-      // TODO: 실제 API 엔드포인트로 교체 필요
-      const response = await fetch(`http://localhost:8080/api/store/change-password`, {
-        method: 'PUT',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          storeIdx: storeIdx,
-          oldPassword: currentPassword,
-          newPassword: newPassword,
-        }),
-      });
+      const response = await apiPut(`/store/password-change`, { password: newPassword });
 
       if (!response.ok) {
         throw new Error('Failed to change password');
@@ -88,7 +69,7 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
   };
 
   return (
-    <div className="pwd-change-backdrop" onClick={onClose}>
+    <div className="pwd-change-backdrop">
       <div className="pwd-change-wrap" onClick={(e) => e.stopPropagation()}>
         <div className="pwd-change-header">
           비밀번호 변경

@@ -2,37 +2,36 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/mypageedit.css";
 import PasswordChangeModal from "./modal/PasswordChangeModal";
+import { apiGet, apiPut } from "../../utils/apiClient";
 
 const MyPageEdit = () => {
   const navigate = useNavigate();
   const [storeData, setStoreData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [banks, setBanks] = useState([]);
 
   const [formData, setFormData] = useState({
     storeNm: "",
     storeTelNo: "",
-    StoreAddr: "",
-    StoreAddrDetail: "",
-    BankNm: "",
-    StoreAccNo: "",
-    StoreOpenDate: "",
-    StoreOpenTime: "",
-    StoreCloseTime: "",
-    businessDays: ['MON', 'TUE', 'WED', 'THU', 'FRI'],
+    storeAddr: "",
+    storeAddrDetail: "",
+    bankIdx: "",
+    storeAccNo: "",
+    ownerNm: "",
+    storeOpenDate: [],
+    storeOpenTime: "",
+    storeCloseTime: "",
   });
 
   useEffect(() => {
     const fetchUserData = async () => {
+      
       try {
-        const storeCode = "STO_90865359"; // TODO: 실제 storeIdx를 로그인 정보에서 가져와야 합니다
+        let userInfo = localStorage.getItem("user");
+        const storeCode = JSON.parse(userInfo).storeCode;
         
-        const response = await fetch(`http://localhost:8080/api/store/view/${storeCode}`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await apiGet(`/store/view/${storeCode}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch store data: ${response.status}`);
@@ -45,14 +44,14 @@ const MyPageEdit = () => {
         setFormData({
           storeNm: data.storeNm || "",
           storeTelNo: data.storeTelNo || "",
-          StoreAddr: data.StoreAddr || "",
-          StoreAddrDetail: data.StoreAddrDetail || "",
-          BankNm: data.BankNm || "",
-          StoreAccNo: data.StoreAccNo || "",
-          StoreOpenDate: data.StoreOpenDate || "",
-          StoreOpenTime: data.StoreOpenTime || "",
-          StoreCloseTime: data.StoreCloseTime || "",
-          businessDays: data.businessDays || ['MON', 'TUE', 'WED', 'THU', 'FRI'],
+          storeAddr: data.storeAddr || "",
+          storeAddrDetail: data.storeAddrDetail || "",
+          bankIdx: data.bankIdx || "1",
+          storeAccNo: data.storeAccNo || "",
+          ownerNm: data.ownerNm || "",
+          storeOpenDate: data.storeOpenDate || [],
+          storeOpenTime: data.storeOpenTime || "",
+          storeCloseTime: data.storeCloseTime || "",
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -61,7 +60,21 @@ const MyPageEdit = () => {
       }
     };
 
+    const fetchBanks = async () => {
+      try {
+        const response = await apiGet("/bank");
+
+        if (response.ok) {
+          const data = await response.json();
+          setBanks(data);
+        }
+      } catch (error) {
+        console.error("은행 목록 조회 실패:", error);
+      }
+    };
+
     fetchUserData();
+    fetchBanks();
   }, []);
 
   const handleChange = (e) => {
@@ -84,14 +97,14 @@ const MyPageEdit = () => {
 
   const handleBusinessDayChange = (day) => {
     setFormData((prev) => {
-      const isSelected = prev.businessDays.includes(day);
-      const newBusinessDays = isSelected
-        ? prev.businessDays.filter(d => d !== day)
-        : [...prev.businessDays, day];
+      const isSelected = prev.storeOpenDate.includes(day);
+      const newStoreOpenDate = isSelected
+        ? prev.storeOpenDate.filter(d => d !== day)
+        : [...prev.storeOpenDate, day];
       
       return {
         ...prev,
-        businessDays: newBusinessDays,
+        storeOpenDate: newStoreOpenDate,
       };
     });
   };
@@ -100,22 +113,17 @@ const MyPageEdit = () => {
     e.preventDefault();
     
     try {
-      const storeIdx = 1; // TODO: 실제 storeIdx를 로그인 정보에서 가져와야 합니다
+      let userInfo = localStorage.getItem("user");
+      const storeCode = JSON.parse(userInfo).storeCode;
       
-      const response = await fetch(`http://localhost:8080/api/store/update/${storeIdx}`, {
-        method: 'PUT',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await apiPut(`/store/info-modify/${storeCode}`, formData);
       
       if (!response.ok) {
         throw new Error('Failed to update store data');
       }
       
       alert("정보가 성공적으로 수정되었습니다.");
-      navigate('/mypage');
+      navigate('/store/mypage');
     } catch (error) {
       console.error("Error updating store data:", error);
       alert("정보 수정에 실패했습니다.");
@@ -123,7 +131,7 @@ const MyPageEdit = () => {
   };
 
   const handleCancel = () => {
-    navigate('/mypage');
+    navigate('/store/mypage');
   };
 
   if (loading) {
@@ -173,8 +181,8 @@ const MyPageEdit = () => {
                   <label>주소</label>
                   <input
                     type="text"
-                    name="StoreAddr"
-                    value={formData.StoreAddr}
+                    name="storeAddr"
+                    value={formData.storeAddr}
                     onChange={handleChange}
                     placeholder="주소를 입력하세요"
                   />
@@ -184,8 +192,8 @@ const MyPageEdit = () => {
                   <label>상세주소</label>
                   <input
                     type="text"
-                    name="StoreAddrDetail"
-                    value={formData.StoreAddrDetail}
+                    name="storeAddrDetail"
+                    value={formData.storeAddrDetail}
                     onChange={handleChange}
                     placeholder="상세주소를 입력하세요"
                   />
@@ -198,33 +206,20 @@ const MyPageEdit = () => {
                 <div className="mypage-edit-field">
                   <label>은행명</label>
                   <select
-                    name="BankNm"
-                    value={formData.BankNm}
+                    name="bankIdx"
+                    value={formData.bankIdx || ""}
                     onChange={handleChange}
                   >
                     <option value="">은행을 선택하세요</option>
-                    <option value="KB국민은행">KB국민은행</option>
-                    <option value="신한은행">신한은행</option>
-                    <option value="우리은행">우리은행</option>
-                    <option value="하나은행">하나은행</option>
-                    <option value="NH농협은행">NH농협은행</option>
-                    <option value="IBK기업은행">IBK기업은행</option>
-                    <option value="SC제일은행">SC제일은행</option>
-                    <option value="한국씨티은행">한국씨티은행</option>
-                    <option value="카카오뱅크">카카오뱅크</option>
-                    <option value="케이뱅크">케이뱅크</option>
-                    <option value="토스뱅크">토스뱅크</option>
-                    <option value="새마을금고">새마을금고</option>
-                    <option value="신협">신협</option>
-                    <option value="우체국">우체국</option>
-                    <option value="KDB산업은행">KDB산업은행</option>
-                    <option value="수협은행">수협은행</option>
-                    <option value="대구은행">대구은행</option>
-                    <option value="부산은행">부산은행</option>
-                    <option value="경남은행">경남은행</option>
-                    <option value="광주은행">광주은행</option>
-                    <option value="전북은행">전북은행</option>
-                    <option value="제주은행">제주은행</option>
+                    {banks && banks.length > 0 ? (
+                      banks.map((bank) => (
+                        <option key={bank.bankIdx} value={bank.bankIdx}>
+                          {bank.bankNm}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>은행 정보를 불러오는 중...</option>
+                    )}
                   </select>
                 </div>
 
@@ -232,8 +227,8 @@ const MyPageEdit = () => {
                   <label>계좌번호</label>
                   <input
                     type="text"
-                    name="StoreAccNo"
-                    value={formData.StoreAccNo}
+                    name="storeAccNo"
+                    value={formData.storeAccNo}
                     onChange={handleChange}
                     placeholder="계좌번호를 입력하세요"
                   />
@@ -243,7 +238,7 @@ const MyPageEdit = () => {
                   <label>예금주</label>
                   <input
                     type="text"
-                    value={storeData.OwnerNm}
+                    value={storeData.ownerNm}
                     disabled
                   />
                 </div>
@@ -259,7 +254,7 @@ const MyPageEdit = () => {
                     <label>사업자명</label>
                     <input
                       type="text"
-                      value={storeData.BizNm}
+                      value={storeData.bizNm}
                       disabled
                     />
                   </div>
@@ -268,7 +263,7 @@ const MyPageEdit = () => {
                     <label>사업자번호</label>
                     <input
                       type="text"
-                      value={storeData.BizNo}
+                      value={storeData.bizNo}
                       disabled
                     />
                   </div>
@@ -279,7 +274,7 @@ const MyPageEdit = () => {
                     <label>대표</label>
                     <input
                       type="text"
-                      value={storeData.OwnerNm}
+                      value={storeData.ownerNm}
                       disabled
                     />
                   </div>
@@ -288,7 +283,7 @@ const MyPageEdit = () => {
                     <label>대표 연락처</label>
                     <input
                       type="text"
-                      value={storeData.OwnerTelNo}
+                      value={storeData.ownerTelNo}
                       disabled
                     />
                   </div>
@@ -299,16 +294,16 @@ const MyPageEdit = () => {
                     <label>가맹점 유형</label>
                     <input
                       type="text"
-                      value={storeData.StoreType}
+                      value={storeData.storeType}
                       disabled
                     />
                   </div>
 
                   <div className="mypage-edit-field">
-                    <label>등록 신청일</label>
+                    <label>사업자 등록일</label>
                     <input
                       type="text"
-                      value={storeData.RequestedDateTime ? new Date(storeData.RequestedDateTime).toLocaleDateString('ko-KR') : '-'}
+                      value={storeData.requestedDateTime ? new Date(storeData.requestedDateTime).toLocaleDateString('ko-KR') : '-'}
                       disabled
                     />
                   </div>
@@ -318,23 +313,13 @@ const MyPageEdit = () => {
               <div className="mypage-edit-box">
                 <div className="mypage-edit-box-title">운영 정보</div>
                 
-                <div className="mypage-edit-field">
-                  <label>개업일</label>
-                  <input
-                    type="date"
-                    name="StoreOpenDate"
-                    value={formData.StoreOpenDate}
-                    onChange={handleChange}
-                  />
-                </div>
-
                 <div className="mypage-edit-field-row">
                   <div className="mypage-edit-field">
                     <label>오픈시간</label>
                     <input
                       type="time"
-                      name="StoreOpenTime"
-                      value={formData.StoreOpenTime}
+                      name="storeOpenTime"
+                      value={formData.storeOpenTime}
                       onChange={handleChange}
                     />
                   </div>
@@ -343,8 +328,8 @@ const MyPageEdit = () => {
                     <label>마감시간</label>
                     <input
                       type="time"
-                      name="StoreCloseTime"
-                      value={formData.StoreCloseTime}
+                      name="storeCloseTime"
+                      value={formData.storeCloseTime}
                       onChange={handleChange}
                     />
                   </div>
@@ -356,56 +341,56 @@ const MyPageEdit = () => {
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('MON')}
-                        onChange={() => handleBusinessDayChange('MON')}
+                        checked={formData.storeOpenDate.includes('월')}
+                        onChange={() => handleBusinessDayChange('월')}
                       />
                       월
                     </label>
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('TUE')}
-                        onChange={() => handleBusinessDayChange('TUE')}
+                        checked={formData.storeOpenDate.includes('화')}
+                        onChange={() => handleBusinessDayChange('화')}
                       />
                       화
                     </label>
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('WED')}
-                        onChange={() => handleBusinessDayChange('WED')}
+                        checked={formData.storeOpenDate.includes('수')}
+                        onChange={() => handleBusinessDayChange('수')}
                       />
                       수
                     </label>
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('THU')}
-                        onChange={() => handleBusinessDayChange('THU')}
+                        checked={formData.storeOpenDate.includes('목')}
+                        onChange={() => handleBusinessDayChange('목')}
                       />
                       목
                     </label>
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('FRI')}
-                        onChange={() => handleBusinessDayChange('FRI')}
+                        checked={formData.storeOpenDate.includes('금')}
+                        onChange={() => handleBusinessDayChange('금')}
                       />
                       금
                     </label>
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('SAT')}
-                        onChange={() => handleBusinessDayChange('SAT')}
+                        checked={formData.storeOpenDate.includes('토')}
+                        onChange={() => handleBusinessDayChange('토')}
                       />
                       토
                     </label>
                     <label className="mypage-edit-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={formData.businessDays.includes('SUN')}
-                        onChange={() => handleBusinessDayChange('SUN')}
+                        checked={formData.storeOpenDate.includes('일')}
+                        onChange={() => handleBusinessDayChange('일')}
                       />
                       일
                     </label>
@@ -425,7 +410,7 @@ const MyPageEdit = () => {
                     <label>로그인 아이디</label>
                     <input
                       type="text"
-                      value={storeData.LoginId || "admin@example.com"}
+                      value={JSON.parse(localStorage.getItem('user')).memberId || "admin@example.com"}
                       disabled
                     />
                   </div>
