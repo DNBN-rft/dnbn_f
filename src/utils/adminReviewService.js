@@ -254,6 +254,9 @@ export const searchReviews = async (searchParams, page = 0, size = 10) => {
     if (searchParams.searchType) {
       params.append('searchType', searchParams.searchType);
     }
+    if (searchParams.isReported !== undefined && searchParams.isReported !== null) {
+      params.append('isReported', searchParams.isReported);
+    }
 
     const response = await fetch(`${BASE_URL}/search?${params.toString()}`, {
       method: "GET",

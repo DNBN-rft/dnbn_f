@@ -50,7 +50,6 @@ export const getCategoryList = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("카테고리 목록 조회 응답 데이터:", data);
       return {
         success: true,
         data: data,

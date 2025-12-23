@@ -395,6 +395,45 @@
   border-color: #dee2e6;
 }
 
+.adminreview-date-input {
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #495057;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adminreview-date-input:hover {
+  border-color: #adb5bd;
+}
+
+.adminreview-date-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.adminreview-reset-btn {
+  width: 80px;
+  height: 40px;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.adminreview-reset-btn:hover {
+  background-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+
 /* Responsive */
 @media (max-width: 1200px) {
   .adminreview-wrap {
@@ -414,3 +453,4 @@
     padding: 12px 8px;
   }
 }
+

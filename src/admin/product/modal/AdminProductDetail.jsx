@@ -22,7 +22,6 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
   const fetchProductDetail = async () => {
     const result = await getProductDetail(productCode);
     if (result.success) {
-      console.log("상품 상세 조회 응답 데이터:", result.data);
       setProductData(result.data);
     } else {
       alert(result.error);
