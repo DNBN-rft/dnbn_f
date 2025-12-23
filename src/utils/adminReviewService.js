@@ -191,7 +191,7 @@ export const deleteReviews = async (reviewDeleteList) => {
  */
 export const updateHiddenExpiry = async (reviewIdx, newHiddenDate) => {
   try {
-    const response = await fetch(`${BASE_URL}/${reviewIdx}/hidden-expiry`, {
+    const response = await fetch(`${BASE_URL}/update-hidden-expiry-date/${reviewIdx}`, {
       method: "PUT",
       credentials: "include",
       headers: {
