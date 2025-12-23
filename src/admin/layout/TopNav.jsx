@@ -4,7 +4,7 @@ import AdminAlarmModal from './modal/AdminAlarmModal';
 
 const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
   // 알람 데이터 (실제로는 서버에서 가져오거나 상태 관리)
-  const [alarms, setAlarms] = useState([]);
+  const [alarms] = useState([]);
   const hasAlarms = alarms.length > 0;
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
 

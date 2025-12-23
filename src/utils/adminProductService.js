@@ -2,7 +2,7 @@
  * 관리자 상품 관리 API 서비스
  */
 
-const BASE_URL = "http://localhost:8080/api/admin/product";
+import { apiDelete, apiGet, apiPut } from "./apiClient";
 
 /**
  * 모든 상품 목록 조회 (페이지네이션)
@@ -11,10 +11,7 @@ const BASE_URL = "http://localhost:8080/api/admin/product";
  */
 export const getProducts = async (page = 0, size = 10) => {
   try {
-    const response = await fetch(`${BASE_URL}?page=${page}&size=${size}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/product?page=${page}&size=${size}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -46,10 +43,7 @@ export const getProducts = async (page = 0, size = 10) => {
  */
 export const getProductDetail = async (productCode) => {
   try {
-    const response = await fetch(`${BASE_URL}/${productCode}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/product/${productCode}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -82,14 +76,7 @@ export const getProductDetail = async (productCode) => {
  */
 export const updateProduct = async (productCode, productData) => {
   try {
-    const response = await fetch(`${BASE_URL}/${productCode}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(productData),
-    });
+    const response = await apiPut(`/admin/product/${productCode}`, JSON.stringify(productData));
 
     if (response.ok) {
       const message = await response.text();
@@ -121,14 +108,7 @@ export const updateProduct = async (productCode, productData) => {
  */
 export const restrictProducts = async (productCodes) => {
   try {
-    const response = await fetch(`${BASE_URL}/restrictProduct`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ productCodes }),
-    });
+    const response = await apiPut(`/admin/product/restrictProduct`, JSON.stringify({ productCodes }));
 
     if (response.ok) {
       const message = await response.text();
@@ -160,14 +140,7 @@ export const restrictProducts = async (productCodes) => {
  */
 export const deleteProducts = async (productCodes) => {
   try {
-    const response = await fetch(`${BASE_URL}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ productCodes }),
-    });
+    const response = await apiDelete(`/admin/product`, JSON.stringify({ productCodes }));
 
     if (response.ok) {
       const message = await response.text();
@@ -218,10 +191,7 @@ export const searchProducts = async (searchParams, page = 0, size = 10) => {
     params.append("page", page);
     params.append("size", size);
 
-    const response = await fetch(`${BASE_URL}/search?${params.toString()}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/product/search?${params.toString()}`);
 
     if (response.ok) {
       const data = await response.json();

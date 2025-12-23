@@ -34,13 +34,18 @@ const startTokenRefresh = () => {
         method: "POST",
         credentials: "include",
       });
-      if (!response.ok) {
+      if (response.ok) {
+        console.log("토큰 갱신 성공");
+      } else {
         // Refresh Token도 만료되면 로그인 페이지로
+        console.error("토큰 갱신 실패 - 로그아웃 처리");
         stopTokenRefresh();
+        localStorage.clear();
         window.location.href = getLoginPage();
       }
     } catch (error) {
-      console.error("주기적 토큰 갱신 실패:", error);
+      console.error("주기적 토큰 갱신 중 오류:", error);
+      // 네트워크 오류 등으로 실패한 경우 다음 주기에 재시도
     }
   }, 600000); // 10분마다 갱신 (access token 15분, refresh token 7일)
 };
@@ -191,11 +196,13 @@ export const apiPostFormData = async (endpoint, formData, options = {}) => {
           } else {
             processQueue(new Error("Token refresh failed"));
             window.location.href = "/store/login";
+            localStorage.clear();
             return response;
           }
         } catch (error) {
           processQueue(error);
           window.location.href = "/store/login";
+          localStorage.clear();
           throw error;
         }
       } else {
@@ -248,11 +255,13 @@ export const apiPutFormData = async (endpoint, formData, options = {}) => {
           } else {
             processQueue(new Error("Token refresh failed"));
             window.location.href = "/store/login";
+            localStorage.clear();
             return response;
           }
         } catch (error) {
           processQueue(error);
           window.location.href = "/store/login";
+          localStorage.clear();
           throw error;
         }
       } else {

@@ -1,8 +1,7 @@
 import "./css/noticedetail.css";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const NoticeDetail = () => {
-    const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const notice = location.state?.notice || {};

@@ -1,10 +1,8 @@
-import { apiCall } from "./apiClient";
+import { apiGet, apiPut } from "./apiClient";
 
 /**
  * 알림 관련 API 서비스
  */
-
-const BASE_URL = "http://localhost:8080/api";
 
 /**
  * 사용자의 알림 목록을 조회합니다
@@ -16,9 +14,7 @@ export const fetchAlarmList = async (memberId) => {
     throw new Error("memberId가 필요합니다.");
   }
 
-  const response = await apiCall(`/store/alarm/list?memberId=${memberId}`, {
-    method: "GET",
-  });
+  const response = await apiGet(`/store/alarm/list?memberId=${memberId}`);
 
   if (!response.ok) {
     throw new Error("알림 목록을 불러오는데 실패했습니다.");
@@ -38,12 +34,7 @@ export const fetchUnreadAlarmCount = async (memberId) => {
     throw new Error("memberId가 필요합니다.");
   }
 
-  const response = await apiCall(
-    `/store/alarm/unread-count?memberId=${memberId}`,
-    {
-      method: "GET",
-    }
-  );
+  const response = await apiGet(`/store/alarm/unread-count?memberId=${memberId}`);
 
   if (!response.ok) {
     throw new Error("읽지 않은 알림 개수를 불러오는데 실패했습니다.");
@@ -63,12 +54,7 @@ export const markAlarmAsRead = async (alarmIdx) => {
     throw new Error("alarmIdx가 필요합니다.");
   }
 
-  const response = await apiCall(
-    `/store/alarm/read?storeAlarmIdx=${alarmIdx}`,
-    {
-      method: "PUT",
-    }
-  );
+  const response = await apiPut(`/store/alarm/read?storeAlarmIdx=${alarmIdx}`);
 
   if (!response.ok) {
     throw new Error("알림을 읽음 처리하는데 실패했습니다.");
@@ -85,9 +71,7 @@ export const markAllAlarmsAsRead = async (memberId) => {
     throw new Error("memberId가 필요합니다.");
   }
 
-  const response = await apiCall(`/store/alarm/read-all?memberId=${memberId}`, {
-    method: "PUT",
-  });
+  const response = await apiPut(`/store/alarm/read-all?memberId=${memberId}`);
 
   if (!response.ok) {
     throw new Error("모든 알림을 읽음 처리하는데 실패했습니다.");
@@ -101,12 +85,7 @@ export const markAllAlarmsAsRead = async (memberId) => {
  * @returns {Promise<Object>} 페이지네이션된 알림 목록
  */
 export const getAdminStoreAlarms = async (page = 0, size = 10) => {
-  const response = await apiCall(
-    `/admin/alarm/store?page=${page}&size=${size}`,
-    {
-      method: "GET",
-    }
-  );
+  const response = await apiGet(`/admin/alarm/store?page=${page}&size=${size}`);
 
   if (!response.ok) {
     throw new Error("알림 목록을 불러오는데 실패했습니다.");
@@ -143,13 +122,7 @@ export const searchAlrams = async (searchParams, page = 0, size = 10) => {
       params.append("searchTerm", searchParams.searchTerm);
     }
 
-    const response = await fetch(
-      `${BASE_URL}/admin/alarm/search-store?${params.toString()}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
+    const response = await apiGet(`/admin/alarm/search-store?${params.toString()}`);
 
     if (response.ok) {
       const data = await response.json();

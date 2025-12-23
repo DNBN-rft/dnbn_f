@@ -80,7 +80,7 @@ const AdminPlan = () => {
     const fetchChartData = () => {
         // 여기에 실제 API 호출을 추가하세요
         // const response = await axios.get(`/api/admin/plan-statistics`, {
-        //     params: { plan: selectedPlan, month: selectedMonth, type: selectedType }
+        //     params: { plan: selectedPlan, month: selectedMonth, type: setSelectedType }
         // });
 
         const months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];

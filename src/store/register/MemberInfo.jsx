@@ -11,13 +11,6 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
   const [passwordCheckStatus, setPasswordCheckStatus] = useState(null);
   const [isEmailDisabled, setIsEmailDisabled] = useState(false);
 
-  // 비밀번호 유효성 검사 함수
-  const validatePassword = (password) => {
-    // 8~16자 영문 대소문자, 숫자, 특수문자를 모두 포함
-    const regex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
-    return regex.test(password);
-  };
-
   const getPasswordCheckMessage = (password) => {
     if (!password) {
       return { message: "", status: null };

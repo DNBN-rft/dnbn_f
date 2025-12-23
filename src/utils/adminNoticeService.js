@@ -2,7 +2,7 @@
  * 관리자 공지사항 관리 API 서비스
  */
 
-import { apiCall } from "./apiClient";
+import { apiDelete, apiGet, apiPost, apiPut } from "./apiClient";
 
 /**
  * 모든 공지사항 목록 조회 (페이지네이션)
@@ -11,9 +11,7 @@ import { apiCall } from "./apiClient";
  */
 export const getNotices = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall(`/admin/notice?page=${page}&size=${size}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/notice?page=${page}&size=${size}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -45,9 +43,7 @@ export const getNotices = async (page = 0, size = 10) => {
  */
 export const getNoticeDetail = async (noticeIdx) => {
   try {
-    const response = await apiCall(`/admin/notice/${noticeIdx}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/notice/${noticeIdx}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -80,10 +76,7 @@ export const getNoticeDetail = async (noticeIdx) => {
  */
 export const updateNotice = async (noticeIdx, data) => {
   try {
-    const response = await apiCall(`/admin/notice/${noticeIdx}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
+    const response = await apiPut(`/admin/notice/${noticeIdx}`, JSON.stringify(data));
 
     if (response.ok) {
       const message = await response.text();
@@ -115,10 +108,7 @@ export const updateNotice = async (noticeIdx, data) => {
  */
 export const createNotice = async (data) => {
   try {
-    const response = await apiCall("/admin/notice", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    const response = await apiPost("/admin/notice", JSON.stringify(data));
 
     if (response.ok) {
       const message = await response.text();
@@ -150,10 +140,7 @@ export const createNotice = async (data) => {
  */
 export const deleteNotices = async (noticeDeleteList) => {
   try {
-    const response = await apiCall("/admin/notice", {
-      method: "DELETE",
-      body: JSON.stringify({ noticeDeleteList }),
-    });
+    const response = await apiDelete("/admin/notice", JSON.stringify({ noticeDeleteList }));
 
     if (response.ok) {
       const message = await response.text();
@@ -207,9 +194,7 @@ export const searchNotices = async (searchParams, page = 0, size = 10) => {
       params.append('searchType', searchParams.searchType);
     }
 
-    const response = await apiCall(`/admin/notice/search?${params.toString()}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/notice/search?${params.toString()}`);
 
     if (response.ok) {
       const data = await response.json();

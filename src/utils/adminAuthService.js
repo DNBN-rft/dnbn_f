@@ -2,7 +2,7 @@
  * 관리자 로그인 처리 서비스
  */
 
-import { apiCall } from "./apiClient";
+import { apiGet, apiPost } from "./apiClient";
 import apiClient from "./apiClient";
 
 /**
@@ -13,13 +13,7 @@ import apiClient from "./apiClient";
  */
 export const adminLogin = async (empId, password) => {
   try {
-    const response = await apiCall("/admin/login", {
-      method: "POST",
-      body: JSON.stringify({
-        empId: empId,
-        empPw: password,
-      }),
-    });
+    const response = await apiPost("/admin/login", {body: JSON.stringify({empId: empId, empPw: password})});
 
     if (response.ok) {
       const data = await response.json();
@@ -92,9 +86,7 @@ export const clearAdminFromStorage = () => {
 // 권한 목록 조회
 export const getAuthList = async () => {
   try {
-    const response = await apiCall("/admin/auth", {
-      method: "GET",
-    });
+    const response = await apiGet("/admin/auth");
 
     if (!response.ok) {
       throw new Error("권한 목록 조회 실패");

@@ -15,7 +15,6 @@ import { getBankList, getMembershipList, getAuthList } from "../../../utils/comm
 const StoreInfoModal = ({ storeCode, onClose }) => {
   // 가맹점 상세 데이터
   const [storeData, setStoreData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // 은행 및 멤버십 목록
   const [bankList, setBankList] = useState([]);
@@ -59,7 +58,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);        
         // 가맹점 상세 정보 조회
         const storeResult = await getStoreDetail(storeCode);
         
@@ -87,8 +85,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
           setAuthList(authResult.data);
         }
       } catch (error) {
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -147,7 +143,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     setSelectedMenus(
       Array.isArray(storeData?.menuAuth) ? storeData.menuAuth.map(m => m.code) : []
     );
-  }, [storeData, bankList]);
+  }, [storeData, bankList, membershipList]);
 
   // 각 섹션별 폼 데이터
   const [storeForm, setStoreForm] = useState({
