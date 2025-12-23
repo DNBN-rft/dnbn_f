@@ -2,16 +2,14 @@
  * 관리자 가맹점 관리 API 서비스
  */
 
-import { apiCall } from "./apiClient";
+import { apiGet, apiPut } from "./apiClient";
 
 /**
  * 승인 대기 가맹점 목록 조회 (페이지네이션)
  */
 export const getReadyStores = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall(`/admin/store?page=${page}&size=${size}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/store?page=${page}&size=${size}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -42,9 +40,7 @@ export const getReadyStores = async (page = 0, size = 10) => {
  */
 export const getAllStores = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall(`/admin/store/all?page=${page}&size=${size}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/store/all?page=${page}&size=${size}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -75,9 +71,7 @@ export const getAllStores = async (page = 0, size = 10) => {
  */
 export const getPendingStoreDetail = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/pending/${storeCode}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/store/pending/${storeCode}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -109,9 +103,7 @@ export const getPendingStoreDetail = async (storeCode) => {
  */
 export const viewStoreDetail = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/${storeCode}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/store/${storeCode}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -142,9 +134,7 @@ export const viewStoreDetail = async (storeCode) => {
  */
 export const approveStore = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/approve/${storeCode}`, {
-      method: "PUT",
-    });
+    const response = await apiPut(`/admin/store/approve/${storeCode}`);
 
     if (response.ok) {
       return {
@@ -175,9 +165,7 @@ export const approveStore = async (storeCode) => {
  */
 export const rejectStore = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/reject/${storeCode}`, {
-      method: "PUT",
-    });
+    const response = await apiPut(`/admin/store/reject/${storeCode}`);
 
     if (response.ok) {
       return {
@@ -207,11 +195,7 @@ export const rejectStore = async (storeCode) => {
  */
 export const modStoreInfo = async (storeCode, formData) => {
   try {
-    const response = await apiCall(`/admin/store/modStoreInfo/${storeCode}`, {
-      method: "PUT",
-      headers: {},
-      body: formData, // FormData 객체
-    });
+    const response = await apiPut(`/admin/store/modStoreInfo/${storeCode}`, formData); // FormData 객체
 
     if (response.ok) {
       return {
@@ -241,10 +225,7 @@ export const modStoreInfo = async (storeCode, formData) => {
  */
 export const modSubsInfo = async (storeCode, subsInfo) => {
   try {
-    const response = await apiCall(`/admin/store/modSubsInfo/${storeCode}`, {
-      method: "PUT",
-      body: JSON.stringify(subsInfo),
-    });
+    const response = await apiPut(`/admin/store/modSubsInfo/${storeCode}`, JSON.stringify(subsInfo));
 
     if (response.ok) {
       return {
@@ -274,10 +255,7 @@ export const modSubsInfo = async (storeCode, subsInfo) => {
  */
 export const modMemberInfo = async (storeCode, memberInfo) => {
   try {
-    const response = await apiCall(`/admin/store/modMemberInfo/${storeCode}`, {
-      method: "PUT",
-      body: JSON.stringify(memberInfo),
-    });
+    const response = await apiPut(`/admin/store/modMemberInfo/${storeCode}`, JSON.stringify(memberInfo));
 
     if (response.ok) {
       return {
@@ -307,10 +285,7 @@ export const modMemberInfo = async (storeCode, memberInfo) => {
  */
 export const modBizInfo = async (storeCode, bizInfo) => {
   try {
-    const response = await apiCall(`/admin/store/modBizInfo/${storeCode}`, {
-      method: "PUT",
-      body: JSON.stringify(bizInfo),
-    });
+    const response = await apiPut(`/admin/store/modBizInfo/${storeCode}`, JSON.stringify(bizInfo));
 
     if (response.ok) {
       return {
@@ -340,10 +315,7 @@ export const modBizInfo = async (storeCode, bizInfo) => {
  */
 export const modAuthInfo = async (storeCode, authInfo) => {
   try {
-    const response = await apiCall(`/admin/store/modAuthInfo/${storeCode}`, {
-      method: "PUT",
-      body: JSON.stringify(authInfo),
-    });
+    const response = await apiPut(`/admin/store/modAuthInfo/${storeCode}`, JSON.stringify(authInfo));
 
     if (response.ok) {
       return {
@@ -373,10 +345,7 @@ export const modAuthInfo = async (storeCode, authInfo) => {
  */
 export const modMemberPassword = async (storeCode, data) => {
   try {
-    const response = await apiCall(`/admin/store/modPw/${storeCode}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
+    const response = await apiPut(`/admin/store/modPw/${storeCode}`, JSON.stringify(data));
 
     if (response.ok) {
       return {
@@ -406,9 +375,7 @@ export const modMemberPassword = async (storeCode, data) => {
  */
 export const getStoreDetail = async (storeCode) => {
   try {
-    const response = await apiCall(`/admin/store/${storeCode}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/store/${storeCode}`);
 
 
     if (response.ok) {
@@ -445,9 +412,7 @@ export const searchStores = async (searchParams, page = 0, size = 10) => {
       ...searchParams
     });
 
-    const response = await apiCall(`/admin/store/search?${params.toString()}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/store/search?${params.toString()}`);
 
     if (response.ok) {
       const data = await response.json();

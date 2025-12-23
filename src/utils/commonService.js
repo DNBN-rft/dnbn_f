@@ -2,17 +2,15 @@
  * 공통 API 서비스
  */
 
-const BASE_URL = "http://localhost:8080/api";
+import { apiGet } from "./apiClient";
+
 
 /**
  * 은행 목록 조회
  */
 export const getBankList = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/bank`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/bank`);
 
     if (response.ok) {
       const data = await response.json();
@@ -43,10 +41,7 @@ export const getBankList = async () => {
  */
 export const getCategoryList = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/category`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/category`);
 
     if (response.ok) {
       const data = await response.json();
@@ -77,10 +72,7 @@ export const getCategoryList = async () => {
  */
 export const getMembershipList = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/admin/membership`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/membership`);
 
     if (response.ok) {
       const data = await response.json();
@@ -111,10 +103,7 @@ export const getMembershipList = async () => {
  */
 export const getAuthList = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/admin/auth`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/auth`);
 
     if (response.ok) {
       const data = await response.json();

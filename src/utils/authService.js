@@ -1,7 +1,7 @@
 /**
  * 로그인 처리 서비스
  */
-import apiClient from "./apiClient";
+import apiClient, { apiPost } from "./apiClient";
 
 /**
  * 로그인 API 호출 및 localStorage에 사용자 정보 저장
@@ -11,17 +11,7 @@ import apiClient from "./apiClient";
  */
 export const login = async (username, password) => {
   try {
-    const response = await fetch("http://localhost:8080/api/store/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // 쿠키를 자동으로 포함
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
+    const response = await apiPost("http://localhost:8080/api/store/login", JSON.stringify({username: username, password: password}));
 
     if (response.ok) {
       const data = await response.json();
