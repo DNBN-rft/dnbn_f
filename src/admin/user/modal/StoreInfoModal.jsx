@@ -7,25 +7,44 @@ import {
   modBizInfo,
   modAuthInfo,
   modMemberPassword,
-  approveStore
+  approveStore,
+  getStoreDetail
 } from "../../../utils/adminStoreService";
-import { getBankList, getMembershipList } from "../../../utils/commonService";
+import { getBankList, getMembershipList, getAuthList } from "../../../utils/commonService";
 
-const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
+const StoreInfoModal = ({ storeCode, onClose }) => {
+  // 가맹점 상세 데이터
+  const [storeData, setStoreData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   // 은행 및 멤버십 목록
   const [bankList, setBankList] = useState([]);
   const [membershipList, setMembershipList] = useState([]);
+  const [authList, setAuthList] = useState([]);
+  const [selectedAuthIdx, setSelectedAuthIdx] = useState(null);
 
   // 영업일 옵션
   const openDayOptions = [
-    { value: "MON", label: "월" },
-    { value: "TUE", label: "화" },
-    { value: "WED", label: "수" },
-    { value: "THU", label: "목" },
-    { value: "FRI", label: "금" },
-    { value: "SAT", label: "토" },
-    { value: "SUN", label: "일" },
+    { value: "월", label: "월" },
+    { value: "화", label: "화" },
+    { value: "수", label: "수" },
+    { value: "목", label: "목" },
+    { value: "금", label: "금" },
+    { value: "토", label: "토" },
+    { value: "일", label: "일" },
   ];
+
+  // 한글 요일을 enum으로 변환
+  const convertDayToEnum = (day) => {
+    const dayMap = { "월": "MON", "화": "TUE", "수": "WED", "목": "THU", "금": "FRI", "토": "SAT", "일": "SUN" };
+    return dayMap[day] || day;
+  };
+
+  // enum을 한글 요일로 변환
+  const convertEnumToDay = (enumDay) => {
+    const dayMap = { "MON": "월", "TUE": "화", "WED": "수", "THU": "목", "FRI": "금", "SAT": "토", "SUN": "일" };
+    return dayMap[enumDay] || enumDay;
+  };
 
   // 각 섹션별 수정 모드 상태
   const [editModes, setEditModes] = useState({
@@ -36,99 +55,183 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
     auth: false,
   });
 
-  // 은행 및 멤버십 목록 조회
+  // 은행 및 멤버십 목록 조회 및 가맹점 상세 정보 조회
   useEffect(() => {
     const fetchData = async () => {
-      const bankResult = await getBankList();
-      if (bankResult.success) {
-        setBankList(bankResult.data);
-      }
+      try {
+        setLoading(true);        
+        // 가맹점 상세 정보 조회
+        const storeResult = await getStoreDetail(storeCode);
+        
+        if (storeResult.success) {
+          setStoreData(storeResult.data);
+        } else {
+          console.error("가맹점 상세 정보 조회 실패:", storeResult.error);
+        }
 
-      const membershipResult = await getMembershipList();
-      if (membershipResult.success) {
-        setMembershipList(membershipResult.data);
+        // 은행 목록 조회
+        const bankResult = await getBankList();
+        if (bankResult.success) {
+          setBankList(bankResult.data);
+        }
+
+        // 멤버십 목록 조회
+        const membershipResult = await getMembershipList();
+        if (membershipResult.success) {
+          setMembershipList(membershipResult.data);
+        }
+
+        // 권한 목록 조회
+        const authResult = await getAuthList();
+        if (authResult.success) {
+          setAuthList(authResult.data);
+        }
+      } catch (error) {
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    if (storeCode) {
+      fetchData();
+    }
+  }, [storeCode]);
+
+  // storeData가 변경될 때 폼 데이터 업데이트
+  useEffect(() => {
+    // bankNm으로부터 bankIdx 찾기
+    const selectedBank = bankList.find(bank => bank.bankNm === storeData?.bankNm);
+    
+    // storeOpenDate가 enum 배열이면 한글로 변환
+    const openDaysKorean = Array.isArray(storeData?.storeOpenDate)
+      ? storeData.storeOpenDate.map(day => convertEnumToDay(day))
+      : [];
+
+    setStoreForm({
+      storeNm: storeData?.storeNm || "",
+      storeAddr: storeData?.storeAddr || "",
+      storeAddrDetail: storeData?.storeAddrDetail || "",
+      bankIdx: selectedBank?.bankIdx || "",
+      storeAccNo: storeData?.storeAccNo || "",
+      storeTelNo: storeData?.storeTelNo || "",
+      storeOpenDate: openDaysKorean,
+      storeOpenTime: storeData?.storeOpenTime || "",
+      storeCloseTime: storeData?.storeCloseTime || "",
+    });
+
+    // membershipPlanIdx를 찾기 위해 membershipList에서 현재 선택된 플랜 검색
+    const selectedPlan = membershipList.find(plan => plan.planNm === storeData?.membershipNm);
+
+    setSubscriptionForm({
+      membershipPlanIdx: selectedPlan?.planIdx ? selectedPlan.planIdx.toString() : "",
+      isRenew: storeData?.isRenew || false,
+      nextBillingDate: storeData?.nextBillingDate ? new Date(storeData.nextBillingDate).toISOString().split('T')[0] : "",
+    });
+
+    setMemberForm({
+      memberLoginId: storeData?.memberLoginId || "",
+      ownerNm: storeData?.ownerNm || "",
+      ownerTelNo: storeData?.ownerTelNo || "",
+      newPassword: "",
+    });
+
+    setBusinessForm({
+      bizNm: storeData?.bizNm || "",
+      bizType: storeData?.bizType || "",
+      ownerNm: storeData?.ownerNm || "",
+      bizRegDate: storeData?.bizRegDate || "",
+      bizNo: storeData?.bizNo || "",
+      ownerTelNo: storeData?.ownerTelNo || "",
+    });
+
+    setSelectedMenus(
+      Array.isArray(storeData?.menuAuth) ? storeData.menuAuth.map(m => m.code) : []
+    );
+  }, [storeData, bankList]);
 
   // 각 섹션별 폼 데이터
   const [storeForm, setStoreForm] = useState({
-    storeNm: storeData?.storeNm || "",
-    storeAddr: storeData?.storeAddr || "",
-    storeAddrDetail: storeData?.storeAddrDetail || "",
-    zipCode: storeData?.zipCode || "",
-    bankIdx: storeData?.bankIdx || "",
-    storeAccNo: storeData?.storeAccNo || "",
-    storeTelNo: storeData?.storeTelNo || "",
-    storeOpenDate: storeData?.storeOpenDate || [],
-    storeOpenTime: storeData?.storeOpenTime || "",
-    storeCloseTime: storeData?.storeCloseTime || "",
-    storeApproved: storeData?.approvalStatus || "",
+    storeNm: "",
+    storeAddr: "",
+    storeAddrDetail: "",
+    bankIdx: "",
+    storeAccNo: "",
+    storeTelNo: "",
+    storeOpenDate: [],
+    storeOpenTime: "",
+    storeCloseTime: "",
   });
 
   const [subscriptionForm, setSubscriptionForm] = useState({
-    membershipPlanIdx: storeData?.membershipPlanIdx || "",
-    isRenew: storeData?.isRenew || false,
-    nextBillingDate: storeData?.nextBillingDate ? new Date(storeData.nextBillingDate).toISOString().split('T')[0] : "",
+    membershipPlanIdx: "",
+    isRenew: false,
+    nextBillingDate: "",
   });
 
   // 선택된 플랜 가져오기
   const getSelectedPlan = () => {
-    if (!subscriptionForm.membershipPlanIdx && subscriptionForm.membershipPlanIdx !== 0) {
-      return null;
-    }
-    return membershipList[subscriptionForm.membershipPlanIdx];
+    const plan = membershipList.find(p => p.planIdx === parseInt(subscriptionForm.membershipPlanIdx));
+    return plan || { planNm: "", planPrice: 0 };
+  };
+
+  // 선택된 권한 가져오기
+  const getSelectedAuth = () => {
+    const auth = authList.find(a => a.authIdx === parseInt(selectedAuthIdx));
+    return auth || null;
   };
 
   const [memberForm, setMemberForm] = useState({
-    memberLoginId: storeData?.memberLoginId || "",
-    ownerNm: storeData?.ownerNm || "",
-    ownerTelNo: storeData?.ownerTelNo || "",
+    memberLoginId: "",
+    ownerNm: "",
+    ownerTelNo: "",
     newPassword: "",
   });
 
   const [businessForm, setBusinessForm] = useState({
-    bizNm: storeData?.bizNm || "",
-    bizType: storeData?.bizType || "",
-    ownerNm: storeData?.ownerNm || "",
-    bizRegDate: storeData?.bizRegDate || "",
-    bizNo: storeData?.bizNo || "",
-    ownerTelNo: storeData?.ownerTelNo || "",
+    bizNm: "",
+    bizType: "",
+    ownerNm: "",
+    bizRegDate: "",
+    bizNo: "",
+    ownerTelNo: "",
   });
 
   // 권한 관련 상태 - menuAuth를 배열로 변환
   const [selectedMenus, setSelectedMenus] = useState(
-    storeData?.menuAuth ? storeData.menuAuth.split(',').map(m => m.trim()) : []
+    Array.isArray(storeData?.menuAuth) ? storeData.menuAuth.map(m => m.code) : []
   );
 
   // 메뉴 토글
-  const handleMenuToggle = (menuId) => {
+  const handleMenuToggle = (code) => {
     setSelectedMenus(prev => {
-      if (prev.includes(menuId)) {
-        return prev.filter(id => id !== menuId);
+      if (prev.includes(code)) {
+        return prev.filter(id => id !== code);
       } else {
-        return [...prev, menuId];
+        return [...prev, code];
       }
     });
   };
 
-  // 모든 메뉴 목록
-  const allMenus = [
-    { id: "store-membership", name: "멤버십 정보" },
-    { id: "store-mypage", name: "마이페이지" },
-    { id: "store-order", name: "주문 관리" },
-    { id: "store-negotiation", name: "흥정 관리" },
-    { id: "store-static", name: "주문 통계" },
-    { id: "store-product", name: "상품 관리" },
-    { id: "store-sale", name: "판매 관리" },
-    { id: "store-review", name: "리뷰 관리" },
-    { id: "store-employee", name: "직원 관리" },
-    { id: "store-notice", name: "공지사항" },
-    { id: "store-question", name: "문의하기" },
-    { id: "store-subscription", name: "구독 플랜" },
-  ];
+  // 권한명 변경 시 해당 권한의 menuAuth로 selectedMenus 업데이트
+  const handleAuthChange = (authIdx) => {
+    const selectedAuth = authList.find(a => a.authIdx === parseInt(authIdx));
+    if (selectedAuth) {
+      setSelectedAuthIdx(authIdx);
+      // menuAuth에서 code만 추출
+      const menuCodes = selectedAuth.menuAuth.map(m => m.code);
+      setSelectedMenus(menuCodes);
+      console.log("권한 변경, 메뉴:", menuCodes);
+    }
+  };
+
+  // 현재 선택된 권한의 메뉴 목록
+  const getAvailableMenus = () => {
+    const selectedAuth = getSelectedAuth();
+    if (selectedAuth) {
+      return selectedAuth.menuAuth;
+    }
+    return storeData?.menuAuth || [];
+  };
 
   // 섹션별 수정 모드 토글
   const toggleEditMode = (section) => {
@@ -141,21 +244,25 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
   // 섹션별 취소
   const handleCancel = (section) => {
     if (section === "store") {
+      const selectedBank = bankList.find(bank => bank.bankNm === storeData?.bankNm);
+      const openDaysKorean = Array.isArray(storeData?.storeOpenDate)
+        ? storeData.storeOpenDate.map(day => convertEnumToDay(day))
+        : [];
       setStoreForm({
         storeNm: storeData?.storeNm || "",
         storeAddr: storeData?.storeAddr || "",
         storeAddrDetail: storeData?.storeAddrDetail || "",
-        zipCode: storeData?.zipCode || "",
-        bankIdx: storeData?.bankIdx || "",
+        bankIdx: selectedBank?.bankIdx || "",
         storeAccNo: storeData?.storeAccNo || "",
         storeTelNo: storeData?.storeTelNo || "",
-        storeOpenDate: storeData?.storeOpenDate || [],
+        storeOpenDate: openDaysKorean,
         storeOpenTime: storeData?.storeOpenTime || "",
         storeCloseTime: storeData?.storeCloseTime || "",
       });
     } else if (section === "subscription") {
+      const selectedPlan = membershipList.find(plan => plan.planNm === storeData?.membershipNm);
       setSubscriptionForm({
-        membershipPlanIdx: storeData?.membershipPlanIdx || "",
+        membershipPlanIdx: selectedPlan?.planIdx ? selectedPlan.planIdx.toString() : "",
         isRenew: storeData?.isRenew || false,
         nextBillingDate: storeData?.nextBillingDate ? new Date(storeData.nextBillingDate).toISOString().split('T')[0] : "",
       });
@@ -177,7 +284,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
       });
     } else if (section === "auth") {
       setSelectedMenus(
-        storeData?.menuAuth ? storeData.menuAuth.split(',').map(m => m.trim()) : []
+        Array.isArray(storeData?.menuAuth) ? storeData.menuAuth.map(m => m.code) : []
       );
     }
     toggleEditMode(section);
@@ -196,26 +303,50 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
     formData.append("storeOpenTime", storeForm.storeOpenTime);
     formData.append("storeCloseTime", storeForm.storeCloseTime);
 
-    // storeOpenDate는 배열이므로 JSON 문자열로 변환
-    formData.append("storeOpenDate", JSON.stringify(storeForm.storeOpenDate));
+    // storeOpenDate는 한글을 enum으로 변환하여 각 요소를 개별적으로 추가
+    storeForm.storeOpenDate.forEach(day => {
+      formData.append("storeOpenDate", convertDayToEnum(day));
+    });
 
     const result = await modStoreInfo(storeData.storeCode, formData);
     if (result.success) {
       alert("가맹점 정보가 수정되었습니다.");
       toggleEditMode("store");
-      onUpdate();
+      // 데이터 재로드
+      const refreshResult = await getStoreDetail(storeCode);
+      if (refreshResult.success) {
+        setStoreData(refreshResult.data);
+      }
     } else {
       alert(result.error);
     }
   };
 
   // 구독 정보 저장
+  // 구독 정보 저장
   const handleSaveSubscriptionInfo = async () => {
-    const result = await modSubsInfo(storeData.storeCode, subscriptionForm);
+    // membershipPlanIdx를 Long으로 변환하고 검증
+    if (!subscriptionForm.membershipPlanIdx) {
+      alert("플랜을 선택해주세요.");
+      return;
+    }
+
+    const subsData = {
+      membershipPlanIdx: parseInt(subscriptionForm.membershipPlanIdx), // Long으로 변환
+      isRenew: subscriptionForm.isRenew === true || subscriptionForm.isRenew === 'true',
+    };
+
+    console.log("구독 정보 저장 데이터:", subsData);
+    
+    const result = await modSubsInfo(storeData.storeCode, subsData);
     if (result.success) {
       alert("구독 정보가 수정되었습니다.");
       toggleEditMode("subscription");
-      onUpdate();
+      // 데이터 재로드
+      const refreshResult = await getStoreDetail(storeCode);
+      if (refreshResult.success) {
+        setStoreData(refreshResult.data);
+      }
     } else {
       alert(result.error);
     }
@@ -236,13 +367,19 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
         const pwResult = await modMemberPassword(storeData.storeCode, {
           newPassword: memberForm.newPassword,
         });
-        if (!pwResult.success) {
+        if (pwResult.success) {
+          alert("비밀번호도 변경되었습니다.");
+        } else {
           alert("비밀번호 변경 실패: " + pwResult.error);
         }
       }
 
       toggleEditMode("member");
-      onUpdate();
+      // 데이터 재로드
+      const refreshResult = await getStoreDetail(storeCode);
+      if (refreshResult.success) {
+        setStoreData(refreshResult.data);
+      }
     } else {
       alert(result.error);
     }
@@ -254,21 +391,30 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
     if (result.success) {
       alert("사업자 정보가 수정되었습니다.");
       toggleEditMode("business");
-      onUpdate();
+      // 데이터 재로드
+      const refreshResult = await getStoreDetail(storeCode);
+      if (refreshResult.success) {
+        setStoreData(refreshResult.data);
+      }
     } else {
       alert(result.error);
     }
   };
 
   // 권한 정보 저장
+  // 권한 정보 저장
   const handleSaveAuthInfo = async () => {
-    // 메뉴 배열을 콤마로 구분된 문자열로 변환
-    const menuAuthString = selectedMenus.join(',');
-    const result = await modAuthInfo(storeData.storeCode, { menuAuth: menuAuthString });
+    // 메뉴 배열을 JSON 배열 형식으로 전송
+    console.log("선택된 메뉴:", selectedMenus);
+    const result = await modAuthInfo(storeData.storeCode, { menuAuth: selectedMenus });
     if (result.success) {
       alert("권한 정보가 수정되었습니다.");
       toggleEditMode("auth");
-      onUpdate();
+      // 데이터 재로드
+      const refreshResult = await getStoreDetail(storeCode);
+      if (refreshResult.success) {
+        setStoreData(refreshResult.data);
+      }
     } else {
       alert(result.error);
     }
@@ -283,7 +429,11 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
     const result = await approveStore(storeData.storeCode);
     if (result.success) {
       alert("승인되었습니다.");
-      onUpdate();
+      // 데이터 재로드
+      const refreshResult = await getStoreDetail(storeCode);
+      if (refreshResult.success) {
+        setStoreData(refreshResult.data);
+      }
       onClose();
     } else {
       alert(result.error);
@@ -488,10 +638,10 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
               <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">승인 상태</label>
                 <div className="storeinfomodal-approval-container">
-                  <span className={`storeinfomodal-approval-status ${storeData?.approvalStatus === "PENDING" ? 'storeinfomodal-approval-approved' : 'storeinfomodal-approval-pending'}`}>
-                    {storeData?.approvalStatus === "APPROVED" ? "승인" : storeData?.approvalStatus === "PENDING" ? "대기중" : "거절"}
+                  <span className={`storeinfomodal-approval-status ${storeData?.approvalStatus === 'APPROVED' ? 'storeinfomodal-approval-approved' : 'storeinfomodal-approval-pending'}`}>
+                    {storeData?.approvalStatus === 'APPROVED' ? "승인" : storeData?.approvalStatus === 'PENDING' ? "대기 중" : "거절"}
                   </span>
-                  {storeData?.approvalStatus === "PENDING" && (
+                  {storeData?.approvalStatus !== 'APPROVED' && (
                     <button
                       className="storeinfomodal-approval-btn storeinfomodal-approve-btn"
                       onClick={handleApprove}
@@ -536,18 +686,23 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
               <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">플랜명</label>
                 {editModes.subscription ? (
-                  <select
-                    value={subscriptionForm.membershipPlanIdx}
-                    onChange={(e) => setSubscriptionForm({ ...subscriptionForm, membershipPlanIdx: e.target.value })}
-                    className="storeinfomodal-select"
-                  >
-                    <option value="">플랜 선택</option>
-                    {membershipList.map((plan, index) => (
-                      <option key={index} value={index}>
-                        {plan.planNm}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="storeinfomodal-plan-wrapper">
+                    <select
+                      value={subscriptionForm.membershipPlanIdx?.toString() || ""}
+                      onChange={(e) => {
+                        console.log("플랜 선택:", e.target.value);
+                        setSubscriptionForm({ ...subscriptionForm, membershipPlanIdx: e.target.value });
+                      }}
+                      className="storeinfomodal-select"
+                    >
+                      <option value="">플랜 선택</option>
+                      {membershipList.map((plan) => (
+                        <option key={plan.planIdx} value={plan.planIdx?.toString()}>
+                          {plan.planNm}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 ) : (
                   <span className="storeinfomodal-value">{storeData?.membershipNm}</span>
                 )}
@@ -556,7 +711,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
               <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">플랜 가격</label>
                 <span className="storeinfomodal-value">
-                  {editModes.subscription && getSelectedPlan()
+                  {editModes.subscription && subscriptionForm.membershipPlanIdx
                     ? getSelectedPlan().planPrice?.toLocaleString() + "원"
                     : storeData?.membershipPrice?.toLocaleString() + "원"
                   }
@@ -580,8 +735,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
                   </span>
                 )}
               </div>
-
-              <div className="storeinfomodal-field">
+                  <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">다음 결제일</label>
                 {editModes.subscription ? (
                   <input
@@ -589,6 +743,7 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
                     value={subscriptionForm.nextBillingDate}
                     onChange={(e) => setSubscriptionForm({ ...subscriptionForm, nextBillingDate: e.target.value })}
                     className="storeinfomodal-input"
+                    disabled
                   />
                 ) : (
                   <span className="storeinfomodal-value">
@@ -843,14 +998,35 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
             <div className="storeinfomodal-auth-row">
               <div className="storeinfomodal-auth-field">
                 <label className="storeinfomodal-label">권한명</label>
-                <span className="storeinfomodal-value">{storeData?.authNm}</span>
+                {editModes.auth ? (
+                  <select
+                    value={selectedAuthIdx || ""}
+                    onChange={(e) => handleAuthChange(e.target.value)}
+                    className="storeinfomodal-select"
+                  >
+                    <option value="">권한 선택</option>
+                    {authList.map((auth) => (
+                      <option key={auth.authIdx} value={auth.authIdx}>
+                        {auth.authNm}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span className="storeinfomodal-value">{storeData?.authNm}</span>
+                )}
               </div>
 
               <div className="storeinfomodal-auth-field">
                 <label className="storeinfomodal-label">권한 설명</label>
-                <span className="storeinfomodal-value storeinfomodal-auth-description">
-                  {storeData?.authDescription || "-"}
-                </span>
+                {editModes.auth && selectedAuthIdx ? (
+                  <span className="storeinfomodal-value storeinfomodal-auth-description">
+                    {getSelectedAuth()?.authDescription || "-"}
+                  </span>
+                ) : (
+                  <span className="storeinfomodal-value storeinfomodal-auth-description">
+                    {storeData?.authDescription || "-"}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -858,23 +1034,23 @@ const StoreInfoModal = ({ storeData, onClose, onUpdate }) => {
               <h4 className="storeinfomodal-menu-title">메뉴 권한</h4>
               {editModes.auth ? (
                 <div className="storeinfomodal-menu-grid">
-                  {allMenus.map(menu => (
-                    <label key={menu.id} className="storeinfomodal-checkbox-label">
+                  {getAvailableMenus().map(menu => (
+                    <label key={menu.code} className="storeinfomodal-checkbox-label">
                       <input
                         type="checkbox"
-                        checked={selectedMenus.includes(menu.id)}
-                        onChange={() => handleMenuToggle(menu.id)}
+                        checked={selectedMenus.includes(menu.code)}
+                        onChange={() => handleMenuToggle(menu.code)}
                       />
-                      <span>{menu.name}</span>
+                      <span>{menu.displayName}</span>
                     </label>
                   ))}
                 </div>
               ) : (
                 <div className="storeinfomodal-permission-list">
-                  {storeData?.menuAuth ? (
-                    storeData.menuAuth.split(',').map((menuAuth, index) => (
+                  {Array.isArray(storeData?.menuAuth) ? (
+                    storeData.menuAuth.map((menu, index) => (
                       <span key={index} className="storeinfomodal-permission-tag">
-                        {menuAuth.trim()}
+                        {menu.displayName}
                       </span>
                     ))
                   ) : (

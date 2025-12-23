@@ -142,7 +142,7 @@ const OrderInfo = ({ onClose, orderCode }) => {
     };
 
     try {
-      const response = await apiPut('/order/qr/use', requestBody);
+      const response = await apiPut('/store/order/qr', requestBody);
       if (response.ok) {
         alert('사용 처리 되었습니다.');
         const detailResponse = await apiGet(`/order/statistics/detail/${orderCode}`);

@@ -1,9 +1,11 @@
-import { apiDelete, apiGet, apiPut } from "./apiClient";
+import { apiCall } from "./apiClient";
 
 // 고객 목록 조회
 export const getCusts = async (page = 0, size = 10) => {
   try {
-    const response = await apiGet(`/admin/cust?page=${page}&size=${size}`);
+    const response = await apiCall(`/admin/cust?page=${page}&size=${size}`, {
+      method: "GET",
+    });
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
@@ -18,7 +20,9 @@ export const getCusts = async (page = 0, size = 10) => {
 // 고객 상세 조회
 export const getCustDetail = async (custCode) => {
   try {
-    const response = await apiGet(`/admin/cust/${custCode}`);
+    const response = await apiCall(`/admin/cust/${custCode}`, {
+      method: "GET",
+    });
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
@@ -35,7 +39,13 @@ export const updateCust = async (custCode, modRequest) => {
   try {
     const requestBody = JSON.stringify(modRequest);
     
-    const response = await apiPut(`/admin/cust/${custCode}`, requestBody);
+    const response = await apiCall(`/admin/cust/${custCode}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    });
 
 
     if (!response.ok) {
@@ -77,7 +87,9 @@ export const searchCusts = async (searchParams) => {
       queryString.append("searchTerm", searchParams.searchTerm);
     }
 
-    const response = await apiGet(`/admin/cust/search?${queryString.toString()}`);
+    const response = await apiCall(`/admin/cust/search?${queryString.toString()}`, {
+      method: "GET",
+    });
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
@@ -96,7 +108,13 @@ export const deleteCusts = async (custCodes) => {
       custCodes: custCodes,
     };
 
-    const response = await apiDelete("/admin/cust", JSON.stringify(deleteRequest));
+    const response = await apiCall("/admin/cust", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deleteRequest),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

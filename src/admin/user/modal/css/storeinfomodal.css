@@ -521,3 +521,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* 플랜 선택 시 가격 표시 */
+.storeinfomodal-plan-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.storeinfomodal-plan-wrapper .storeinfomodal-select {
+  flex: 1;
+  margin: 0 !important;
+}

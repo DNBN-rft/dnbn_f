@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import "./css/adminstoreinfo.css";
 import StoreInfoModal from "./modal/StoreInfoModal";
-import { getAllStores, viewStoreDetail, approveStore, searchStores } from "../../utils/adminStoreService";
+import { getAllStores, getStoreDetail, searchStores } from "../../utils/adminStoreService";
 
-const StoreInfo = () => {
+const AdminStoreInfo = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedStore, setSelectedStore] = useState(null);
   const [storeList, setStoreList] = useState([]);
@@ -102,13 +102,18 @@ const StoreInfo = () => {
   };
 
   const handleOpenModal = async (store) => {
-    // 상세 정보 조회
-    const result = await viewStoreDetail(store.storeCode);
-    if (result.success) {
-      setSelectedStore(result.data);
-      setIsDetailOpen(true);
-    } else {
-      alert(result.error);
+    try {
+      // 상세 정보 조회
+      const result = await getStoreDetail(store.storeCode);
+      if (result.success) {
+        setSelectedStore(result.data);
+        setIsDetailOpen(true);
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      console.error("모달 오픈 중 오류:", error);
+      alert("가맹점 정보 조회 실패");
     }
   };
 
@@ -123,25 +128,6 @@ const StoreInfo = () => {
       handleSearchInternal(currentPage);
     } else {
       loadStores(currentPage);
-    }
-  };
-
-  const handleApprovalChange = async (storeCode) => {
-    if (!window.confirm("가맹점을 승인하시겠습니까?")) {
-      return;
-    }
-
-    const result = await approveStore(storeCode);
-    if (result.success) {
-      alert("승인되었습니다.");
-      if (isSearchMode) {
-        handleSearchInternal(currentPage);
-      } else {
-        loadStores(currentPage);
-      }
-      handleCloseModal();
-    } else {
-      alert(result.error);
     }
   };
 
@@ -180,8 +166,11 @@ const StoreInfo = () => {
                 <option value="법인">법인</option>
               </select>
             </div>
-
-            <div className="adminstoreinfo-filter-group">
+            
+            {
+              /*
+              가맹점 타입 필터 (현재 사용 안함)
+              <div className="adminstoreinfo-filter-group">
               <label htmlFor="store-type">가맹점 타입</label>
               <select
                 name="store-type"
@@ -195,6 +184,9 @@ const StoreInfo = () => {
                 <option value="wholesale">도매점</option>
               </select>
             </div>
+            */
+            }
+            
           </div>
 
           <div className="adminstoreinfo-filter-row storeinfo-search-row">
@@ -343,14 +335,12 @@ const StoreInfo = () => {
 
       {isDetailOpen && selectedStore && (
         <StoreInfoModal
-          storeData={selectedStore}
+          storeCode={selectedStore.storeCode}
           onClose={handleCloseModal}
-          onUpdate={handleUpdate}
-          onApprovalChange={handleApprovalChange}
         />
       )}
     </div>
   );
 };
 
-export default StoreInfo;
+export default AdminStoreInfo;

@@ -402,6 +402,39 @@ export const modMemberPassword = async (storeCode, data) => {
 };
 
 /**
+ * 가맹점 상세 조회
+ */
+export const getStoreDetail = async (storeCode) => {
+  try {
+    const response = await apiCall(`/admin/store/${storeCode}`, {
+      method: "GET",
+    });
+
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "가맹점 상세 정보를 불러오는데 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
+};
+
+/**
  * 가맹점 검색 (페이지네이션)
  */
 export const searchStores = async (searchParams, page = 0, size = 10) => {
