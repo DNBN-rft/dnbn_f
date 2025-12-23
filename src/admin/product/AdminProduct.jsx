@@ -149,9 +149,12 @@ const AdminProduct = () => {
       startDate: filters.startDate,
       endDate: filters.endDate,
       categoryNm: filters.category,
-      productState: filters.saleStatus === "판매중" ? "AVAILABLE" : 
-                    filters.saleStatus === "품절" ? "SOLDOUT" : 
-                    filters.saleStatus === "제재" ? "REJECTED" : 
+      productState: filters.saleStatus === "all-option" ? "all" :
+                    filters.saleStatus === "pending" ? "PENDING" :
+                    filters.saleStatus === "on_sale" ? "ON_SALE" :
+                    filters.saleStatus === "ended" ? "ENDED" :
+                    filters.saleStatus === "sold_out" ? "SOLDOUT" : 
+                    filters.saleStatus === "restricted" ? "REJECTED" : 
                     filters.saleStatus,
       searchTerm: filters.searchKeyword,
       searchType: filters.searchType === "all-option" ? "all" : 
@@ -190,16 +193,6 @@ const AdminProduct = () => {
     });
     setCurrentPage(0);
     loadProducts(0);
-  };
-
-  // 판매상태 한글 변환
-  const getProductStateText = (state) => {
-    switch (state) {
-      case "AVAILABLE": return "판매중";
-      case "SOLDOUT": return "품절";
-      case "REJECTED": return "제재";
-      default: return state;
-    }
   };
 
   // 할인/네고 텍스트
@@ -259,10 +252,12 @@ const AdminProduct = () => {
                 value={filters.saleStatus}
                 onChange={(e) => setFilters({...filters, saleStatus: e.target.value})}
               >
-                <option value="all">전체</option>
-                <option value="판매중">판매중</option>
-                <option value="품절">품절</option>
-                <option value="제재">제재</option>
+                <option value="all-option">전체</option>
+                <option value="on_sale">판매중</option>
+                <option value="ended">판매 종료</option>
+                <option value="pending">대기</option>
+                <option value="sold_out">품절</option>
+                <option value="restricted">제재</option>
               </select>
             </div>
           </div>
@@ -278,7 +273,6 @@ const AdminProduct = () => {
               >
                 <option value="all-option">전체</option>
                 <option value="productNm">상품명</option>
-                <option value="productCode">상품코드</option>
                 <option value="storeNm">가맹점명</option>
               </select>
               <input
@@ -362,7 +356,7 @@ const AdminProduct = () => {
                     <td>{product.isAdult ? "성인" : "전체"}</td>
                     <td>{product.productPrice?.toLocaleString()}원</td>
                     <td>{product.productAmount}</td>
-                    <td>{getProductStateText(product.productState)}</td>
+                    <td>{product.productState}</td>
                     <td>{getDiscountNegoText(product.isSale, product.isNego)}</td>
                     <td>{new Date(product.productRegDateTime).toLocaleDateString()}</td>
                     <td>
