@@ -11,7 +11,7 @@ import apiClient, { apiPost } from "./apiClient";
  */
 export const login = async (username, password) => {
   try {
-    const response = await apiPost("http://localhost:8080/api/store/login", JSON.stringify({username: username, password: password}));
+    const response = await apiPost("/store/login", JSON.stringify({username: username, password: password}));
 
     if (response.ok) {
       const data = await response.json();
