@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAlarmList } from "../../../hooks/useAlarm";
 import { markAlarmAsRead } from "../../../utils/alarmService";
 import "./css/storealarmmodal.css";
+import { formatDateTime } from "../../../utils/commonService";
 
 const StoreAlarmModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState("전체");
@@ -37,21 +38,6 @@ const StoreAlarmModal = ({ onClose }) => {
     }
   };
 
-  const formatDateTime = (dateTime) => {
-    if (!dateTime) return "";
-    const date = new Date(dateTime);
-    return date
-      .toLocaleString("ko-KR", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-      .replace(/\. /g, "-")
-      .replace(".", "");
-  };
-
   const transformedAlarms = alarmData.map((alarm, index) => ({
     id: index + 1,
     alarmIdx: alarm.alarmIdx, // 백엔드에서 받은 alarmIdx
@@ -82,7 +68,6 @@ const StoreAlarmModal = ({ onClose }) => {
     try {
       if (alarm.alarmIdx && alarm.isUnread) {
         await markAlarmAsRead(alarm.alarmIdx);
-        console.log(`알림 ${alarm.alarmIdx} 읽음 처리 완료`);
       }
     } catch (error) {
       console.error("알림 읽음 처리 실패:", error);
@@ -166,7 +151,6 @@ const StoreAlarmModal = ({ onClose }) => {
         break;
 
       default:
-        console.log("알 수 없는 알람 타입:", alarm.alarmType);
         break;
     }
   };

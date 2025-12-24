@@ -101,8 +101,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
                 startDateTime: startDateTime
             };
 
-            console.log("할인 등록 요청:", requestData);
-
             const response = await apiPost(`/store/sale/${productCode}`, requestData);
 
             if (response.ok) {

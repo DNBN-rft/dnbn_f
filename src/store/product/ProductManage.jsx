@@ -5,6 +5,7 @@ import ProductDetail from "./modal/ProductDetail";
 import ProductAdd from "./modal/ProductAdd";
 import ProductSale from "./modal/ProductSale";
 import { apiGet, apiPost } from "../../utils/apiClient";
+import { formatDateTime } from "../../utils/commonService";
 
 const ProductManage = () => {
   const location = useLocation();
@@ -19,7 +20,6 @@ const ProductManage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
@@ -57,13 +57,13 @@ const ProductManage = () => {
           negotiation: p.isNego ? "네고상품" : "미네고",
           sale: p.isSale ? "할인상품" : "미할인",
           classify: p.isAdult ? "성인" : "일반",
-          registered: p.productRegDateTime?.split("T")[0] || "",
+          registered: formatDateTime(p.productRegDateTime) || "",
           type: p.isStock ? "일반" : "서비스",
           description: p.productDetailDescription,
           writer: p.regNm || "",
-          regDate: p.productRegDateTime || "",
+          regDate: formatDateTime(p.productRegDateTime) || "",
           editor: p.modNm || "-",
-          editDate: p.productModDateTime || "-",
+          editDate: formatDateTime(p.productModDateTime) || "-",
           categoryIdx: p.categoryIdx,
           imgs: p.images?.files || []
         }));
@@ -112,13 +112,13 @@ const ProductManage = () => {
           negotiation: p.isNego ? "네고상품" : "미네고",
           sale: p.isSale ? "할인상품" : "미할인",
           classify: p.isAdult ? "성인" : "일반",
-          registered: p.productRegDateTime?.split("T")[0] || "",
+          registered: formatDateTime(p.productRegDateTime) || "",
           type: p.isStock ? "일반" : "서비스",
           description: p.productDetailDescription,
           writer: p.regNm || "",
-          regDate: p.productRegDateTime || "",
+          regDate: formatDateTime(p.productRegDateTime) || "",
           editor: p.modNm || "-",
-          editDate: p.productModDateTime || "-",
+          editDate: formatDateTime(p.productModDateTime) || "-",
           categoryIdx: p.categoryIdx,
           imgs: p.images?.files || []
         }));

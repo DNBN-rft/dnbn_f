@@ -14,7 +14,6 @@ const SubscriptionPlans = () => {
       try {
         const response = await apiCall('/store/planinfo');
         const data = await response.json();
-        console.log('플랜 정보 조회 성공:', data);
         setPlanData(data);
       } catch (error) {
         console.error('플랜 정보 조회 실패:', error);

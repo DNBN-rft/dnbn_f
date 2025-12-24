@@ -2,6 +2,7 @@ import "./css/bizinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState, useEffect } from "react";
 import { validateBizInfo } from "../../utils/registerValidation";
+import { apiGet, apiPost } from "../../utils/apiClient";
 
 const BizInfo = ({ formData, setFormData, next, prev }) => {
   const [banks, setBanks] = useState([]);
@@ -9,7 +10,6 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
   const [bizNoCheckMessage, setBizNoCheckMessage] = useState("");
 
   useEffect(() => {
-    // 은행 목록 API 호출
     fetchBanks();
     // bankId, storeZipCode, storeAddr 기본값 설정
     if (!formData.bankId || !formData.storeZipCode || !formData.storeAddr) {
@@ -25,12 +25,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
 
   const fetchBanks = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/bank", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await apiGet("/bank");
 
       if (response.ok) {
         const data = await response.json();
@@ -69,15 +64,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/store/check-bizNo/${formData.bizNo}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await apiGet(`/store/check-bizNo/${formData.bizNo}`);
 
       if (response.ok) {
         const data = await response.text();
@@ -126,13 +113,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
         ],
       };
 
-      const response = await fetch("http://localhost:8080/api/store/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validationRequest),
-      });
+      const response = await apiPost("/store/validate", validationRequest);
 
       if (response.ok) {
         await response.text();
@@ -286,7 +267,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
             />
           </div>
 
-          <div className="bizinfo-middle-subtitle">개업일</div>
+          <div className="bizinfo-middle-subtitle">사업자 등록일</div>
           <div>
             <input
               type="date"

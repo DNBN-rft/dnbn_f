@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./css/sale.css";
 import { apiGet, apiDelete } from "../../utils/apiClient";
+import { formatDateTime } from "../../utils/commonService";
 
 const Sale = () => {
     const [sales, setSales] = useState([]);
@@ -61,11 +62,6 @@ const Sale = () => {
         const matchStatus = statusFilter === "" || sale.saleStatus === statusFilter;
         return matchKeyword && matchStatus;
     });
-
-    const formatDateTime = (dateTime) => {
-        if (!dateTime) return "-";
-        return dateTime.replace("T", " ").substring(0, 16);
-    };
 
     return (
         <div className="sale-wrap">

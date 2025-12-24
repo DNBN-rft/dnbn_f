@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiCall } from "../../../utils/apiClient";
+import { apiCall, apiPut } from "../../../utils/apiClient";
 import "./css/reasoninputmodal.css";
 
 const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingReason }) => {
@@ -43,13 +43,7 @@ const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingRea
     const finalReason = selectedReason === "기타" ? customReason : selectedReason;
     
     try {
-      const response = await apiCall("/order/reason", {
-        method: "PUT",
-        body: JSON.stringify({
-          orderDetailIdx: orderDetailIdx,
-          reason: finalReason
-        })
-      });
+      const response = await apiPut("/order/reason", {orderDetailIdx: orderDetailIdx, reason: finalReason});
 
       if (response.ok) {
         onSubmit(finalReason);

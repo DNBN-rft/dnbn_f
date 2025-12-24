@@ -46,9 +46,7 @@ export const getQuestionDetail = async (questionIdx) => {
  */
 export const registerAnswer = async (questionIdx, answerContent) => {
   try {
-    const response = await apiPost(`/admin/question/${questionIdx}`, {
-      body: JSON.stringify({ answerContent }),
-    });
+    const response = await apiPost(`/admin/question/${questionIdx}`,{ answerContent });
     if (!response.ok) {
       throw new Error("답변 등록에 실패했습니다.");
     }
@@ -65,9 +63,7 @@ export const registerAnswer = async (questionIdx, answerContent) => {
  */
 export const modifyAnswer = async (questionIdx, answerContent) => {
   try {
-    const response = await apiPut(`/admin/question/${questionIdx}`, {
-      body: JSON.stringify({ answerContent }),
-    });
+    const response = await apiPut(`/admin/question/${questionIdx}`, { answerContent });
     if (!response.ok) {
       throw new Error("답변 수정에 실패했습니다.");
     }
