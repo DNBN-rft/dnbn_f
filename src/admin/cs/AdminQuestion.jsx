@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "./css/adminquestion.css";
 import AdminQuestionDetail from "./modal/AdminQuestionDetail";
 import { getQuestionList, searchQuestions } from "../../utils/adminQuestionService";
+import { formatDateTime } from "../../utils/commonService";
 
 const AdminQuestion = () => {
   const navigate = useNavigate();
@@ -13,16 +14,13 @@ const AdminQuestion = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
-  // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
 
-  // 필터 상태
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
@@ -34,7 +32,6 @@ const AdminQuestion = () => {
     searchKeyword: "",
   });
 
-  // 문의사항 목록 조회
   useEffect(() => {
     fetchQuestions();
   }, []);
@@ -68,7 +65,6 @@ const AdminQuestion = () => {
       setLoading(false);
     }
   };
-  // 문의 유형 한글 변환
   const getQuestionTypeLabel = (type) => {
     const typeMap = {
       QR: "QR 관련",
@@ -101,7 +97,6 @@ const AdminQuestion = () => {
     }
   };
 
-  // 검색 내부 함수
   const handleSearchInternal = async (page = 0) => {
     const searchParams = {
       startDate: filters.startDate,
@@ -136,13 +131,11 @@ const AdminQuestion = () => {
     }
   };
 
-  // 검색 버튼 클릭
   const handleSearch = () => {
     setCurrentPage(0);
     handleSearchInternal(0);
   };
 
-  // 필터 초기화
   const handleReset = () => {
     setFilters({
       startDate: "",
@@ -160,7 +153,6 @@ const AdminQuestion = () => {
   return (
     <div className="adminquestion-container">
       <div className="adminquestion-wrap">
-        {/* 탭 네비게이션 */}
         <div className="adminquestion-tab-navigation">
           <button className="adminquestion-tab-btn adminquestion-tab-active">
             고객문의
@@ -174,7 +166,6 @@ const AdminQuestion = () => {
         </div>
         {/* 필터 영역 */}
         <div className="adminquestion-filter-section">
-          {/* 첫 번째 행: 기간 선택, 답변완료여부, 수정 여부 */}
           <div className="adminquestion-filter-row">
             <div className="adminquestion-filter-group">
               <label className="adminquestion-filter-label">기간 선택</label>
@@ -215,7 +206,6 @@ const AdminQuestion = () => {
               </label>
             </div>
           </div>
-          {/* 두 번째 행: 사용자 구분, 문의타입 */}
           <div className="adminquestion-filter-row">
             <div className="adminquestion-filter-group">
               <label className="adminquestion-filter-label">사용자 구분</label>
@@ -249,9 +239,7 @@ const AdminQuestion = () => {
               </select>
             </div>
           </div>
-          {/* 구분선 */}
           <div className="adminquestion-filter-divider"></div>
-          {/* 세 번째 행: 검색조건, 검색input, 검색버튼 */}
           <div className="adminquestion-filter-row">
             <div className="adminquestion-filter-group">
               <select 
@@ -279,13 +267,11 @@ const AdminQuestion = () => {
             </div>
           </div>
         </div>
-        {/* 테이블 제목 */}
         <div className="adminquestion-table-header">
           <div className="adminquestion-table-info">
             총 <span className="adminquestion-count-bold">{totalElements}</span>건
           </div>
         </div>
-        {/* 테이블 영역 */}
         <div className="adminquestion-table-wrap">
           {loading ? (
             <div>로딩 중...</div>
@@ -321,7 +307,7 @@ const AdminQuestion = () => {
                       <td>{getQuestionTypeLabel(question.questionRequestType)}</td>
                       <td>{question.questionRegNm}</td>
                       <td className="adminquestion-table-title-cell">{question.questionTitle}</td>
-                      <td>{question.questionRegDateTime}</td>
+                      <td>{formatDateTime(question.questionRegDateTime)}</td>
                       <td>
                         <span className={`adminquestion-status ${question.isAnswered ? 'adminquestion-status-complete' : 'adminquestion-status-pending'}`}>
                           {question.isAnswered ? '처리완료' : '처리대기'}

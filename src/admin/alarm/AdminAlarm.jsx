@@ -1,32 +1,29 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminStoreAlarms, searchAlrams } from "../../utils/alarmService";
+import { formatDateTime } from "../../utils/commonService";
 import "./css/adminalarm.css";
 
 const AdminAlarm = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("store"); // 'store' or 'cust'
+  const [activeTab, setActiveTab] = useState("store");
   const [alarms, setAlarms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
-  // 필터 상태
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [alarmType, setAlarmType] = useState("all");
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
 
-  // 알림 목록 조회
   const fetchAlarms = useCallback(async (page = 0) => {
   setLoading(true);
   setError(null);
@@ -58,7 +55,6 @@ const AdminAlarm = () => {
 useEffect(() => {
   fetchAlarms(0);
 }, [fetchAlarms]);
-  // 알림 타입 한글 변환
   const getAlarmTypeLabel = (type) => {
     const typeMap = {
       NEGO: "네고",
@@ -70,18 +66,6 @@ useEffect(() => {
       ORDER: "주문",
     };
     return typeMap[type] || type;
-  };
-  // 날짜 포맷팅
-  const formatDateTime = (dateTime) => {
-    if (!dateTime) return "-";
-    const date = new Date(dateTime);
-    return date.toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   const handleSearchInternal = async (page = 0) => {
