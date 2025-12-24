@@ -2,6 +2,7 @@ import "./css/fileinfo.css"
 import StepButton from "../register/component/StepButton";
 import { useState } from "react";
 import { validateFileInfo } from "../../utils/registerValidation";
+import { apiPost } from "../../utils/apiClient";
 
 const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
   const [storeImage, setStoreImage] = useState(null);
@@ -136,10 +137,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
         formDataToSend.append("bzFile", file);
       });
 
-      const response = await fetch("http://localhost:8080/api/store/register", {
-        method: "POST",
-        body: formDataToSend,
-      });
+      const response = await apiPost("/store/register", formDataToSend);
 
       if (response.ok) {
         alert("회원가입이 완료되었습니다.");

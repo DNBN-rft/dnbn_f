@@ -33,9 +33,8 @@ export const getCustDetail = async (custCode) => {
 // 고객 정보 수정
 export const updateCust = async (custCode, modRequest) => {
   try {
-    const requestBody = JSON.stringify(modRequest);
     
-    const response = await apiPut(`/admin/cust/${custCode}`, requestBody);
+    const response = await apiPut(`/admin/cust/${custCode}`,modRequest);
 
 
     if (!response.ok) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiCall } from "../../utils/apiClient";
+import { apiCall, apiPost } from "../../utils/apiClient";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import "./css/orderstatic.css";
+import { formatDate } from "../../utils/commonService";
 
 ChartJS.register(
   CategoryScale,
@@ -31,14 +32,6 @@ const OrderStatic = () => {
   const [staticData, setStaticData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dateType, setDateType] = useState("");
-
-  // 날짜를 YYYY-MM-DD 형식으로 변환 (로컬 타임존)
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
   const handleRecentDateClick = (type) => {
     const today = new Date();
@@ -98,22 +91,13 @@ const OrderStatic = () => {
         endDate: endDate
       };
       
-      console.log("API 요청:", {
-        url: `/store/order/statistics/${storeCode}`,
-        body: requestBody
-      });
-      
       // API 호출
-      const response = await apiCall(`/store/order/statistics/${storeCode}`, {
-        method: "POST",
-        body: JSON.stringify(requestBody)
-      });
+      const response = await apiPost(`/store/order/statistics/${storeCode}`, requestBody);
 
       // JSON 파싱
       const data = await response.json();
       
       setStaticData(data);
-      console.log("매출 통계 데이터:", data);
     } catch (error) {
       console.error("매출 통계 조회 실패:", error);
       console.error("에러 상세:", error);
@@ -140,7 +124,6 @@ const OrderStatic = () => {
     }
 
     try {
-      // localStorage에서 storeCode 가져오기
       const userInfo = localStorage.getItem("user");
       if (!userInfo) {
         alert("로그인 정보가 없습니다.");
@@ -154,15 +137,7 @@ const OrderStatic = () => {
         endDate: endDate
       };
       
-      // 엑셀 다운로드 API 호출 - fetch 직접 사용
-      const response = await fetch(`http://localhost:8080/api/store/order/statistics/${storeCode}/excel`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(requestBody)
-      });
+      const response = await apiPost(`/store/order/statistics/${storeCode}/excel`, requestBody);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -185,7 +160,6 @@ const OrderStatic = () => {
         document.body.removeChild(a);
       }, 100);
       
-      console.log("엑셀 다운로드 완료");
     } catch (error) {
       console.error("엑셀 다운로드 실패:", error);
       alert("엑셀 다운로드에 실패했습니다.");

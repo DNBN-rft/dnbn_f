@@ -2,6 +2,7 @@ import "./css/memberinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState } from "react";
 import { validateMemberInfo } from "../../utils/registerValidation";
+import { apiGet } from "../../utils/apiClient";
 
 const MemberInfo = ({ formData, setFormData, next, prev }) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -74,12 +75,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/store/check-loginId/${formData.loginId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      });
+      const response = await apiGet(`/store/check-loginId/${formData.loginId}`);
       
       if (response.ok) {
         const data = await response.text();

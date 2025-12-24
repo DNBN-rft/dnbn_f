@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import './css/membership.css';
 import { useEffect, useState } from 'react';
 import { apiGet } from '../../utils/apiClient';
+import { formatDate } from '../../utils/commonService';
 
 const Membership = () => {
   const navigate = useNavigate();
@@ -50,13 +51,6 @@ const Membership = () => {
   }
 
   const { planNm, nextBillingDate, membershipPlanFuncList, membershipPaymentList } = dashboardData;
-
-  // 날짜 포맷팅 함수
-  const formatDate = (dateString) => {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
-  };
 
   // 기능 정렬 및 병합 처리
   const processedFunctions = () => {

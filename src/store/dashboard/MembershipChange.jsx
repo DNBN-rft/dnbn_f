@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/membershipchange.css";
-import { apiCall } from "../../utils/apiClient";
+import { apiGet, apiPost } from "../../utils/apiClient";
 const MembershipChange = () => {
   const navigate = useNavigate();
   const [currentPlan, setCurrentPlan] = useState(null);
@@ -15,15 +15,7 @@ const MembershipChange = () => {
         let userInfo = localStorage.getItem("user");
         const storeCode = JSON.parse(userInfo).storeCode;
         // 현재 멤버십 정보 가져오기
-        const storeResponse = await fetch(
-          `http://localhost:8080/api/store/view/${storeCode}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const storeResponse = await apiGet(`/store/view/${storeCode}`);
         if (storeResponse.ok) {
           const storeData = await storeResponse.json();
           setCurrentPlan({
@@ -32,15 +24,7 @@ const MembershipChange = () => {
           });
         }
         // 구독 플랜 목록 가져오기
-        const plansResponse = await fetch(
-          `http://localhost:8080/api/member/membership-plans`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const plansResponse = await apiGet(`/member/membership-plans`);
         if (plansResponse.ok) {
           const plansData = await plansResponse.json();
           setmemberShipPlans(plansData);
@@ -74,10 +58,7 @@ const MembershipChange = () => {
           storeCode: storeCode,
           memberShipPlanIdx: selectedPlan.memberShipPlanIdx,
         };
-        const response = await apiCall("/store/changeMembership", {
-          method: "POST",
-          body: JSON.stringify(requestBody),
-        });
+        const response = await apiPost("/store/changeMembership", requestBody);
         if (response.ok) {
           alert("멤버십이 성공적으로 변경되었습니다.");
           navigate("/mypage");

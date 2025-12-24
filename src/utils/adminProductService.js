@@ -76,7 +76,7 @@ export const getProductDetail = async (productCode) => {
  */
 export const updateProduct = async (productCode, productData) => {
   try {
-    const response = await apiPut(`/admin/product/${productCode}`, JSON.stringify(productData));
+    const response = await apiPut(`/admin/product/${productCode}`, productData);
 
     if (response.ok) {
       const message = await response.text();
@@ -108,7 +108,7 @@ export const updateProduct = async (productCode, productData) => {
  */
 export const restrictProducts = async (productCodes) => {
   try {
-    const response = await apiPut(`/admin/product/restrictProduct`, JSON.stringify({ productCodes }));
+    const response = await apiPut(`/admin/product/restrictProduct`, { productCodes });
 
     if (response.ok) {
       const message = await response.text();

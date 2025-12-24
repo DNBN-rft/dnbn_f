@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import "./css/productdetail.css";
 import ProductModDetail from "./ProductModDetail";
 import { apiGet, apiDelete } from "../../../utils/apiClient";
+import { formatDateTime } from "../../../utils/commonService";
 
 const ProductDetail = ({ productCode, onClose, onRefresh }) => {
   const [isModOpen, setIsModOpen] = useState(false);
@@ -170,14 +171,14 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
                   <div>등록자</div>
                   <div>{product.regNm}</div>
                   <div>등록일시</div>
-                  <div>{product.regDateTime}</div>
+                  <div>{formatDateTime(product.regDateTime)}</div>
                 </div>
 
                 <div className="productdetail-bottom-content-editor">
                   <div>수정자</div>
                   <div>{product.modNm}</div>
                   <div>수정일시</div>
-                  <div>{product.modDateTime}</div>
+                  <div>{formatDateTime(product.modDateTime)}</div>
                 </div>
               </div>
             </div>

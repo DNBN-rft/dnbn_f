@@ -3,6 +3,7 @@ import QuestionRegisterModal from "./modal/QuestionRegisterModal";
 import QuestionDetailModal from "./modal/QuestionDetailModal";
 import { apiGet } from "../../utils/apiClient";
 import "./css/questions.css";
+import { formatDate } from "../../utils/commonService";
 
 const Questions = () => {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -46,11 +47,6 @@ const Questions = () => {
       loadQuestions(0);
     }
   }, [storeCode, loadQuestions]);
-
-  const formatDate = (dateTime) => {
-    if (!dateTime) return "-";
-    return dateTime.replace("T", " ").substring(0, 16);
-  };
 
   const handleRowClick = (id) => {
     setSelectedId(id);
