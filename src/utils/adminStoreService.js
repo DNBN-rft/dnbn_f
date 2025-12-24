@@ -2,7 +2,7 @@
  * 관리자 가맹점 관리 API 서비스
  */
 
-import { apiCall } from "./apiClient";
+import { apiCall, apiGet } from "./apiClient";
 
 /**
  * 승인 대기 가맹점 목록 조회 (페이지네이션)
@@ -472,3 +472,51 @@ export const searchStores = async (searchParams, page = 0, size = 10) => {
     };
   }
 };
+
+
+export const searchAccept = async (searchParams, page = 0, size = 10) => {
+  try {
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("size", size);
+
+    if (searchParams.bizType && searchParams.bizType !== "") {
+      params.append("bizType", searchParams.bizType);
+    }
+    if (searchParams.startDate) {
+      params.append("startDate", searchParams.startDate);
+    }
+    if (searchParams.endDate) {
+      params.append("endDate", searchParams.endDate);
+    }
+    if (searchParams.searchType) {
+      params.append("searchType", searchParams.searchType);
+    }
+    if (searchParams.searchTerm) {
+      params.append("searchTerm", searchParams.searchTerm);
+    }
+
+    const response = await apiGet(`/admin/store/pendingSearch?${params.toString()}`);
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "가맹점 검색에 실패했습니다."
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다."
+    };
+  } 
+}
