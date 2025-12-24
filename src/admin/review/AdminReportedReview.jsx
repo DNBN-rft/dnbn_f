@@ -158,16 +158,16 @@ const AdminReportedReview = () => {
   // 검색 내부 함수
   const handleSearchInternal = async (page = 0) => {
     const searchParams = {
-      isHidden: filters.status === "normal" ? false : 
-                filters.status === "hidden" ? true : null,
+      isHidden: filters.status === "normal" ? false :
+        filters.status === "hidden" ? true : null,
       ratings: filters.rate !== "rateall" ? [parseInt(filters.rate)] : null,
       startDate: filters.startDate,
       endDate: filters.endDate,
       searchTerm: filters.searchKeyword,
       searchType: filters.searchType === "typeall" ? "all" :
-                  filters.searchType === "store" ? "storenm" :
-                  filters.searchType === "author" ? "regnm" :
-                  filters.searchType === "content" ? "content" : "all",
+        filters.searchType === "store" ? "storenm" :
+          filters.searchType === "author" ? "regnm" :
+            filters.searchType === "content" ? "content" : "all",
       isReported: true, // 신고된 리뷰만 조회
     };
 
@@ -234,6 +234,24 @@ const AdminReportedReview = () => {
         <div className="adminreview-filter-wrap">
           <div className="adminreview-filter-row">
             <div className="adminreview-filter-group">
+              <label>조회기간</label>
+              <input
+                type="date"
+                className="adminreview-date-input"
+                value={filters.startDate}
+                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              />
+              <span>~</span>
+              <input
+                type="date"
+                className="adminreview-date-input"
+                value={filters.endDate}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="adminreview-filter-row">
+            <div className="adminreview-filter-group">
               <label htmlFor="review-status">상태</label>
               <select
                 name="review-status"
@@ -269,24 +287,6 @@ const AdminReportedReview = () => {
                 <option value="5">5점</option>
               </select>
             </div>
-
-            <div className="adminreview-filter-group">
-              <label htmlFor="report-today">기간</label>
-              <select
-                name="report-today"
-                id="report-today"
-                className="adminreview-select"
-                value={filters.period}
-                onChange={(e) =>
-                  setFilters({ ...filters, period: e.target.value })
-                }
-              >
-                <option value="dayall">전체</option>
-                <option value="today">오늘</option>
-                <option value="week">이번주</option>
-                <option value="month">이번달</option>
-              </select>
-            </div>
           </div>
 
           <div className="adminreview-filter-row adminreview-search-row">
@@ -316,6 +316,9 @@ const AdminReportedReview = () => {
               />
               <button className="adminreview-search-btn" onClick={handleSearch}>
                 검색
+              </button>
+              <button className="adminreview-reset-btn" onClick={handleReset}>
+                초기화
               </button>
             </div>
           </div>
@@ -428,11 +431,10 @@ const AdminReportedReview = () => {
                           상세
                         </button>
                         <button
-                          className={`adminreview-btn ${
-                            review.isHidden
+                          className={`adminreview-btn ${review.isHidden
                               ? "adminreview-btn-show"
                               : "adminreview-btn-hide"
-                          }`}
+                            }`}
                           onClick={() =>
                             handleToggleHidden(
                               review.reviewIdx,
@@ -452,7 +454,7 @@ const AdminReportedReview = () => {
 
           {/* 페이지네이션 */}
           <div className="adminreview-pagination">
-            <button 
+            <button
               className="adminreview-page-btn"
               onClick={() => {
                 if (currentPage > 0) {
@@ -477,7 +479,7 @@ const AdminReportedReview = () => {
                 {index + 1}
               </button>
             ))}
-            <button 
+            <button
               className="adminreview-page-btn"
               onClick={() => {
                 if (currentPage < totalPages - 1) {

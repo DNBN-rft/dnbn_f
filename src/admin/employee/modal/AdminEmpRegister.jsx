@@ -256,12 +256,19 @@ const AdminEmpRegister = ({ onClose, onSuccess }) => {
               <input 
                 type="password" 
                 name="empPwConfirm"
-                className="adminempregister-input"
+                className={`adminempregister-input ${formData.empPwConfirm && formData.empPw && formData.empPw === formData.empPwConfirm ? 'adminempregister-input-success' : ''}`}
                 value={formData.empPwConfirm}
                 onChange={handleInputChange}
                 placeholder="비밀번호를 다시 입력하세요"
               />
-              {errors.empPwConfirm && (
+              {formData.empPwConfirm && (
+                formData.empPw === formData.empPwConfirm ? (
+                  <div className="adminempregister-success">비밀번호가 일치합니다.</div>
+                ) : (
+                  <div className="adminempregister-error">비밀번호가 일치하지 않습니다.</div>
+                )
+              )}
+              {!formData.empPwConfirm && errors.empPwConfirm && (
                 <div className="adminempregister-error">{errors.empPwConfirm}</div>
               )}
             </div>
@@ -311,11 +318,11 @@ const AdminEmpRegister = ({ onClose, onSuccess }) => {
                     {(() => {
                       try {
                         const menuAuth = authList.find(auth => auth.authIdx === parseInt(formData.authIdx))?.menuAuth;
-                        const menuArray = typeof menuAuth === 'string' ? JSON.parse(menuAuth) : menuAuth;
-                        return Array.isArray(menuArray) && menuArray.length > 0 ? (
+                        const menuArray = Array.isArray(menuAuth) ? menuAuth : [];
+                        return menuArray.length > 0 ? (
                           menuArray.map((menu, index) => (
                             <span key={index} className="adminempregister-menu-tag">
-                              {menu}
+                              {menu.displayName}
                             </span>
                           ))
                         ) : (
