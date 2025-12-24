@@ -128,3 +128,30 @@ export const getAuthList = async () => {
     };
   }
 };
+
+/**
+ * 날짜 및 시간 포맷팅
+ * @param {string|Date} dateTime - 포맷팅할 날짜/시간
+ * @returns {string} 포맷팅된 날짜/시간 문자열 (YYYY. MM. DD HH:MM)
+ */
+export const formatDateTime = (dateTime) => {
+  if (!dateTime) return "-";
+  const date = new Date(dateTime);
+  return date.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+export const formatDate = (dateTime) => {
+  if (!dateTime) return "-";
+  const date = new Date(dateTime);
+  return date.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};

@@ -12,16 +12,13 @@ const AdminNotice = () => {
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedNotices, setSelectedNotices] = useState([]);
 
-  // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
-  // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
 
-  // 필터 상태
   const [filters, setFilters] = useState({
     isPinned: null,
     startDate: "",
@@ -48,12 +45,10 @@ const AdminNotice = () => {
         setNotices([]);
       }
     } catch (error) {
-      console.error("공지사항 목록 조회 오류:", error);
       setNotices([]);
     }
   };
 
-  // 체크박스 선택
   const handleCheckboxChange = (noticeIdx) => {
     setSelectedNotices(prev => {
       if (prev.includes(noticeIdx)) {
@@ -64,13 +59,11 @@ const AdminNotice = () => {
     });
   };
 
-  // 삭제 모드 토글
   const toggleDeleteMode = () => {
     setShowCheckbox(!showCheckbox);
     setSelectedNotices([]);
   };
 
-  // 공지사항 삭제
   const handleDelete = async () => {
     if (selectedNotices.length === 0) {
       alert("삭제할 공지사항을 선택해주세요.");
@@ -96,7 +89,6 @@ const AdminNotice = () => {
     }
   };
 
-  // 검색 내부 함수
   const handleSearchInternal = async (page = 0) => {
     try {
       const searchParams = {
@@ -119,7 +111,6 @@ const AdminNotice = () => {
         alert(result.error || "공지사항 검색 실패");
       }
     } catch (error) {
-      console.error("공지사항 검색 오류:", error);
       setNotices([]);
       alert("공지사항 검색 중 오류가 발생했습니다.");
     }
