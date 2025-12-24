@@ -92,31 +92,30 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const submitData = {
       storeCode: storeCode,
-      memberNm: formData.memberNm,
       memberTelNo: formData.memberTelNo,
       memberEmail: formData.memberEmail,
       memberPw: formData.memberPw,
       memberPwCheck: formData.memberPwCheck,
       memberAuth: JSON.stringify(formData.memberAuth), // JSON 문자열로 변환
     };
-    
+
     try {
       const response = await apiPut(`/store/member/detail/${member.memberId}`, submitData);
 
       if (!response.ok) {
         throw new Error("직원 정보 수정에 실패했습니다.");
       }
-      
+
       alert("직원 정보가 성공적으로 수정되었습니다.");
-      
+
       // 데이터 새로고침
       if (refreshData) {
         await refreshData();
       }
-      
+
       onClose();
     } catch (error) {
       alert("직원 정보 수정에 실패했습니다. 다시 시도해주세요.");
@@ -169,6 +168,7 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
                   name="memberNm"
                   value={formData.memberNm}
                   onChange={handleChange}
+                  disabled
                 />
                 <label>전화번호</label>
                 <input

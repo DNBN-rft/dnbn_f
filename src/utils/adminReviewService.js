@@ -2,7 +2,8 @@
  * 관리자 리뷰 관리 API 서비스
  */
 
-const BASE_URL = "http://localhost:8080/api/admin/review";
+import { apiDelete, apiGet, apiPut } from "./apiClient";
+
 
 /**
  * 모든 리뷰 목록 조회 (페이지네이션)
@@ -11,10 +12,7 @@ const BASE_URL = "http://localhost:8080/api/admin/review";
  */
 export const getReviews = async (page = 0, size = 10) => {
   try {
-    const response = await fetch(`${BASE_URL}?page=${page}&size=${size}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/review?page=${page}&size=${size}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -46,10 +44,7 @@ export const getReviews = async (page = 0, size = 10) => {
  */
 export const getReviewDetail = async (reviewIdx) => {
   try {
-    const response = await fetch(`${BASE_URL}/${reviewIdx}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/review/${reviewIdx}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -81,10 +76,7 @@ export const getReviewDetail = async (reviewIdx) => {
  */
 export const hideReview = async (reviewIdx) => {
   try {
-    const response = await fetch(`${BASE_URL}/hidden/${reviewIdx}`, {
-      method: "PUT",
-      credentials: "include",
-    });
+    const response = await apiPut(`/admin/review/hidden/${reviewIdx}`);
 
     if (response.ok) {
       const message = await response.text();
@@ -116,10 +108,7 @@ export const hideReview = async (reviewIdx) => {
  */
 export const unhideReview = async (reviewIdx) => {
   try {
-    const response = await fetch(`${BASE_URL}/unhide/${reviewIdx}`, {
-      method: "PUT",
-      credentials: "include",
-    });
+    const response = await apiPut(`/admin/review/unhide/${reviewIdx}`);
 
     if (response.ok) {
       const message = await response.text();
@@ -151,14 +140,7 @@ export const unhideReview = async (reviewIdx) => {
  */
 export const deleteReviews = async (reviewDeleteList) => {
   try {
-    const response = await fetch(`${BASE_URL}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ reviewDeleteList }),
-    });
+    const response = await apiDelete("/admin/review", JSON.stringify({ reviewDeleteList }));
 
     if (response.ok) {
       const message = await response.text();
@@ -191,14 +173,7 @@ export const deleteReviews = async (reviewDeleteList) => {
  */
 export const updateHiddenExpiry = async (reviewIdx, newHiddenDate) => {
   try {
-    const response = await fetch(`${BASE_URL}/${reviewIdx}/hidden-expiry`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ newHiddenDate }),
-    });
+    const response = await apiPut(`/admin/review/${reviewIdx}/hidden-expiry`, JSON.stringify({ newHiddenDate }));
 
     if (response.ok) {
       const message = await response.text();
@@ -254,11 +229,11 @@ export const searchReviews = async (searchParams, page = 0, size = 10) => {
     if (searchParams.searchType) {
       params.append('searchType', searchParams.searchType);
     }
+    if (searchParams.isReported !== undefined && searchParams.isReported !== null) {
+      params.append('isReported', searchParams.isReported);
+    }
 
-    const response = await fetch(`${BASE_URL}/search?${params.toString()}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/review/search?${params.toString()}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -291,10 +266,7 @@ export const searchReviews = async (searchParams, page = 0, size = 10) => {
  */
 export const getReportedReviews = async (page = 0, size = 10) => {
   try {
-    const response = await fetch(`${BASE_URL}/reportedReview?page=${page}&size=${size}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await apiGet(`/admin/review/reportedReview?page=${page}&size=${size}`);
 
     if (response.ok) {
       const data = await response.json();

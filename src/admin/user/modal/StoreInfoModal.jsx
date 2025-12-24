@@ -15,7 +15,6 @@ import { getBankList, getMembershipList, getAuthList } from "../../../utils/comm
 const StoreInfoModal = ({ storeCode, onClose }) => {
   // 가맹점 상세 데이터
   const [storeData, setStoreData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // 은행 및 멤버십 목록
   const [bankList, setBankList] = useState([]);
@@ -59,10 +58,9 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);        
         // 가맹점 상세 정보 조회
         const storeResult = await getStoreDetail(storeCode);
-        
+
         if (storeResult.success) {
           setStoreData(storeResult.data);
         } else {
@@ -87,8 +85,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
           setAuthList(authResult.data);
         }
       } catch (error) {
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -101,7 +97,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
   useEffect(() => {
     // bankNm으로부터 bankIdx 찾기
     const selectedBank = bankList.find(bank => bank.bankNm === storeData?.bankNm);
-    
+
     // storeOpenDate가 enum 배열이면 한글로 변환
     const openDaysKorean = Array.isArray(storeData?.storeOpenDate)
       ? storeData.storeOpenDate.map(day => convertEnumToDay(day))
@@ -138,7 +134,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     setBusinessForm({
       bizNm: storeData?.bizNm || "",
       bizType: storeData?.bizType || "",
-      ownerNm: storeData?.ownerNm || "",
       bizRegDate: storeData?.bizRegDate || "",
       bizNo: storeData?.bizNo || "",
       ownerTelNo: storeData?.ownerTelNo || "",
@@ -147,7 +142,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     setSelectedMenus(
       Array.isArray(storeData?.menuAuth) ? storeData.menuAuth.map(m => m.code) : []
     );
-  }, [storeData, bankList]);
+  }, [storeData, bankList, membershipList]);
 
   // 각 섹션별 폼 데이터
   const [storeForm, setStoreForm] = useState({
@@ -182,7 +177,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
 
   const [memberForm, setMemberForm] = useState({
     memberLoginId: "",
-    ownerNm: "",
     ownerTelNo: "",
     newPassword: "",
   });
@@ -190,7 +184,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
   const [businessForm, setBusinessForm] = useState({
     bizNm: "",
     bizType: "",
-    ownerNm: "",
     bizRegDate: "",
     bizNo: "",
     ownerTelNo: "",
@@ -269,7 +262,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     } else if (section === "member") {
       setMemberForm({
         memberLoginId: storeData?.memberLoginId || "",
-        ownerNm: storeData?.ownerNm || "",
         ownerTelNo: storeData?.ownerTelNo || "",
         newPassword: "",
       });
@@ -277,7 +269,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
       setBusinessForm({
         bizNm: storeData?.bizNm || "",
         bizType: storeData?.bizType || "",
-        ownerNm: storeData?.ownerNm || "",
         bizRegDate: storeData?.bizRegDate || "",
         bizNo: storeData?.bizNo || "",
         ownerTelNo: storeData?.ownerTelNo || "",
@@ -337,7 +328,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     };
 
     console.log("구독 정보 저장 데이터:", subsData);
-    
+
     const result = await modSubsInfo(storeData.storeCode, subsData);
     if (result.success) {
       alert("구독 정보가 수정되었습니다.");
@@ -735,7 +726,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
                   </span>
                 )}
               </div>
-                  <div className="storeinfomodal-field">
+              <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">다음 결제일</label>
                 {editModes.subscription ? (
                   <input
@@ -805,6 +796,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
                     value={memberForm.ownerNm}
                     onChange={(e) => setMemberForm({ ...memberForm, ownerNm: e.target.value })}
                     className="storeinfomodal-input"
+                    disabled
                   />
                 ) : (
                   <span className="storeinfomodal-value">{storeData?.ownerNm}</span>

@@ -3,6 +3,16 @@ import "./css/adminproductdetail.css";
 import { getProductDetail, updateProduct } from "../../../utils/adminProductService";
 import { getCategoryList } from "../../../utils/commonService";
 
+// 한글 상태 -> 영문 enum 매핑
+const STATE_MAP = {
+  "판매중": "ON_SALE",
+  "판매 중": "ON_SALE",
+  "품절": "SOLDOUT",
+  "제재": "REJECTED",
+  "대기": "PENDING",
+  "판매종료": "ENDED",
+};
+
 const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
   const [productData, setProductData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -11,22 +21,8 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
 
   const fetchProductDetail = async () => {
     const result = await getProductDetail(productCode);
-    console.log("상품 상세 조회 응답:", result);
     if (result.success) {
-      console.log("상품 데이터:", result.data);
       setProductData(result.data);
-      setEditForm({
-        productNm: result.data.productNm,
-        categoryIdx: result.data.categoryIdx,
-        categoryNm: result.data.categoryNm,
-        isAdult: result.data.isAdult,
-        productPrice: result.data.productPrice,
-        productAmount: result.data.productAmount,
-        productState: result.data.productState,
-        isNego: result.data.isNego,
-        isSale: result.data.isSale,
-        productDescription: result.data.productDescription,
-      });
     } else {
       alert(result.error);
       onClose();
@@ -48,6 +44,28 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productCode]);
 
+  // productData와 categoryList가 모두 로드되면 editForm 설정
+  useEffect(() => {
+    if (productData && categoryList.length > 0) {
+      const foundCategory = categoryList.find(cat => cat.categoryNm === productData.categoryNm);
+      // productState를 한글에서 영문 enum으로 변환 (초기값 설정용)
+      const stateValue = STATE_MAP[productData.productState] || productData.productState;
+      
+      setEditForm({
+        productNm: productData.productNm,
+        categoryIdx: foundCategory?.categoryIdx || null,
+        categoryNm: productData.categoryNm,
+        isAdult: productData.isAdult,
+        productPrice: productData.productPrice,
+        productAmount: productData.productAmount,
+        productState: stateValue,
+        isNego: productData.isNego,
+        isSale: productData.isSale,
+        productDescription: productData.productDescription,
+      });
+    }
+  }, [productData, categoryList]);
+
   const handleSave = async () => {
     const result = await updateProduct(productCode, editForm);
     if (result.success) {
@@ -63,6 +81,9 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
   };
 
   const handleCancel = () => {
+    // productState를 한글에서 영문 enum으로 변환
+    const stateValue = STATE_MAP[productData.productState] || productData.productState;
+    
     setEditForm({
       productNm: productData.productNm,
       categoryIdx: productData.categoryIdx,
@@ -70,21 +91,12 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
       isAdult: productData.isAdult,
       productPrice: productData.productPrice,
       productAmount: productData.productAmount,
-      productState: productData.productState,
+      productState: stateValue,
       isNego: productData.isNego,
       isSale: productData.isSale,
       productDescription: productData.productDescription,
     });
     setIsEditMode(false);
-  };
-
-  const getProductStateText = (state) => {
-    switch (state) {
-      case "AVAILABLE": return "판매중";
-      case "SOLDOUT": return "품절";
-      case "REJECTED": return "제재";
-      default: return state;
-    }
   };
 
   if (!productData) return null;
@@ -238,7 +250,7 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
                 <label className="adminproductdetail-label">카테고리</label>
                 {isEditMode ? (
                   <select
-                    value={editForm.categoryIdx || ''}
+                    value={String(editForm.categoryIdx || '')}
                     onChange={(e) => {
                       const selectedCategory = categoryList.find(cat => cat.categoryIdx === parseInt(e.target.value));
                       setEditForm({
@@ -249,9 +261,8 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
                     }}
                     className="adminproductdetail-select"
                   >
-                    <option value="">카테고리 선택</option>
                     {categoryList.map(category => (
-                      <option key={category.categoryIdx} value={category.categoryIdx}>
+                      <option key={category.categoryIdx} value={String(category.categoryIdx)}>
                         {category.categoryNm}
                       </option>
                     ))}
@@ -321,13 +332,15 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
                     onChange={(e) => setEditForm({...editForm, productState: e.target.value})}
                     className="adminproductdetail-select"
                   >
-                    <option value="AVAILABLE">판매중</option>
+                    <option value="ON_SALE">판매중</option>
                     <option value="SOLDOUT">품절</option>
                     <option value="REJECTED">제재</option>
+                    <option value="PENDING">대기</option>
+                    <option value="ENDED">판매종료</option>
                   </select>
                 ) : (
                   <span className="adminproductdetail-value">
-                    {getProductStateText(productData.productState)}
+                    {productData.productState}
                   </span>
                 )}
               </div>
