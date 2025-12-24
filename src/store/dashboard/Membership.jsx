@@ -1,4 +1,3 @@
-import { ProgressBar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './css/membership.css';
 import { useEffect, useState } from 'react';

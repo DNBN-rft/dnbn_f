@@ -3,7 +3,7 @@
  * 직원 관리 관련 API 호출 함수들
  */
 
-import { apiCall } from "./apiClient";
+import { apiDelete, apiGet, apiPost, apiPut } from "./apiClient";
 
 /**
  * 직원 목록 조회 (페이지네이션)
@@ -13,9 +13,7 @@ import { apiCall } from "./apiClient";
  */
 export const getEmployeeList = async (page = 0, size = 10) => {
   try {
-    const response = await apiCall(`/admin/employee?page=${page}&size=${size}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/employee?page=${page}&size=${size}`);
 
     if (!response.ok) {
       throw new Error("직원 목록 조회에 실패했습니다.");
@@ -41,10 +39,7 @@ export const getEmployeeList = async (page = 0, size = 10) => {
  */
 export const registerEmployee = async (employeeData) => {
   try {
-    const response = await apiCall("/admin/employee", {
-      method: "POST",
-      body: JSON.stringify(employeeData),
-    });
+    const response = await apiPost("/admin/employee", JSON.stringify(employeeData));
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -68,10 +63,7 @@ export const registerEmployee = async (employeeData) => {
  */
 export const changeEmployeePassword = async (passwordData) => {
   try {
-    const response = await apiCall("/admin/employee/changePw", {
-      method: "PUT",
-      body: JSON.stringify(passwordData),
-    });
+    const response = await apiPut("/admin/employee/changePw", JSON.stringify(passwordData));
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -94,9 +86,7 @@ export const changeEmployeePassword = async (passwordData) => {
  */
 export const checkDuplicateLoginId = async (loginId) => {
   try {
-    const response = await apiCall(`/admin/employee/duplicate/${loginId}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/employee/duplicate/${loginId}`);
 
     if (!response.ok) {
       throw new Error("아이디 중복 확인에 실패했습니다.");
@@ -119,10 +109,7 @@ export const checkDuplicateLoginId = async (loginId) => {
  */
 export const changeEmployeeStatus = async (statusData) => {
   try {
-    const response = await apiCall("/admin/employee/status", {
-      method: "PUT",
-      body: JSON.stringify(statusData),
-    });
+    const response = await apiPut("/admin/employee/status", JSON.stringify(statusData));
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -147,10 +134,7 @@ export const changeEmployeeStatus = async (statusData) => {
  */
 export const deleteEmployeeList = async (deleteData, page = 0, size = 10) => {
   try {
-    const response = await apiCall(`/admin/employee?page=${page}&size=${size}`, {
-      method: "DELETE",
-      body: JSON.stringify(deleteData),
-    });
+    const response = await apiDelete(`/admin/employee?page=${page}&size=${size}`, JSON.stringify(deleteData));
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -183,9 +167,7 @@ export const searchEmployees = async (searchParams, page = 0, size = 10) => {
       ...searchParams
     });
 
-    const response = await apiCall(`/admin/employee/search?${params.toString()}`, {
-      method: "GET",
-    });
+    const response = await apiGet(`/admin/employee/search?${params.toString()}`);
 
     if (!response.ok) {
       throw new Error("직원 검색에 실패했습니다.");
