@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./css/orderlist.css";
 import OrderInfo from "./modal/OrderInfo";
-import { apiGet } from "../../utils/apiClient";
+import { apiGet, apiPost } from "../../utils/apiClient";
+import { formatDateTime } from "../../utils/commonService";
 
 const OrderList = () => {
   const location = useLocation();
@@ -88,13 +89,7 @@ const OrderList = () => {
       
       const storeCode = JSON.parse(userData).storeCode;
       
-      const response = await fetch(`http://localhost:8080/api/store/order/list/${storeCode}/excel`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include"
-      });
+      const response = await apiPost(`/store/order/list/${storeCode}/excel`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -220,7 +215,7 @@ const OrderList = () => {
                   <td>{p.buyer}</td>
                   <td>{p.totalPrice?.toLocaleString()}원</td>
                   <td>{p.payType}</td>
-                  <td>{p.payDate}</td>
+                  <td>{formatDateTime(p.payDate)}</td>
                 </tr>
               ))
             )}

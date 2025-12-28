@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./css/withdrawalpasswordmodal.css";
+import { apiPost } from "../../../utils/apiClient";
 
 const WithdrawalPasswordModal = ({ onClose, onPasswordVerified, storeIdx }) => {
   const [password, setPassword] = useState("");
@@ -13,17 +14,7 @@ const WithdrawalPasswordModal = ({ onClose, onPasswordVerified, storeIdx }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8080/api/store/password`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          storeIdx: storeIdx,
-          password: password,
-        }),
-      });
+      const response = await apiPost(`/store/password`, {storeIdx: storeIdx, password: password});
 
       if (!response.ok) {
         alert("비밀번호가 올바르지 않습니다.");

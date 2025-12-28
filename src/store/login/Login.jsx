@@ -44,8 +44,6 @@ const Login = () => {
     const result = await login(username, password);
 
     if (result.success) {
-      console.log("로그인 성공:", result.data);
-      
       // AuthContext에 사용자 정보 저장
       setAuthState({
         memberNm: result.data.memberNm,

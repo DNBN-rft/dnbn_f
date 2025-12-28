@@ -76,7 +76,7 @@ export const getNoticeDetail = async (noticeIdx) => {
  */
 export const updateNotice = async (noticeIdx, data) => {
   try {
-    const response = await apiPut(`/admin/notice/${noticeIdx}`, JSON.stringify(data));
+    const response = await apiPut(`/admin/notice/${noticeIdx}`, data);
 
     if (response.ok) {
       const message = await response.text();
@@ -108,7 +108,7 @@ export const updateNotice = async (noticeIdx, data) => {
  */
 export const createNotice = async (data) => {
   try {
-    const response = await apiPost("/admin/notice", JSON.stringify(data));
+    const response = await apiPost("/admin/notice", data);
 
     if (response.ok) {
       const message = await response.text();

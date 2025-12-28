@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiGet } from '../../../utils/apiClient';
 import './css/questiondetailmodal.css';
+import { formatDate } from '../../../utils/commonService';
 
 const QuestionDetailModal = ({ onClose, id }) => {
     const [question, setQuestion] = useState(null);
@@ -25,11 +26,6 @@ const QuestionDetailModal = ({ onClose, id }) => {
         
         loadQuestionDetail();
     }, [id]);
-
-    const formatDate = (dateTime) => {
-        if (!dateTime) return "-";
-        return dateTime.replace("T", " ").substring(0, 16);
-    };
 
     if (loading || !question) {
         return (

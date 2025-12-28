@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./css/mypage.css";
 import WithdrawalPasswordModal from "./modal/WithdrawalPasswordModal";
 import WithdrawalConfirmModal from "./modal/WithdrawalConfirmModal";
+import { apiGet } from "../../utils/apiClient";
+import { formatDate } from "../../utils/commonService";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -13,26 +15,13 @@ const MyPage = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // LocalDateTime 포맷팅 함수 (YYYY-MM-DD만 표시)
-  const formatDate = (dateTimeString) => {
-    if (!dateTimeString) return '-';
-    return dateTimeString.split('T')[0];
-  };
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         let userInfo = localStorage.getItem("user");
         const storeCode = JSON.parse(userInfo).storeCode;
         
-        const response = await fetch(`http://localhost:8080/api/store/view/${storeCode}`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        
-        console.log("Response status:", response.status);
+        const response = await apiGet(`/store/view/${storeCode}`);
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -41,7 +30,6 @@ const MyPage = () => {
         }
         
         const data = await response.json();
-        console.log("User Data:", data);
         setStoreData(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -221,7 +209,7 @@ const MyPage = () => {
                         사업자 등록일
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.requestedDateTime ? new Date(storeData.requestedDateTime).toLocaleDateString('ko-KR') : '-'}
+                        {storeData.requestedDateTime ? formatDate(storeData.requestedDateTime) : '-'}
                       </div>
                     </div>
                   </div>
@@ -230,10 +218,6 @@ const MyPage = () => {
                 <div className="mypage-middle-content-align">
                   <div className="mypage-middle-content-title">운영 정보</div>
                   <div className="mypage-middle-content-info">
-                    <div className="mypage-middle-content-subtitle">개업일</div>
-                    <div className="mypage-middle-content-subcontent">
-                      {storeData.storeOpenDate && storeData.storeOpenDate.length > 0 ? storeData.storeOpenDate.join(', ') : '-'}
-                    </div>
                   </div>
                   <div className="mypage-middle-content-info">
                     <div className="mypage-middle-content-subtitle">오픈시간</div>
@@ -271,7 +255,7 @@ const MyPage = () => {
                         구독 시작일
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.membershipStartDate ? new Date(storeData.membershipStartDate).toLocaleDateString('ko-KR') : '-'}
+                        {storeData.membershipStartDate ? formatDate(storeData.membershipStartDate) : '-'}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">
@@ -279,7 +263,7 @@ const MyPage = () => {
                         다음 결제일
                       </div>
                       <div className="mypage-middle-content-subcontent">
-                        {storeData.nextBillingDate ? new Date(storeData.nextBillingDate).toLocaleDateString('ko-KR') : '-'}
+                        {storeData.nextBillingDate ? formatDate(storeData.nextBillingDate) : '-'}
                       </div>
                     </div>
                     <div className="mypage-middle-content-info">

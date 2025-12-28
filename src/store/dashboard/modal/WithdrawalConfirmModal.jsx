@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/withdrawalconfirmmodal.css";
+import { apiDelete } from "../../../utils/apiClient";
 
 const WithdrawalConfirmModal = ({ onClose, storeIdx }) => {
   const navigate = useNavigate();
@@ -11,12 +12,7 @@ const WithdrawalConfirmModal = ({ onClose, storeIdx }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8080/api/store/withdrawal/${storeIdx}`, {
-        method: 'DELETE',
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await apiDelete(`/store/withdrawal/${storeIdx}`);
 
       if (!response.ok) {
         alert("회원 탈퇴 처리 중 오류가 발생했습니다.");

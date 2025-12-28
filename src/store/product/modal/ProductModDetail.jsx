@@ -95,11 +95,9 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
 
       // 기존 이미지를 allImages에 추가 (type: 'existing' 표시)
       if (product.imgs?.files && product.imgs.files.length > 0) {
-        console.log('백엔드에서 받은 이미지 파일 정보:', product.imgs.files);
         const existingImages = product.imgs.files.map(img => {
           // originalName 또는 fileOriginNm 중 존재하는 것 사용
           const fileName = img.originalName || img.fileOriginNm || '';
-          console.log('이미지 파일명:', fileName, '전체 데이터:', img);
           
           return {
             type: 'existing',
@@ -178,7 +176,6 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
   // 기존 이미지를 File 객체로 변환하는 함수
   const convertExistingImageToFile = async (imageUrl, fileName) => {
     try {
-      console.log('convertExistingImageToFile 호출 - imageUrl:', imageUrl, 'fileName:', fileName);
       
       const response = await fetch(imageUrl);
       const blob = await response.blob();
@@ -188,12 +185,10 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
       if (!finalFileName) {
         const urlParts = imageUrl.split('/');
         finalFileName = urlParts[urlParts.length - 1] || 'image.jpg';
-        console.log('파일명이 없어서 URL에서 추출:', finalFileName);
       }
       
       // MIME 타입을 파일명 확장자로 결정
       const mimeType = getMimeTypeFromFileName(finalFileName);
-      console.log(`파일 변환: ${finalFileName}, MIME: ${mimeType}`);
       
       return new File([blob], finalFileName, { type: mimeType });
     } catch (err) {
@@ -356,6 +351,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 <option value="PENDING">대기</option>
                 <option value="ON_SALE">판매 중</option>
                 <option value="ENDED">판매 종료</option>
+                <option value="REJECTED">판매 제재</option>
               </select>
             </div>
           </div>
