@@ -1,3 +1,4 @@
+import { formatDateTime } from "../../utils/commonService";
 import "./css/noticedetail.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -6,10 +7,6 @@ const NoticeDetail = () => {
     const location = useLocation();
     const notice = location.state?.notice || {};
 
-    const formatDateTime = (dateTime) => {
-        if (!dateTime) return "-";
-        return dateTime.replace("T", " ").substring(0, 16);
-    };
 
     return (
         <div className="noticedetail-wrap">

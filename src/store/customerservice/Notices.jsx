@@ -2,6 +2,7 @@ import "./css/notices.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { apiGet } from "../../utils/apiClient";
+import { formatDate } from "../../utils/commonService";
 
 const Notices = () => {
     const navigate = useNavigate();
@@ -33,11 +34,6 @@ const Notices = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const formatDate = (dateTime) => {
-        if (!dateTime) return "-";
-        return dateTime.split("T")[0];
     };
 
     const sortedNotices = (Array.isArray(notices) ? [...notices] : []).sort((a, b) => {

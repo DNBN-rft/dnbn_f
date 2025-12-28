@@ -95,7 +95,6 @@ useEffect(() => {
     } catch (err) {
       setError(err.message);
       alert("고객 정보 수정 실패: " + err.message);
-      console.error("고객 정보 수정 오류:", err);
     } finally {
       setLoading(false);
     }

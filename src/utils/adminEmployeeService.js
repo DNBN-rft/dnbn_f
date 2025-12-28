@@ -39,7 +39,7 @@ export const getEmployeeList = async (page = 0, size = 10) => {
  */
 export const registerEmployee = async (employeeData) => {
   try {
-    const response = await apiPost("/admin/employee", JSON.stringify(employeeData));
+    const response = await apiPost("/admin/employee", employeeData);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -63,7 +63,7 @@ export const registerEmployee = async (employeeData) => {
  */
 export const changeEmployeePassword = async (passwordData) => {
   try {
-    const response = await apiPut("/admin/employee/changePw", JSON.stringify(passwordData));
+    const response = await apiPut("/admin/employee/changePw", passwordData);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -109,7 +109,7 @@ export const checkDuplicateLoginId = async (loginId) => {
  */
 export const changeEmployeeStatus = async (statusData) => {
   try {
-    const response = await apiPut("/admin/employee/status", JSON.stringify(statusData));
+    const response = await apiPut("/admin/employee/status", statusData);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

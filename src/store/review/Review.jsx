@@ -4,6 +4,7 @@ import "./css/review.css";
 import ReviewAnswer from "./modal/ReviewAnswer";
 import { apiGet, apiPut } from "../../utils/apiClient";
 import ReviewReport from "./modal/ReviewReport";
+import { formatDate } from "../../utils/commonService";
 
 const Review = () => {
   const location = useLocation();
@@ -198,7 +199,7 @@ const Review = () => {
                   <td>{p.content}</td>
                   <td>{p.reviewRate}</td>
                   <td>{p.regNm || "회원"}</td>
-                  <td>{p.regDate ? new Date(p.regDate).toLocaleString('ko-KR') : "-"}</td>
+                  <td>{p.regDate ? formatDate(p.regDate) : "-"}</td>
                   <td>
                     <button 
                       className="review-btn"

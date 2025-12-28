@@ -33,10 +33,7 @@ export const getCustDetail = async (custCode) => {
 // 고객 정보 수정
 export const updateCust = async (custCode, modRequest) => {
   try {
-    const requestBody = JSON.stringify(modRequest);
-    
-    const response = await apiPut(`/admin/cust/${custCode}`, requestBody);
-
+    const response = await apiPut(`/admin/cust/${custCode}`, modRequest);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -46,13 +43,13 @@ export const updateCust = async (custCode, modRequest) => {
     // 응답이 텍스트일 수 있으므로 먼저 텍스트로 읽기
     const contentType = response.headers.get("content-type");
     let responseData;
-    
+
     if (contentType && contentType.includes("application/json")) {
       responseData = await response.json();
     } else {
       responseData = await response.text();
     }
-    
+
     return responseData;
   } catch (error) {
     throw error;
@@ -63,7 +60,7 @@ export const updateCust = async (custCode, modRequest) => {
 export const searchCusts = async (searchParams) => {
   try {
     const queryString = new URLSearchParams();
-    
+
     if (searchParams.custState) {
       queryString.append("custState", searchParams.custState);
     }
@@ -96,7 +93,9 @@ export const deleteCusts = async (custCodes) => {
       custCodes: custCodes,
     };
 
-    const response = await apiDelete("/admin/cust", JSON.stringify(deleteRequest));
+    const response = await apiDelete("/admin/cust", {
+      body: JSON.stringify(deleteRequest),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -106,13 +105,13 @@ export const deleteCusts = async (custCodes) => {
     // 응답이 텍스트일 수 있으므로 먼저 텍스트로 읽기
     const contentType = response.headers.get("content-type");
     let responseData;
-    
+
     if (contentType && contentType.includes("application/json")) {
       responseData = await response.json();
     } else {
       responseData = await response.text();
     }
-    
+
     return responseData;
   } catch (error) {
     throw error;

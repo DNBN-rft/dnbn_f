@@ -122,14 +122,14 @@ const AdminStoreInfo = () => {
     setSelectedStore(null);
   };
 
-  const handleUpdate = () => {
-    // 수정 후 목록 새로고침
-    if (isSearchMode) {
-      handleSearchInternal(currentPage);
-    } else {
-      loadStores(currentPage);
-    }
-  };
+  // const handleUpdate = () => {
+  //   // 수정 후 목록 새로고침
+  //   if (isSearchMode) {
+  //     handleSearchInternal(currentPage);
+  //   } else {
+  //     loadStores(currentPage);
+  //   }
+  // };
 
   return (
     <div className="adminstoreinfo-container">

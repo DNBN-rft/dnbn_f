@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./css/orderinfo.css";
 import ReasonInputModal from "./ReasonInputModal";
 import { apiGet, apiPut } from "../../../utils/apiClient";
+import { formatDateTime } from "../../../utils/commonService";
 
 const OrderInfo = ({ onClose, orderCode }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -266,7 +267,7 @@ const OrderInfo = ({ onClose, orderCode }) => {
                   <td>{orderData.orderCode || '-'}</td>
                   <td>{orderData.totalPrice ? `${orderData.totalPrice.toLocaleString()}원` : '-'}</td>
                   <td>{orderData.payType || '-'}</td>
-                  <td>{orderData.payDate || '-'}</td>
+                  <td>{formatDateTime(orderData.payDate) || '-'}</td>
                   <td>
                     <button className="orderinfo-bill-btn">조회</button>
                   </td>
