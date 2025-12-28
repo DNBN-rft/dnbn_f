@@ -2,7 +2,7 @@
  * 관리자 가맹점 관리 API 서비스
  */
 
-import { apiGet, apiPut } from "./apiClient";
+import { apiGet, apiPut, apiPutFormData } from "./apiClient";
 
 /**
  * 승인 대기 가맹점 목록 조회 (페이지네이션)
@@ -195,7 +195,8 @@ export const rejectStore = async (storeCode) => {
  */
 export const modStoreInfo = async (storeCode, formData) => {
   try {
-    const response = await apiPut(`/admin/store/modStoreInfo/${storeCode}`, formData); // FormData 객체
+    console.log(formData);
+    const response = await apiPutFormData(`/admin/store/modStoreInfo/${storeCode}`, formData); // FormData 객체
 
     if (response.ok) {
       return {
@@ -225,7 +226,7 @@ export const modStoreInfo = async (storeCode, formData) => {
  */
 export const modSubsInfo = async (storeCode, subsInfo) => {
   try {
-    const response = await apiPut(`/admin/store/modSubsInfo/${storeCode}`, JSON.stringify(subsInfo));
+    const response = await apiPut(`/admin/store/modSubsInfo/${storeCode}`, subsInfo);
 
     if (response.ok) {
       return {
@@ -255,7 +256,7 @@ export const modSubsInfo = async (storeCode, subsInfo) => {
  */
 export const modMemberInfo = async (storeCode, memberInfo) => {
   try {
-    const response = await apiPut(`/admin/store/modMemberInfo/${storeCode}`, JSON.stringify(memberInfo));
+    const response = await apiPut(`/admin/store/modMemberInfo/${storeCode}`, memberInfo);
 
     if (response.ok) {
       return {
@@ -285,7 +286,7 @@ export const modMemberInfo = async (storeCode, memberInfo) => {
  */
 export const modBizInfo = async (storeCode, bizInfo) => {
   try {
-    const response = await apiPut(`/admin/store/modBizInfo/${storeCode}`, JSON.stringify(bizInfo));
+    const response = await apiPut(`/admin/store/modBizInfo/${storeCode}`, bizInfo);
 
     if (response.ok) {
       return {
@@ -315,7 +316,7 @@ export const modBizInfo = async (storeCode, bizInfo) => {
  */
 export const modAuthInfo = async (storeCode, authInfo) => {
   try {
-    const response = await apiPut(`/admin/store/modAuthInfo/${storeCode}`, JSON.stringify(authInfo));
+    const response = await apiPut(`/admin/store/modAuthInfo/${storeCode}`, authInfo);
 
     if (response.ok) {
       return {
@@ -345,7 +346,7 @@ export const modAuthInfo = async (storeCode, authInfo) => {
  */
 export const modMemberPassword = async (storeCode, data) => {
   try {
-    const response = await apiPut(`/admin/store/modPw/${storeCode}`, JSON.stringify(data));
+    const response = await apiPut(`/admin/store/modPw/${storeCode}`, data);
 
     if (response.ok) {
       return {

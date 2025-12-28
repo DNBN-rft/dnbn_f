@@ -149,18 +149,9 @@ const AdminProduct = () => {
       startDate: filters.startDate,
       endDate: filters.endDate,
       categoryNm: filters.category,
-      productState: filters.saleStatus === "all-option" ? "all" :
-                    filters.saleStatus === "pending" ? "PENDING" :
-                    filters.saleStatus === "on_sale" ? "ON_SALE" :
-                    filters.saleStatus === "ended" ? "ENDED" :
-                    filters.saleStatus === "sold_out" ? "SOLDOUT" : 
-                    filters.saleStatus === "restricted" ? "REJECTED" : 
-                    filters.saleStatus,
+      productState: filters.saleStatus,
       searchTerm: filters.searchKeyword,
-      searchType: filters.searchType === "all-option" ? "all" : 
-                  filters.searchType === "productNm" ? "productnm" : 
-                  filters.searchType === "productCode" ? "productcode" : 
-                  filters.searchType === "storeNm" ? "registernm" : "all",
+      searchType: filters.searchType,
     };
 
     const result = await searchProducts(searchParams, page, pageSize);
@@ -252,12 +243,12 @@ const AdminProduct = () => {
                 value={filters.saleStatus}
                 onChange={(e) => setFilters({...filters, saleStatus: e.target.value})}
               >
-                <option value="all-option">전체</option>
-                <option value="on_sale">판매중</option>
-                <option value="ended">판매 종료</option>
-                <option value="pending">대기</option>
-                <option value="sold_out">품절</option>
-                <option value="restricted">제재</option>
+                <option value="">전체</option>
+                <option value="ON_SALE">판매중</option>
+                <option value="ENDED">판매 종료</option>
+                <option value="PENDING">대기</option>
+                <option value="SOLD_OUT">품절</option>
+                <option value="RESTRICTED">제재</option>
               </select>
             </div>
           </div>
@@ -271,7 +262,7 @@ const AdminProduct = () => {
                 value={filters.searchType}
                 onChange={(e) => setFilters({...filters, searchType: e.target.value})}
               >
-                <option value="all-option">전체</option>
+                <option value="all">전체</option>
                 <option value="productNm">상품명</option>
                 <option value="storeNm">가맹점명</option>
               </select>

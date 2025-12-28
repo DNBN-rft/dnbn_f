@@ -173,7 +173,7 @@ export const deleteReviews = async (reviewDeleteList) => {
  */
 export const updateHiddenExpiry = async (reviewIdx, newHiddenDate) => {
   try {
-    const response = await apiPut(`/admin/review/${reviewIdx}/hidden-expiry`, JSON.stringify({ newHiddenDate }));
+    const response = await apiPut(`/admin/review/${reviewIdx}/hidden-expiry`, { newHiddenDate });
 
     if (response.ok) {
       const message = await response.text();
