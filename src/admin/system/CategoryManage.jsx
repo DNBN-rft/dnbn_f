@@ -36,7 +36,6 @@ const CategoryManage = () => {
                 imageUrl: category.images?.files?.[0]?.fileUrl || null,
                 images: category.images
             }));
-            console.log(data)
             setCategories(formattedData);
         } catch (err) {
             setError("카테고리 목록을 불러오는 데 실패했습니다.");

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./css/custinfomodal.css";
 import { getAuthList } from "../../../utils/adminAuthService";
+import { formatDate } from "../../../utils/commonService";
 
 // 메뉴 매핑 (id: 영어, name: 한국어)
 const MENU_MAP = {
@@ -166,7 +167,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
         custState: formData.custState,
         custMenuAuth: JSON.stringify(selectedMenuAuth),
       };
-      console.log("모달에서 전송할 데이터:", updateData);
       onUpdate(updateData);
     }
     setIsEditMode(false);
@@ -195,10 +195,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
     return status;
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString("ko-KR");
-  };
 
   // 메뉴 권한 파싱 함수
   const parseMenuAuth = (menuAuthStr) => {

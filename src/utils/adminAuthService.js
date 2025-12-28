@@ -13,7 +13,7 @@ import apiClient from "./apiClient";
  */
 export const adminLogin = async (empId, password) => {
   try {
-    const response = await apiPost("/admin/login", {body: JSON.stringify({empId: empId, empPw: password})});
+    const response = await apiPost("/admin/login", {empId: empId, empPw: password});
 
     if (response.ok) {
       const data = await response.json();

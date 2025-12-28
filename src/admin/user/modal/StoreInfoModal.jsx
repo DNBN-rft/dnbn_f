@@ -213,7 +213,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
       // menuAuth에서 code만 추출
       const menuCodes = selectedAuth.menuAuth.map(m => m.code);
       setSelectedMenus(menuCodes);
-      console.log("권한 변경, 메뉴:", menuCodes);
     }
   };
 
@@ -327,7 +326,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
       isRenew: subscriptionForm.isRenew === true || subscriptionForm.isRenew === 'true',
     };
 
-    console.log("구독 정보 저장 데이터:", subsData);
 
     const result = await modSubsInfo(storeData.storeCode, subsData);
     if (result.success) {
@@ -396,7 +394,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
   // 권한 정보 저장
   const handleSaveAuthInfo = async () => {
     // 메뉴 배열을 JSON 배열 형식으로 전송
-    console.log("선택된 메뉴:", selectedMenus);
     const result = await modAuthInfo(storeData.storeCode, { menuAuth: selectedMenus });
     if (result.success) {
       alert("권한 정보가 수정되었습니다.");
@@ -681,7 +678,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
                     <select
                       value={subscriptionForm.membershipPlanIdx?.toString() || ""}
                       onChange={(e) => {
-                        console.log("플랜 선택:", e.target.value);
                         setSubscriptionForm({ ...subscriptionForm, membershipPlanIdx: e.target.value });
                       }}
                       className="storeinfomodal-select"

@@ -143,7 +143,6 @@ const AuthModal = ({ onClose, onSave }) => {
             isActive: isActive
         };
 
-        console.log("Backend에 전송:", newAuth);
         onSave(newAuth);
         onClose();
     };
