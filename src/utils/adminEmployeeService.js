@@ -39,7 +39,7 @@ export const getEmployeeList = async (page = 0, size = 10) => {
  */
 export const registerEmployee = async (employeeData) => {
   try {
-    const response = await apiPost("/admin/employee", JSON.stringify(employeeData));
+    const response = await apiPost("/admin/employee", employeeData);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

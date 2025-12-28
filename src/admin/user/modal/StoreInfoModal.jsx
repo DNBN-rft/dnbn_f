@@ -186,6 +186,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     bizType: "",
     bizRegDate: "",
     bizNo: "",
+    ownerNm: "",
     ownerTelNo: "",
   });
 
@@ -271,6 +272,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
         bizType: storeData?.bizType || "",
         bizRegDate: storeData?.bizRegDate || "",
         bizNo: storeData?.bizNo || "",
+        ownerNm: storeData?.ownerNm || "",
         ownerTelNo: storeData?.ownerTelNo || "",
       });
     } else if (section === "auth") {
@@ -313,7 +315,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     }
   };
 
-  // 구독 정보 저장
   // 구독 정보 저장
   const handleSaveSubscriptionInfo = async () => {
     // membershipPlanIdx를 Long으로 변환하고 검증
@@ -392,7 +393,6 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     }
   };
 
-  // 권한 정보 저장
   // 권한 정보 저장
   const handleSaveAuthInfo = async () => {
     // 메뉴 배열을 JSON 배열 형식으로 전송
@@ -894,12 +894,7 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
               <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">대표자명</label>
                 {editModes.business ? (
-                  <input
-                    type="text"
-                    value={businessForm.ownerNm}
-                    onChange={(e) => setBusinessForm({ ...businessForm, ownerNm: e.target.value })}
-                    className="storeinfomodal-input"
-                  />
+                  <span className="storeinfomodal-value">{storeData?.ownerNm}</span>
                 ) : (
                   <span className="storeinfomodal-value">{storeData?.ownerNm}</span>
                 )}

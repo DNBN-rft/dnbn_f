@@ -2,7 +2,7 @@
  * 관리자 가맹점 관리 API 서비스
  */
 
-import { apiGet, apiPut } from "./apiClient";
+import { apiGet, apiPut, apiPutFormData } from "./apiClient";
 
 /**
  * 승인 대기 가맹점 목록 조회 (페이지네이션)
@@ -195,7 +195,9 @@ export const rejectStore = async (storeCode) => {
  */
 export const modStoreInfo = async (storeCode, formData) => {
   try {
-    const response = await apiPut(`/admin/store/modStoreInfo/${storeCode}`, formData);
+    console.log(formData);
+    const response = await apiPutFormData(`/admin/store/modStoreInfo/${storeCode}`, formData); // FormData 객체
+
     if (response.ok) {
       return {
         success: true,

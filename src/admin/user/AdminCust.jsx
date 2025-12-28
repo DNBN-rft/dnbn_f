@@ -85,9 +85,7 @@ useEffect(() => {
         custState: updatedData.custState || "ACTIVE",
         custMenuAuth: updatedData.custMenuAuth || "",
       };
-      
-      console.log("수정 요청 데이터:", modRequest);
-      
+            
       await updateCust(selectedCustomer.custCode, modRequest);
       setIsModalOpen(false);
       setSelectedCustomer(null);
@@ -96,7 +94,6 @@ useEffect(() => {
     } catch (err) {
       setError(err.message);
       alert("고객 정보 수정 실패: " + err.message);
-      console.error("고객 정보 수정 오류:", err);
     } finally {
       setLoading(false);
     }
