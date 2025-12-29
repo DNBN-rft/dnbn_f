@@ -2,7 +2,7 @@ import "./css/memberinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState } from "react";
 import { validateMemberInfo } from "../../utils/registerValidation";
-import { apiGet } from "../../utils/apiClient";
+import { apiGet, API_BASE_URL } from "../../utils/apiClient";
 
 const MemberInfo = ({ formData, setFormData, next, prev }) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -69,7 +69,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
   const handleIdCheck = async () => {
     if (!formData.loginId.trim()) {
-      console.log(process.env.REACT_APP_API_URL);
+      console.log(API_BASE_URL);
       setIdCheckMessage("아이디를 입력해주세요.");
       setIdCheckStatus("error");
       return;
