@@ -1,5 +1,4 @@
-// const API_BASE_URL = "http://localhost:8080/api";
-const API_BASE_URL = "https://dnbn.onrender.com/api";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
 // 토큰 갱신 중인지 추적
 let isRefreshing = false;
