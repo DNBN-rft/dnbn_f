@@ -55,7 +55,6 @@ const AdminQuestionDetail = ({ questionIdx, onClose }) => {
         // 답변 등록
         await registerAnswer(questionIdx, answerContent);
         alert("답변이 등록되었습니다.");
-        console.log(hasAnswer)
       }
       setIsAnswering(false);
       onClose(true); // 성공 시 새로고침 플래그 전달

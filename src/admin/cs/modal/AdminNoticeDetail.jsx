@@ -11,7 +11,6 @@ const AdminNoticeDetail = ({ notice, onClose }) => {
 
   const handleSave = () => {
     // 저장 로직 추가 예정
-    console.log("저장된 데이터:", editedNotice);
     setIsEditMode(false);
   };
 

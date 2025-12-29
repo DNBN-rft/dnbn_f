@@ -9,11 +9,8 @@ const AdminReviewDetail = ({ reviewIdx, onClose, onUpdate }) => {
   const [newExpiryDate, setNewExpiryDate] = useState("");
 
   const fetchReviewDetail = async () => {
-    console.log("리뷰 상세 조회 - reviewIdx:", reviewIdx);
     const result = await getReviewDetail(reviewIdx);
-    console.log("리뷰 상세 조회 응답:", result);
     if (result.success) {
-      console.log("리뷰 데이터:", result.data);
       setReviewData(result.data);
       if (result.data.hiddenExpireAt) {
         setNewExpiryDate(new Date(result.data.hiddenExpireAt).toISOString().split('T')[0]);
@@ -26,7 +23,6 @@ const AdminReviewDetail = ({ reviewIdx, onClose, onUpdate }) => {
   };
 
   useEffect(() => {
-    console.log("AdminReviewDetail mounted, reviewIdx:", reviewIdx);
     if (reviewIdx) {
       fetchReviewDetail();
     }

@@ -42,7 +42,6 @@ const AdminLogin = () => {
     const result = await adminLogin(empId, password);
 
     if (result.success) {
-      console.log("관리자 로그인 성공:", result.data);
       
       // 관리자 대시보드로 이동
       navigate("/admin");

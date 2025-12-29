@@ -353,7 +353,7 @@ const AdminProduct = () => {
                     <td>
                       <button 
                         className="adminproduct-btn adminproduct-btn-detail"
-                        onClick={() => { handleDetailClick(product.productCode); console.log(product.productCode); }}
+                        onClick={() => { handleDetailClick(product.productCode); }}
                       >
                         상세
                       </button>

@@ -24,7 +24,6 @@ const AdminAlarmModal = ({ onClose }) => {
         : alarmData.filter(alarm => alarm.category === activeTab);
 
     const handleAlarmClick = (alarmId) => {
-        console.log("알람 클릭:", alarmId);
         // 추후 상세 페이지로 이동 로직 구현
     };
 

@@ -8,6 +8,7 @@ import {
   deleteEmployeeList,
   searchEmployees,
 } from "../../utils/adminEmployeeService";
+import { formatDate } from "../../utils/commonService";
 
 const AdminEmp = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
@@ -230,12 +231,7 @@ const AdminEmp = () => {
     }
   };
 
-  // 날짜 포맷팅
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ko-KR");
-  };
+
 
   return (
     <div className="adminemp-container">

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import "./css/admincust.css";
 import CustInfoModal from "./modal/CustInfoModal";
 import { getCusts, getCustDetail, updateCust, deleteCusts, searchCusts } from "../../utils/adminCustService";
+import { formatDate } from "../../utils/commonService";
 
 const AdminCust = () => {
   const [customers, setCustomers] = useState([]);
@@ -313,11 +314,6 @@ useEffect(() => {
                       if (status === "SUSPENDED") return "정지";
                       if (status === "WITHDRAWAL") return "탈퇴";
                       return status;
-                    };
-
-                    const formatDate = (dateString) => {
-                      if (!dateString) return "-";
-                      return new Date(dateString).toLocaleDateString("ko-KR");
                     };
 
                     return (
