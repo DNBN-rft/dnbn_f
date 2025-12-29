@@ -293,5 +293,6 @@ const apiClient = {
   apiPutFormData,
   startTokenRefresh,
   stopTokenRefresh,
+  API_BASE_URL,
 };
 export default apiClient;
