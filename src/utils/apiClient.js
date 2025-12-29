@@ -1,5 +1,8 @@
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
+console.log("API_BASE_URL:", API_BASE_URL);
+console.log("환경 변수 REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
+
 // 토큰 갱신 중인지 추적
 let isRefreshing = false;
 let failedQueue = [];
@@ -293,6 +296,5 @@ const apiClient = {
   apiPutFormData,
   startTokenRefresh,
   stopTokenRefresh,
-  API_BASE_URL,
 };
 export default apiClient;
