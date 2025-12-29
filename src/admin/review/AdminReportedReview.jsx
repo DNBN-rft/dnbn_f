@@ -200,19 +200,19 @@ const AdminReportedReview = () => {
   };
 
   // 필터 초기화
-  // const handleReset = () => {
-  //   setFilters({
-  //     status: "statusall",
-  //     rate: "rateall",
-  //     period: "dayall",
-  //     searchType: "typeall",
-  //     searchKeyword: "",
-  //     startDate: "",
-  //     endDate: "",
-  //   });
-  //   setCurrentPage(0);
-  //   loadReviews(0);
-  // };
+  const handleReset = () => {
+    setFilters({
+      status: "statusall",
+      rate: "rateall",
+      period: "dayall",
+      searchType: "typeall",
+      searchKeyword: "",
+      startDate: "",
+      endDate: "",
+    });
+    setCurrentPage(0);
+    loadReviews(0);
+  };
 
   return (
     <div className="adminreview-container">
