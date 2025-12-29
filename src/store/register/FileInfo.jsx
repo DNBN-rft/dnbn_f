@@ -137,10 +137,13 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
         formDataToSend.append("bzFile", file);
       });
 
+      // FormData 사용 시 headers 옵션을 빈 객체로 설정하여 
+      // apiCall의 기본 Content-Type(application/json)을 제거
       const response = await apiCall("/store/register", 
         {
           method: "POST",
-          body: formDataToSend
+          body: formDataToSend,
+          headers: {}
         });
 
       if (response.ok) {
