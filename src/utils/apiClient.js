@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:8080/api";
+// const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://dnbn.onrender.com/api";
+
 // 토큰 갱신 중인지 추적
 let isRefreshing = false;
 let failedQueue = [];
