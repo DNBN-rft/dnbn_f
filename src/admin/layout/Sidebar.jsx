@@ -181,6 +181,8 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               </nav>
             </div>
 
+            
+
             <div className="admin-sb-sidenav-menu-heading">시스템관리</div>
             <a
               className={`nav-link ${
@@ -212,6 +214,20 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                 </Link>
               </nav>
             </div>
+
+            <div className="admin-sb-sidenav-menu-heading">정산</div>
+            <Link
+              className={`nav-link ${
+                location.pathname === "/admin/payout" ? "active" : ""
+              }`}
+              to="/admin/payout"
+              onClick={handleLinkClick}
+            >
+              <div className="admin-sb-nav-link-icon">
+                <i className="fas fa-dollar-sign"></i>
+              </div>
+              정산관리
+            </Link>
           </div>
         </div>
       </nav>
