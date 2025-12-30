@@ -1,5 +1,7 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 import { clearUserFromStorage } from "../utils/authService";
+import { clearAdminFromStorage } from "../utils/adminAuthService";
+import { apiPost } from "../utils/apiClient";
 
 export const AuthContext = createContext();
 
@@ -11,7 +13,9 @@ export const AuthContext = createContext();
  */
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // 앱 시작 시 토큰 유효성 확인 및 localStorage에서 사용자 정보 불러오기
@@ -24,6 +28,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // localStorage에서 사용자 정보 확인
       const storedUser = localStorage.getItem("user");
+      const storedAdmin = localStorage.getItem("admin");
       
       if (storedUser) {
         setIsAuthenticated(true);
@@ -32,11 +37,22 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setUser(null);
       }
+
+      if (storedAdmin) {
+        setIsAdminAuthenticated(true);
+        setAdmin(storedAdmin);
+      } else {
+        setIsAdminAuthenticated(false);
+        setAdmin(null);
+      }
     } catch (error) {
       console.error("인증 상태 확인 실패:", error);
       setIsAuthenticated(false);
       setUser(null);
+      setIsAdminAuthenticated(false);
+      setAdmin(null);
       clearUserFromStorage();
+      clearAdminFromStorage();
     } finally {
       setIsLoading(false);
     }
@@ -46,10 +62,7 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(async () => {
     try {
       // 백엔드: DB의 Refresh Token 삭제
-      await fetch("http://localhost:8080/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await apiPost("/auth/logout");
     } catch (error) {
       console.error("로그아웃 요청 중 오류:", error);
     } finally {
@@ -59,14 +72,25 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // 관리자 로그아웃
+  const adminLogout = useCallback(async () => {
+    try {
+      // 백엔드: DB의 Refresh Token 삭제
+      await apiPost("/auth/logout");
+    } catch (error) {
+      console.error("로그아웃 요청 중 오류:", error);
+    } finally {
+      setIsAdminAuthenticated(false);
+      setAdmin(null);
+      clearAdminFromStorage(); // localStorage 정리
+    }
+  }, []);
+
   // Access Token 갱신
   // Refresh Token은 DB에서 자동으로 처리됨
   const refreshAccessToken = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/auth/refresh", {
-        method: "POST",
-        credentials: "include", // 쿠키의 Access Token 포함
-      });
+      const response = await apiPost("/auth/refresh");
 
       if (response.ok) {
         return true;
@@ -88,14 +112,25 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   }, []);
 
+  // 관리자 로그인 성공 시 인증 상태 직접 설정
+  const setAdminAuthState = useCallback((adminData) => {
+    setIsAdminAuthenticated(true);
+    setAdmin(adminData);
+    setIsLoading(false);
+  }, []);
+
   const value = {
     isAuthenticated,
+    isAdminAuthenticated,
     user,
+    admin,
     isLoading,
     logout,
+    adminLogout,
     refreshAccessToken,
     checkAuthStatus,
     setAuthState,
+    setAdminAuthState,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

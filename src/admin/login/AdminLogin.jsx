@@ -1,7 +1,8 @@
 import "../login/css/adminlogin.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../../utils/adminAuthService";
+import AuthContext from "../../context/AuthContext";
 
 const AdminLogin = () => {
   const [empId, setEmpId] = useState("");
@@ -9,6 +10,7 @@ const AdminLogin = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { setAdminAuthState } = useContext(AuthContext);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +44,8 @@ const AdminLogin = () => {
     const result = await adminLogin(empId, password);
 
     if (result.success) {
+      // AuthContext에 관리자 인증 상태 설정
+      setAdminAuthState(result.data);
       
       // 관리자 대시보드로 이동
       navigate("/admin");
