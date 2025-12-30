@@ -23,7 +23,7 @@
 }
 
 .adminregion-static-graph {
-    width: 45%;
+    width: 60%;
     height: 700px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: white;
@@ -31,7 +31,7 @@
 }
 
 .adminregion-static-table {
-    width: 54%;
+    width: 39%;
     height: 700px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: white;
@@ -231,11 +231,43 @@
     font-weight: 500;
 }
 
-.adminregion-no-data {
-    flex: 1;
+.chart-bar-container {
+    display: flex;
+    gap: 5px;
+    align-items: flex-end;
+}
+
+.price-bar {
+    background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%);
+}
+
+.count-bar {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.legend-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: #999;
-    font-size: 16px;
+    gap: 5px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+.legend-color.price-bar {
+    background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%);
+}
+
+.legend-color.count-bar {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
 }

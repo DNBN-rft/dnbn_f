@@ -2,7 +2,7 @@ import "./css/fileinfo.css"
 import StepButton from "../register/component/StepButton";
 import { useState } from "react";
 import { validateFileInfo } from "../../utils/registerValidation";
-import { apiCall, apiPost } from "../../utils/apiClient";
+import { apiCall } from "../../utils/apiClient";
 
 const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
   const [storeImage, setStoreImage] = useState(null);
