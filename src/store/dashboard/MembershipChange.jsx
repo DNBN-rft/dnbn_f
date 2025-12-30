@@ -19,8 +19,8 @@ const MembershipChange = () => {
         if (storeResponse.ok) {
           const storeData = await storeResponse.json();
           setCurrentPlan({
-            name: storeData.PlanNm,
-            price: storeData.PlanPrice,
+            name: storeData.planNm,
+            price: storeData.planPrice,
           });
         }
         // 구독 플랜 목록 가져오기
@@ -80,7 +80,7 @@ const MembershipChange = () => {
         <div className="membership-change-title">멤버쉽 변경</div>
         <button
           className="membership-change-back-btn"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/store/dashboard")}
         >
           돌아가기
         </button>
@@ -184,8 +184,8 @@ const MembershipChange = () => {
                         </span>
                         <span className="membership-change-plan-box-feature-text">
                           <strong>{func.funcDescription}:</strong>{" "}
-                          {func.usageLimit}
-                          {func.usageUnit}
+                          {func.usageLimit === -1 ? "무제한" : func.usageLimit}
+                          {func.usageLimit === -1 ? "" : func.usageUnit}
                         </span>
                       </div>
                     ))}
