@@ -26,7 +26,6 @@ export const getReadyStores = async (page = 0, size = 10) => {
       };
     }
   } catch (error) {
-    console.error("승인 대기 가맹점 목록 조회 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -57,7 +56,6 @@ export const getAllStores = async (page = 0, size = 10) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 목록 조회 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -88,7 +86,6 @@ export const getPendingStoreDetail = async (storeCode) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 상세 조회 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -120,7 +117,6 @@ export const viewStoreDetail = async (storeCode) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 상세 조회 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -150,7 +146,6 @@ export const approveStore = async (storeCode) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 승인 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -181,7 +176,6 @@ export const rejectStore = async (storeCode) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 거절 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -195,7 +189,6 @@ export const rejectStore = async (storeCode) => {
  */
 export const modStoreInfo = async (storeCode, formData) => {
   try {
-    console.log(formData);
     const response = await apiPutFormData(`/admin/store/modStoreInfo/${storeCode}`, formData); // FormData 객체
 
     if (response.ok) {
@@ -212,7 +205,6 @@ export const modStoreInfo = async (storeCode, formData) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 정보 수정 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -242,7 +234,6 @@ export const modSubsInfo = async (storeCode, subsInfo) => {
       };
     }
   } catch (error) {
-    console.error("구독 정보 수정 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -272,7 +263,6 @@ export const modMemberInfo = async (storeCode, memberInfo) => {
       };
     }
   } catch (error) {
-    console.error("사용자 정보 수정 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -302,7 +292,6 @@ export const modBizInfo = async (storeCode, bizInfo) => {
       };
     }
   } catch (error) {
-    console.error("사업자 정보 수정 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -332,7 +321,6 @@ export const modAuthInfo = async (storeCode, authInfo) => {
       };
     }
   } catch (error) {
-    console.error("권한 정보 수정 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -362,7 +350,6 @@ export const modMemberPassword = async (storeCode, data) => {
       };
     }
   } catch (error) {
-    console.error("비밀번호 변경 중 오류:", error);
     return {
       success: false,
       data: null,
@@ -430,7 +417,6 @@ export const searchStores = async (searchParams, page = 0, size = 10) => {
       };
     }
   } catch (error) {
-    console.error("가맹점 검색 중 오류:", error);
     return {
       success: false,
       data: null,
