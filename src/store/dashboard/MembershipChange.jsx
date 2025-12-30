@@ -19,12 +19,12 @@ const MembershipChange = () => {
         if (storeResponse.ok) {
           const storeData = await storeResponse.json();
           setCurrentPlan({
-            name: storeData.PlanNm,
-            price: storeData.PlanPrice,
+            name: storeData.planNm,
+            price: storeData.planPrice,
           });
         }
         // 구독 플랜 목록 가져오기
-        const plansResponse = await apiGet(`/member/membership-plans`);
+        const plansResponse = await apiGet(`/store/member/membership-plans`);
         if (plansResponse.ok) {
           const plansData = await plansResponse.json();
           setmemberShipPlans(plansData);
@@ -61,7 +61,7 @@ const MembershipChange = () => {
         const response = await apiPost("/store/changeMembership", requestBody);
         if (response.ok) {
           alert("멤버십이 성공적으로 변경되었습니다.");
-          navigate("/mypage");
+          navigate("/store/mypage");
         } else {
           alert("멤버십 변경에 실패했습니다.");
         }
@@ -80,7 +80,7 @@ const MembershipChange = () => {
         <div className="membership-change-title">멤버쉽 변경</div>
         <button
           className="membership-change-back-btn"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/store/dashboard")}
         >
           돌아가기
         </button>
@@ -100,10 +100,10 @@ const MembershipChange = () => {
           </div>
           <div className="membership-change-features-info">
             <div className="membership-change-features-title">
-              :전구: 각 플랜의 기능을 확인하세요
+              각 플랜의 기능을 확인하세요
             </div>
             <p className="membership-change-features-description">
-              각 멤버쉽 플랜을 클릭하면 포함된 기능의 상세 정보를 확인할 수
+              멤버쉽 플랜을 클릭하면 포함된 기능의 상세 정보를 확인할 수
               있습니다. 현재 사용 중인 플랜과 다른 플랜을 비교해보세요.
             </p>
           </div>
@@ -184,8 +184,8 @@ const MembershipChange = () => {
                         </span>
                         <span className="membership-change-plan-box-feature-text">
                           <strong>{func.funcDescription}:</strong>{" "}
-                          {func.usageLimit}
-                          {func.usageUnit}
+                          {func.usageLimit === -1 ? "무제한" : func.usageLimit}
+                          {func.usageLimit === -1 ? "" : func.usageUnit}
                         </span>
                       </div>
                     ))}
