@@ -24,7 +24,7 @@ const MembershipChange = () => {
           });
         }
         // 구독 플랜 목록 가져오기
-        const plansResponse = await apiGet(`/member/membership-plans`);
+        const plansResponse = await apiGet(`/store/member/membership-plans`);
         if (plansResponse.ok) {
           const plansData = await plansResponse.json();
           setmemberShipPlans(plansData);
