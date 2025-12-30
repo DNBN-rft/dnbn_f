@@ -423,7 +423,15 @@
 .adminmain-churn-chart {
   display: flex;
   justify-content: center;
+  gap: 30px;
   padding: 20px;
+  flex-wrap: wrap;
+}
+
+.adminmain-donut-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .adminmain-donut-chart {
@@ -431,10 +439,6 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: conic-gradient(
-    rgba(241, 129, 30, 1) 0deg 339deg,
-    #e2e8f0 339deg 360deg
-  );
   display: flex;
   align-items: center;
   justify-content: center;
