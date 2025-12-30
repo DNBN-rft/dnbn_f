@@ -61,7 +61,7 @@ const MembershipChange = () => {
         const response = await apiPost("/store/changeMembership", requestBody);
         if (response.ok) {
           alert("멤버십이 성공적으로 변경되었습니다.");
-          navigate("/mypage");
+          navigate("/store/mypage");
         } else {
           alert("멤버십 변경에 실패했습니다.");
         }
@@ -100,10 +100,10 @@ const MembershipChange = () => {
           </div>
           <div className="membership-change-features-info">
             <div className="membership-change-features-title">
-              :전구: 각 플랜의 기능을 확인하세요
+              각 플랜의 기능을 확인하세요
             </div>
             <p className="membership-change-features-description">
-              각 멤버쉽 플랜을 클릭하면 포함된 기능의 상세 정보를 확인할 수
+              멤버쉽 플랜을 클릭하면 포함된 기능의 상세 정보를 확인할 수
               있습니다. 현재 사용 중인 플랜과 다른 플랜을 비교해보세요.
             </p>
           </div>
