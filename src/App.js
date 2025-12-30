@@ -49,6 +49,8 @@ import FaqPage from "./store/customerservice/FaqPage";
 import { useEffect } from "react";
 import apiClient from "./utils/apiClient";
 import AdminReportedReview from "./admin/review/AdminReportedReview";
+import AdminPayout from "./admin/payout/AdminPayout";
+import AdminPayoutCompleted from "./admin/payout/AdminPayoutCompleted";
 
 // React Query Client 생성
 const queryClient = new QueryClient({
@@ -135,6 +137,8 @@ function App() {
             <Route path="/admin/accept" element={<AdminAccept />} />
             <Route path="/admin/categorymanage" element={<CategoryManage />} />
             <Route path="/admin/authmanage" element={<AuthManage />} />
+            <Route path="/admin/payout" element={<AdminPayout />} />
+            <Route path="/admin/payout/completed" element={<AdminPayoutCompleted />} />
           </Route>
         </Routes>
       </Router>
