@@ -1,0 +1,330 @@
+.adminpayout-completed-container {
+  width: 100%;
+  min-height: calc(100vh - 126px);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.adminpayout-completed-wrap {
+  width: 90%;
+  max-width: 1400px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+}
+
+/* Tab Navigation */
+.adminpayout-completed-tab-navigation {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0;
+}
+
+.adminpayout-completed-tab-btn {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6c757d;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.adminpayout-completed-tab-btn:hover {
+  color: #495057;
+  background-color: #f8f9fa;
+}
+
+.adminpayout-completed-tab-active {
+  color: #007bff !important;
+  border-bottom-color: #007bff !important;
+  background-color: transparent !important;
+}
+
+/* Filter Area */
+.adminpayout-completed-filter-wrap {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.adminpayout-completed-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.adminpayout-completed-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminpayout-completed-filter-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  min-width: 50px;
+}
+
+.adminpayout-completed-search-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminpayout-completed-date-input {
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #495057;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adminpayout-completed-date-input:hover {
+  border-color: #adb5bd;
+}
+
+.adminpayout-completed-date-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.adminpayout-completed-search-btn {
+  width: 80px;
+  height: 40px;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.adminpayout-completed-search-btn:hover {
+  background-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.adminpayout-completed-reset-btn {
+  width: 80px;
+  height: 40px;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.adminpayout-completed-reset-btn:hover {
+  background-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Table Area */
+.adminpayout-completed-table-wrap {
+  margin-top: 20px;
+}
+
+.adminpayout-completed-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 4px;
+  gap: 12px;
+}
+
+.adminpayout-completed-table-info {
+  font-size: 14px;
+  color: #495057;
+  flex: 1;
+}
+
+.adminpayout-completed-table-info b {
+  color: #4f46e5;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.adminpayout-completed-btn-excel {
+  background-color: #059669;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.adminpayout-completed-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.adminpayout-completed-table thead {
+  background-color: #f8f9fa;
+}
+
+.adminpayout-completed-table th {
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.adminpayout-completed-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s;
+}
+
+.adminpayout-completed-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.adminpayout-completed-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.adminpayout-completed-table td {
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 14px;
+  color: #495057;
+  vertical-align: middle;
+}
+
+/* Status */
+.adminpayout-completed-status-pending {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.adminpayout-completed-status-completed {
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* Buttons */
+.adminpayout-completed-btn {
+  padding: 6px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0 4px;
+  background-color: white;
+}
+
+/* Pagination */
+.adminpayout-completed-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  padding: 20px 0;
+}
+
+.adminpayout-completed-page-btn {
+  padding: 8px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  color: #495057;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 40px;
+}
+
+.adminpayout-completed-page-btn:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.adminpayout-completed-page-btn.active {
+  background-color: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+  font-weight: 600;
+}
+
+.adminpayout-completed-page-btn.active:hover {
+  background-color: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+  font-weight: 600;
+}
+
+.adminpayout-completed-page-btn:disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+  border-color: #dee2e6;
+}
+
+.adminpayout-completed-loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #6c757d;
+}
+
+.adminpayout-completed-error {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .adminpayout-completed-wrap {
+    padding: 20px;
+  }
+
+  .adminpayout-completed-filter-row {
+    flex-wrap: wrap;
+  }
+
+  .adminpayout-completed-table {
+    font-size: 13px;
+  }
+
+  .adminpayout-completed-table th,
+  .adminpayout-completed-table td {
+    padding: 12px 8px;
+  }
+}
