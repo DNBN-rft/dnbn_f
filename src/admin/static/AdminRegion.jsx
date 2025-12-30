@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./css/adminregion.css"
-import { getRegionStatistics } from "../../utils/adminRegionService";
+import { getRegionStatistics, getCustStatistics } from "../../utils/adminRegionService";
 import { apiGet } from "../../utils/apiClient";
 
 const AdminRegion = () => {
@@ -10,7 +10,8 @@ const AdminRegion = () => {
     const [selectedDistrict, setSelectedDistrict] = useState("");
     const [selectedDistrictName, setSelectedDistrictName] = useState("");
     const [selectedTab, setSelectedTab] = useState("franchise"); // franchise or general
-    const [chartData, setChartData] = useState(null);
+    const [franchiseData, setFranchiseData] = useState(null);
+    const [generalData, setGeneralData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -143,29 +144,46 @@ const AdminRegion = () => {
         setError(null);
 
         try {
-            const result = await getRegionStatistics(selectedDistrictName);
+            const [franchiseResult, generalResult] = await Promise.all([
+                getRegionStatistics(selectedDistrictName),
+                getCustStatistics(selectedDistrictName)
+            ]);
 
-            if (result.success) {
-                const data = result.data;
-                
-                // API 응답을 차트 데이터로 변환
-                const labels = data.map(item => `${item.month}월`);
-                const sellingPrices = data.map(item => Math.floor(item.totalSellingPrice / 1000000)); // 백만원 단위로 변환
-                const sellingCounts = data.map(item => item.totalSellingCnt);
+            if (franchiseResult.success && generalResult.success) {
+                const franchiseData = franchiseResult.data;
+                const generalData = generalResult.data;
 
-                setChartData({
-                    labels: labels,
-                    franchise: sellingPrices, // 가맹점 판매액 (백만원)
-                    general: sellingCounts // 일반사용자 구매건수
+                // 가맹점 데이터 변환
+                const franchiseLabels = franchiseData.map(item => `${item.month}월`);
+                const franchiseSellingPrices = franchiseData.map(item => item.totalSellingPrice); // 원 단위
+                const franchiseSellingCounts = franchiseData.map(item => item.totalSellingCnt);
+
+                setFranchiseData({
+                    labels: franchiseLabels,
+                    sellingPrices: franchiseSellingPrices,
+                    sellingCounts: franchiseSellingCounts
+                });
+
+                // 고객 데이터 변환
+                const generalLabels = generalData.map(item => `${item.month}월`);
+                const generalSellingPrices = generalData.map(item => item.totalSellingPrice); // 원 단위
+                const generalSellingCounts = generalData.map(item => item.totalSellingCnt);
+
+                setGeneralData({
+                    labels: generalLabels,
+                    sellingPrices: generalSellingPrices,
+                    sellingCounts: generalSellingCounts
                 });
             } else {
-                setError(result.error);
-                setChartData(null);
+                setError(franchiseResult.error || generalResult.error);
+                setFranchiseData(null);
+                setGeneralData(null);
             }
         } catch (err) {
             console.error("API 요청 실패:", err);
             setError("데이터 조회에 실패했습니다. 다시 시도해주세요.");
-            setChartData(null);
+            setFranchiseData(null);
+            setGeneralData(null);
         } finally {
             setLoading(false);
         }
@@ -219,7 +237,7 @@ const AdminRegion = () => {
                                 {error}
                             </div>
                         )}
-                        {selectedDistrict !== "all" && chartData && (
+                        {selectedDistrict !== "all" && (franchiseData || generalData) && (
                             <>
                                 <div className="adminregion-user-type-tabs">
                                     <button
@@ -237,52 +255,95 @@ const AdminRegion = () => {
                                 </div>
 
                                 <div className="adminregion-chart-area">
-                                    {chartData ? (
+                                    {(selectedTab === 'franchise' ? franchiseData : generalData) ? (
                                         <div className="adminregion-chart">
-                                            <h3>{selectedDistrictName} - {selectedTab === 'franchise' ? '월별 판매액' : '월별 판매건수'}</h3>
+                                            <h3>{selectedDistrictName} - {selectedTab === 'franchise' ? '가맹점 월별 통계' : '일반사용자 월별 통계'}</h3>
                                             <div className="chart-placeholder">
-                                                <p>{selectedTab === 'franchise' ? '월별 판매액 (백만원)' : '월별 판매건수'}</p>
+                                                <p>월별 판매액 및 판매건수</p>
                                                 <div className="chart-bars">
-                                                    {chartData.labels.map((label, index) => {
-                                                        const value = selectedTab === 'franchise' 
-                                                            ? chartData.franchise[index] 
-                                                            : chartData.general[index];
-                                                        const displayValue = selectedTab === 'franchise' 
-                                                            ? `${value}M` 
-                                                            : value;
-                                                        const maxValue = Math.max(
-                                                            ...chartData.franchise,
-                                                            ...chartData.general
-                                                        );
-                                                        const heightPercent = (value / maxValue) * 100;
+                                                    {(selectedTab === 'franchise' ? franchiseData : generalData).labels.map((label, index) => {
+                                                        const data = selectedTab === 'franchise' ? franchiseData : generalData;
+                                                        const priceValue = data.sellingPrices[index];
+                                                        const countValue = data.sellingCounts[index];
+                                                        const maxPrice = Math.max(...data.sellingPrices);
+                                                        const maxCount = Math.max(...data.sellingCounts);
+                                                        const priceHeight = (priceValue / maxPrice) * 100;
+                                                        const countHeight = (countValue / maxCount) * 100;
                                                         return (
                                                             <div key={index} className="chart-bar-group">
-                                                                <div 
-                                                                    className="chart-bar"
-                                                                    style={{ height: `${heightPercent}%`, minHeight: '5px' }}
-                                                                >
-                                                                    <span className="chart-value">{displayValue}</span>
+                                                                <div className="chart-bar-container">
+                                                                    <div 
+                                                                        className="chart-bar price-bar"
+                                                                        style={{ height: `${priceHeight}%`, minHeight: '5px' }}
+                                                                    >
+                                                                        <span className="chart-value">{priceValue.toLocaleString()}</span>
+                                                                    </div>
+                                                                    <div 
+                                                                        className="chart-bar count-bar"
+                                                                        style={{ height: `${countHeight}%`, minHeight: '5px' }}
+                                                                    >
+                                                                        <span className="chart-value">{countValue}</span>
+                                                                    </div>
                                                                 </div>
                                                                 <span className="chart-label">{label}</span>
                                                             </div>
                                                         );
                                                     })}
                                                 </div>
+                                                <div className="chart-legend">
+                                                    <div className="legend-item">
+                                                        <div className="legend-color price-bar"></div>
+                                                        <span>판매액</span>
+                                                    </div>
+                                                    <div className="legend-item">
+                                                        <div className="legend-color count-bar"></div>
+                                                        <span>판매건수</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className="adminregion-no-data">
-                                            <p>검색 버튼을 클릭하여 데이터를 조회하세요</p>
+                                            <p>데이터를 불러오는 중입니다...</p>
                                         </div>
                                     )}
                                 </div>
                             </>
                         )}
-                        {(selectedDistrict === "all" || !chartData) && (
+                        {(selectedDistrict === "all" || (!franchiseData && !generalData)) && (
                             <div className="adminregion-no-data">
                                 <p>읍면동을 선택하고 검색 버튼을 클릭해주세요</p>
                             </div>
                         )}
+                    </div>
+                    <div className="adminregion-static-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>월</th>
+                                    <th>판매액</th>
+                                    <th>판매건수</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(selectedTab === 'franchise' ? franchiseData : generalData) ? (
+                                    (selectedTab === 'franchise' ? franchiseData : generalData).labels.map((label, index) => {
+                                        const data = selectedTab === 'franchise' ? franchiseData : generalData;
+                                        return (
+                                            <tr key={index}>
+                                                <td>{label}</td>
+                                                <td>{data.sellingPrices[index].toLocaleString()}</td>
+                                                <td>{data.sellingCounts[index]}</td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan="3">데이터가 없습니다</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
