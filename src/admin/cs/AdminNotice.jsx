@@ -272,7 +272,7 @@ const AdminNotice = () => {
                       <button
                         className="adminnotice-btn adminnotice-btn-detail"
                         onClick={() => {
-                          setSelectedNotice(notice);
+                          setSelectedNotice(notice.noticeIdx);
                           setIsModalOpen(true);
                         }}
                       >
@@ -340,7 +340,7 @@ const AdminNotice = () => {
       {/* 모달 */}
       {isModalOpen && selectedNotice && (
         <AdminNoticeDetail
-          notice={selectedNotice}
+          noticeIdx={selectedNotice}
           onClose={() => {
             setIsModalOpen(false);
             setSelectedNotice(null);
