@@ -4,10 +4,40 @@ import "./css/adminnoticedetail.css";
 const AdminNoticeDetail = ({ notice, onClose }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedNotice, setEditedNotice] = useState({
-    title: notice.title,
-    content: notice.content,
-    isPinned: notice.isPinned,
+    title: notice?.title || "",
+    content: notice?.content || "",
+    isPinned: notice?.isPinned || false,
   });
+
+  // notice가 없으면 에러 메시지 표시
+  if (!notice) {
+    return (
+      <div className="adminnoticedetail-backdrop" onClick={onClose}>
+        <div
+          className="adminnoticedetail-wrap"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="adminnoticedetail-header">
+            <h2 className="adminnoticedetail-title">공지사항 상세</h2>
+            <button className="adminnoticedetail-close-btn" onClick={onClose}>
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
+          <div className="adminnoticedetail-content">
+            <p>공지사항 정보를 불러올 수 없습니다.</p>
+          </div>
+          <div className="adminnoticedetail-footer">
+            <button
+              className="adminnoticedetail-btn adminnoticedetail-btn-close"
+              onClick={onClose}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleSave = () => {
     // 저장 로직 추가 예정
@@ -16,9 +46,9 @@ const AdminNoticeDetail = ({ notice, onClose }) => {
 
   const handleCancel = () => {
     setEditedNotice({
-      title: notice.title,
-      content: notice.content,
-      isPinned: notice.isPinned,
+      title: notice?.title || "",
+      content: notice?.content || "",
+      isPinned: notice?.isPinned || false,
     });
     setIsEditMode(false);
   };

@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
 import './css/topnav.css';
 import AdminAlarmModal from './modal/AdminAlarmModal';
 
 const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
+  const { admin, adminLogout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  
   // 알람 데이터 (실제로는 서버에서 가져오거나 상태 관리)
   const [alarms] = useState([]);
   const hasAlarms = alarms.length > 0;
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
+
+  const handleLogout = async () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      await adminLogout();
+      navigate('/admin/login');
+    }
+  };
 
   return (
     <nav className="admin-sb-topnav navbar navbar-expand navbar-dark admin-topnav-custom">
@@ -47,11 +59,21 @@ const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
             <i className="fas fa-user fa-fw admin-topnav-i"></i>
           </a>
           <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li className='dropdown-info'><span className="dropdown-user"></span>&nbsp;<span className='dropdown-text'>환영합니다!</span></li>
-            <li><a className="dropdown-item" href="/mypage">내정보</a></li>
-            <li><a className="dropdown-item" href="/dashboard">멤버쉽</a></li>
+            <li className='dropdown-info'>
+              <span className="dropdown-user">{admin?.empNm || '관리자'}님</span>
+              &nbsp;
+              <span className='dropdown-text'>환영합니다!</span>
+            </li>
             <li><hr className="dropdown-divider" /></li>
-            <li><a className="dropdown-item" href="/admin/login">로그인</a></li>
+            <li>
+              <button 
+                className="dropdown-item" 
+                onClick={handleLogout}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%' }}
+              >
+                로그아웃
+              </button>
+            </li>
           </ul>
         </li>
       </ul>
