@@ -2,7 +2,7 @@ import "./css/fileinfo.css"
 import StepButton from "../register/component/StepButton";
 import { useState } from "react";
 import { validateFileInfo } from "../../utils/registerValidation";
-import { apiPostFormData } from "../../utils/apiClient";
+import { apiCall } from "../../utils/apiClient";
 
 const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
   const [storeImage, setStoreImage] = useState(null);
@@ -137,7 +137,14 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
         formDataToSend.append("bzFile", file);
       });
 
-      const response = await apiPostFormData("/store/register", formDataToSend);
+      // FormData 사용 시 headers 옵션을 빈 객체로 설정하여 
+      // apiCall의 기본 Content-Type(application/json)을 제거
+      const response = await apiCall("/store/register", 
+        {
+          method: "POST",
+          body: formDataToSend,
+          headers: {}
+        });
 
       if (response.ok) {
         alert("회원가입이 완료되었습니다.");

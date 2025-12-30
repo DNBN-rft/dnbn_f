@@ -92,7 +92,7 @@ const ProductAdd = ({ onClose }) => {
         formDataObj.append("productImgs", file);
       });
 
-      const response = await apiPostFormData("/product", formDataObj);
+      const response = await apiPostFormData("/store/product", formDataObj);
 
       if (response.ok) {
         alert("상품이 등록되었습니다.");
