@@ -97,9 +97,11 @@ const AuthModal = ({ onClose, onSave }) => {
                 onSave({
                     name: authName,
                     description: description,
+                    authType: authType,
                     menuCodes: selectedMenus
                 });
                 onClose();
+                window.location.reload();
             } else {
                 alert("권한 등록에 실패했습니다.");
             }
