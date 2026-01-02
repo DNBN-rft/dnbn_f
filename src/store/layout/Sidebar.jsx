@@ -6,8 +6,7 @@ const Sidebar = () => {
   const location = useLocation();
   const [isCustomerServiceOpen, setIsCustomerServiceOpen] = useState(false);
   const [isSalesOpen, setIsSalesOpen] = useState(false);
-  const [isNegoOpen, setIsNegoOpen] = useState(false);
-  // const [권한, set권한] = useState([로컬스토리지.권한배열]);
+  const [isNegoOpen, setIsNegoOpen] = useState(false);;
   return (
     <div id="layoutSidenav_nav">
       <nav
