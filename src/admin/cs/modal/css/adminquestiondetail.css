@@ -1,7 +1,7 @@
 /* 모달 오버레이 */
 .adminquestiondetail-overlay {
   position: fixed;
-  top: 0;
+  top: 50px;
   left: 225px;
   right: 0;
   bottom: 0;
@@ -21,6 +21,7 @@
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   overflow-y: auto;
+  scrollbar-width: none;
   padding: 32px;
 }
 
