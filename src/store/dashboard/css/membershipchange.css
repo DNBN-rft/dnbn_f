@@ -126,7 +126,7 @@
   transition: all 0.3s ease;
 }
 
-.membership-change-plan-box:hover {
+.membership-change-plan-box:hover.membership-change-plan-box:not(.membership-change-plan-box-selected):not(.membership-change-plan-box-current) {
   border-color: rgba(241, 129, 30, 0.5);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -209,6 +209,13 @@
 .membership-change-plan-box-select-btn.selected {
   background-color: rgba(241, 129, 30, 1);
   color: white;
+}
+
+.membership-change-plan-box-select-btn.current {
+  border-color: #ccc;
+  background-color: rgba(0, 128, 0, 0.02);
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .membership-change-plan-box-toggle-icon {

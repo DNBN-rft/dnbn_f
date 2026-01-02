@@ -25,10 +25,9 @@ const TopNav = () => {
       <div className="ms-auto"></div>
       {/* Navbar*/}
       <ul className="navbar-nav ms-md-0 me-3 me-lg-4">
-        <li className="nav-item" style={{ position: 'relative' }}>
+        <li className="nav-item topnav-alarm-item">
           <button 
-            className="nav-link" 
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            className="nav-link topnav-alarm-btn" 
             onClick={() => setIsAlarmModalOpen(!isAlarmModalOpen)}
           >
             <i className={`${hasUnreadAlarms ? 'fa-solid' : 'fa-regular'} fa-alarm-clock fa-fw topnav-i`}></i>
@@ -37,7 +36,7 @@ const TopNav = () => {
         </li>
         <li className="nav-item dropdown">
           <a 
-            className="nav-link dropdown-toggle" 
+            className="nav-link dropdown-toggle topnav-dropdown-toggle" 
             id="navbarDropdown" 
             href="/" 
             role="button" 
@@ -52,14 +51,14 @@ const TopNav = () => {
               &nbsp;
               <span className='dropdown-text'>환영합니다!</span>
             </li>
-            <li><a className="dropdown-item" href="/store/mypage">내정보</a></li>
-            <li><a className="dropdown-item" href="/store/dashboard">멤버쉽</a></li>
+            <li><hr className="dropdown-divider" /></li>
+            <li><a className="dropdown-item topnav-dropdown-item" href="/store/mypage">내정보</a></li>
+            <li><a className="dropdown-item topnav-dropdown-item" href="/store/plan">요금제</a></li>
             <li><hr className="dropdown-divider" /></li>
             <li>
               <button 
-                className="dropdown-item" 
+                className="dropdown-item topnav-dropdown-item topnav-logout-btn" 
                 onClick={handleLogout}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
               >
                 로그아웃
               </button>

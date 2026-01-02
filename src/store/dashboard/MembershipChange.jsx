@@ -9,11 +9,10 @@ const MembershipChange = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [expandedPlan, setExpandedPlan] = useState(null);
+  const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let userInfo = localStorage.getItem("user");
-        const storeCode = JSON.parse(userInfo).storeCode;
         // 현재 멤버십 정보 가져오기
         const storeResponse = await apiGet(`/store/view/${storeCode}`);
         if (storeResponse.ok) {
@@ -36,7 +35,7 @@ const MembershipChange = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [storeCode]);
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
   };
@@ -52,8 +51,6 @@ const MembershipChange = () => {
       window.confirm(`${selectedPlan.memberShipPlanNm}으로 변경하시겠습니까?`)
     ) {
       try {
-        let userInfo = localStorage.getItem("user");
-        const storeCode = JSON.parse(userInfo).storeCode;
         const requestBody = {
           storeCode: storeCode,
           memberShipPlanIdx: selectedPlan.memberShipPlanIdx,
@@ -66,7 +63,6 @@ const MembershipChange = () => {
           alert("멤버십 변경에 실패했습니다.");
         }
       } catch (error) {
-        console.error("Error changing membership:", error);
         alert("멤버십 변경 중 오류가 발생했습니다.");
       }
     }
@@ -91,10 +87,10 @@ const MembershipChange = () => {
             <div className="membership-change-current-title">현재 멤버쉽</div>
             <div className="membership-change-current-info">
               <span className="membership-change-current-name">
-                {currentPlan.name}
+                {currentPlan.name === "Default" ? "기본" : currentPlan.name}
               </span>
               <span className="membership-change-current-price">
-                월 {currentPlan.price?.toLocaleString()}원
+                {currentPlan.name === "Default" ? "무료" : currentPlan.name === "Free" ? "최초 1회 무료" : `월 ${currentPlan.price?.toLocaleString()}원`}
               </span>
             </div>
           </div>
@@ -132,7 +128,7 @@ const MembershipChange = () => {
                 <div className="membership-change-plan-box-info">
                   <div className="membership-change-plan-box-name-row">
                     <span className="membership-change-plan-box-name">
-                      {plan.memberShipPlanNm}
+                      {plan.memberShipPlanNm === "Default" ? "기본" : plan.memberShipPlanNm}
                     </span>
                     {currentPlan?.name === plan.memberShipPlanNm && (
                       <span className="membership-change-plan-box-current-badge">
@@ -141,7 +137,7 @@ const MembershipChange = () => {
                     )}
                   </div>
                   <span className="membership-change-plan-box-price">
-                    월 {plan.memberShipPlanPrice?.toLocaleString()}원
+                    {plan.memberShipPlanNm === "Default" ? "무료" : plan.memberShipPlanNm === "Free" ? "최초 1회 무료" : `월 ${plan.memberShipPlanPrice?.toLocaleString()}원`}
                   </span>
                 </div>
                 <div className="membership-change-plan-box-actions">
@@ -150,15 +146,17 @@ const MembershipChange = () => {
                       selectedPlan?.memberShipPlanIdx === plan.memberShipPlanIdx
                         ? "selected"
                         : ""
-                    }`}
+                    } ${currentPlan?.name === plan.memberShipPlanNm ? "current" : ""}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handlePlanSelect(plan);
                     }}
                   >
-                    {selectedPlan?.memberShipPlanIdx === plan.memberShipPlanIdx
+                    {currentPlan?.name === plan.memberShipPlanNm
+                      ? "사용 중"
+                      : `${selectedPlan?.memberShipPlanIdx === plan.memberShipPlanIdx
                       ? "✓ 선택됨"
-                      : "선택하기"}
+                      : "선택하기"}`}
                   </button>
                   <span className="membership-change-plan-box-toggle-icon">
                     {expandedPlan === plan.memberShipPlanIdx ? "▲" : "▼"}
