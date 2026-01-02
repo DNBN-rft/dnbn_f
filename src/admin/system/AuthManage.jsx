@@ -401,6 +401,7 @@ const AuthManage = () => {
             name: newAuth.name,
             description: newAuth.description,
             menus: newAuth.menus,
+            authType: newAuth.authType,
             isActive: newAuth.isActive
         };
 
