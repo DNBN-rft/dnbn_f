@@ -6,7 +6,7 @@ const Sidebar = () => {
   const location = useLocation();
   const [isCustomerServiceOpen, setIsCustomerServiceOpen] = useState(false);
   const [isSalesOpen, setIsSalesOpen] = useState(false);
-  const [isNegoOpen, setIsNegoOpen] = useState(false);;
+  const [isNegoOpen, setIsNegoOpen] = useState(false);
   return (
     <div id="layoutSidenav_nav">
       <nav
