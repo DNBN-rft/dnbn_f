@@ -35,11 +35,8 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
 
   // 기존 직원 권한 설정
   useEffect(() => {
-    console.log('member 데이터:', member);
-    console.log('member.menuAuth:', member?.menuAuth);
     if (member?.menuAuth && Array.isArray(member.menuAuth)) {
       const codes = member.menuAuth.map(auth => auth.code);
-      console.log('추출된 권한 codes:', codes);
       setSelectedAuthCodes(codes);
     }
   }, [member]);
