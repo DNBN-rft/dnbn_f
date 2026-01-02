@@ -67,31 +67,12 @@ const EmployeeManage = () => {
   };
 
   // 권한 정보를 한글로 변환
-  const formatAuthInfo = (authString) => {
-    if (!authString) return "-";
+  const formatAuthInfo = (menuAuth) => {
+    if (!menuAuth || !Array.isArray(menuAuth) || menuAuth.length === 0) return "-";
     
-    const authLabels = {
-      "ROLE_PRODUCT": "상품관리",
-      "ROLE_ORDER": "매출목록",
-      "ROLE_REVIEW": "리뷰관리",
-      "ROLE_EMPLOYEE": "직원관리",
-      "ROLE_SALE": "할인목록",
-      "ROLE_SERVICE": "공지사항",
-      "ROLE_ALL": "전체권한"
-    };
+    const displayNames = menuAuth.map(auth => auth.displayName).filter(Boolean);
     
-    try {
-      // 쉼표로 구분된 문자열을 배열로 변환
-      const authArray = authString.split(",").map(auth => auth.trim());
-      const activeAuth = authArray
-        .map(auth => authLabels[auth] || auth)
-        .filter(Boolean);
-      
-      return activeAuth.length > 0 ? activeAuth.join(", ") : "권한 없음";
-    } catch (error) {
-      console.error("권한 파싱 오류:", error);
-      return "-";
-    }
+    return displayNames.length > 0 ? displayNames.join(", ") : "권한 없음";
   };
 
   // 직원 타입을 한글로 변환
@@ -152,7 +133,7 @@ const EmployeeManage = () => {
               <div className="empmanage-card-body">
                 <div className="empmanage-card-info">{p.memberTelNo}</div>
                 <div className="empmanage-card-info">{p.memberId}</div>
-                <div className="empmanage-card-auth">{formatAuthInfo(p.memberAuth)}</div>
+                <div className="empmanage-card-auth">{formatAuthInfo(p.menuAuth)}</div>
               </div>
               {p.memberType !== "OWNER" && (
                 <div className="empmanage-card-footer">

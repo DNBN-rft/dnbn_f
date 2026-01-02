@@ -41,10 +41,29 @@
     gap: 20px;
 }
 
-.productdetail-top-content-img {
-    border: 1px solid black;
-    width: 100%;
+.productdetail-top-content-img-wrapper {
+    width: 40%;
     height: 250px;
+    border: 1px solid black;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    flex-shrink: 0;
+}
+
+.productdetail-top-content-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.productdetail-no-image {
+    color: #999;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .productdetail-top-content-info1 {

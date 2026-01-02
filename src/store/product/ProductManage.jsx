@@ -219,8 +219,8 @@ const ProductManage = () => {
     }
 
     try {
-      const response = await apiPost("/product/delete", {
-        storeCodes: Array.from(selectedCheckboxes.keys())
+      const response = await apiPost("/store/product/delete", {
+        productCodes: Array.from(selectedCheckboxes.keys())
       });
 
       if (response.ok) {
@@ -477,7 +477,7 @@ const ProductManage = () => {
           onClose={() => setIsSaleModalOpen(false)}
           productPrice={selectedSaleProduct.price}
           productCode={selectedSaleProduct.productCode}
-          timeout={36}
+          onRefresh={loadProducts}
         />
       )}
     </div>

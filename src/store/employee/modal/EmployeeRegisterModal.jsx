@@ -1,17 +1,11 @@
-import { apiPost } from "../../../utils/apiClient";
+import { apiPost, apiGet } from "../../../utils/apiClient";
 import "./css/employeeregistermodal.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EmployeeRegisterModal = ({ onClose, refreshData }) => {
-    // 권한 메뉴 정의
-    const authMenus = [
-        { key: "product", label: "상품" },
-        { key: "sale", label: "매출" },
-        { key: "review", label: "리뷰" },
-        { key: "employee", label: "직원" },
-        { key: "order", label: "할인" },
-        { key: "service", label: "고객센터" },
-    ];
+
+    const [authMenus, setAuthMenus] = useState([]);
+    const [selectedAuthCodes, setSelectedAuthCodes] = useState([]);
 
     const [formData, setFormData] = useState({
         memberId: "",
@@ -19,8 +13,23 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
         memberNm: "",
         memberTelNo: "",
         memberEmail: "",
-        memberAuth: {},
     });
+
+    // 권한 목록 조회
+    useEffect(() => {
+        const fetchAuthList = async () => {
+            try {
+                const response = await apiGet("/store/member/auth");
+                if (response.ok) {
+                    const data = await response.json();
+                    setAuthMenus(data);
+                }
+            } catch (error) {
+                console.error("권한 목록 조회 실패:", error);
+            }
+        };
+        fetchAuthList();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,36 +50,22 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
         setFormData((prev) => ({ ...prev, memberTelNo: numbersOnly }));
     };
 
-    const handleCheckboxChange = (menuKey) => {
-        setFormData((prev) => ({
-            ...prev,
-            memberAuth: {
-                ...prev.memberAuth,
-                [menuKey]: !prev.memberAuth[menuKey],
-            },
-        }));
+    const handleCheckboxChange = (code) => {
+        setSelectedAuthCodes((prev) => {
+            if (prev.includes(code)) {
+                return prev.filter((c) => c !== code);
+            } else {
+                return [...prev, code];
+            }
+        });
     };
 
     const handleSelectAll = () => {
-        const allAuth = {};
-        authMenus.forEach((menu) => {
-            allAuth[menu.key] = true;
-        });
-        setFormData((prev) => ({
-            ...prev,
-            memberAuth: allAuth,
-        }));
+        setSelectedAuthCodes(authMenus.map(menu => menu.code));
     };
 
     const handleClearAll = () => {
-        const noAuth = {};
-        authMenus.forEach((menu) => {
-            noAuth[menu.key] = false;
-        });
-        setFormData((prev) => ({
-            ...prev,
-            memberAuth: noAuth,
-        }));
+        setSelectedAuthCodes([]);
     };
 
     return (
@@ -165,13 +160,13 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
 
                             <div className="emp-reg-checkbox">
                                 {authMenus.map((menu) => (
-                                    <label key={menu.key}>
+                                    <label key={menu.code}>
                                         <input
                                             type="checkbox"
-                                            checked={formData.memberAuth[menu.key] || false}
-                                            onChange={() => handleCheckboxChange(menu.key)}
+                                            checked={selectedAuthCodes.includes(menu.code)}
+                                            onChange={() => handleCheckboxChange(menu.code)}
                                         />
-                                        {menu.label}
+                                        {menu.displayName}
                                     </label>
                                 ))}
                             </div>
@@ -206,7 +201,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
             memberId: formData.memberId,
             memberPw: formData.memberPw,
             memberNm: formData.memberNm,
-            menuAuth: JSON.stringify(formData.memberAuth),
+            menuAuth: selectedAuthCodes,
             memberTelNo: formData.memberTelNo,
             memberEmail: formData.memberEmail,
             approved: false,

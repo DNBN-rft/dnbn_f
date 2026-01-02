@@ -1,29 +1,13 @@
-import { apiPut } from "../../../utils/apiClient";
+import { apiPut, apiGet } from "../../../utils/apiClient";
 import "./css/employeeregistermodal.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EmployeeModModal = ({ onClose, member, refreshData }) => {
   const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
-  // 권한 메뉴 정의
-  const authMenus = [
-    { key: "product", label: "상품" },
-    { key: "sale", label: "매출" },
-    { key: "review", label: "리뷰" },
-    { key: "employee", label: "직원" },
-    { key: "order", label: "할인" },
-    { key: "service", label: "고객센터" },
-  ];
+  
+  const [authMenus, setAuthMenus] = useState([]);
+  const [selectedAuthCodes, setSelectedAuthCodes] = useState([]);
 
-  // DB에서 받은 JSON 문자열을 파싱하여 초기값 설정
-  const parseAuthData = (authString) => {
-    if (!authString) return {};
-    try {
-      const parsed = typeof authString === 'string' ? JSON.parse(authString) : authString;
-      return parsed;
-    } catch (error) {
-      return {};
-    }
-  };
 
   const [formData, setFormData] = useState({
     memberNm: member?.memberNm || "",
@@ -31,8 +15,31 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
     memberEmail: member?.memberEmail || "",
     memberPw: "",
     memberPwCheck: "",
-    memberAuth: parseAuthData(member?.memberAuth),
   });
+
+  // 권한 목록 조회
+  useEffect(() => {
+    const fetchAuthList = async () => {
+      try {
+        const response = await apiGet("/store/member/auth");
+        if (response.ok) {
+          const data = await response.json();
+          setAuthMenus(data);
+        }
+      } catch (error) {
+        console.error("권한 목록 조회 실패:", error);
+      }
+    };
+    fetchAuthList();
+  }, []);
+
+  // 기존 직원 권한 설정
+  useEffect(() => {
+    if (member?.menuAuth && Array.isArray(member.menuAuth)) {
+      const codes = member.menuAuth.map(auth => auth.code);
+      setSelectedAuthCodes(codes);
+    }
+  }, [member]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,36 +60,22 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
     setFormData((prev) => ({ ...prev, memberTelNo: numbersOnly }));
   };
 
-  const handleCheckboxChange = (menuKey) => {
-    setFormData((prev) => ({
-      ...prev,
-      memberAuth: {
-        ...prev.memberAuth,
-        [menuKey]: !prev.memberAuth[menuKey],
-      },
-    }));
+  const handleCheckboxChange = (code) => {
+    setSelectedAuthCodes((prev) => {
+      if (prev.includes(code)) {
+        return prev.filter((c) => c !== code);
+      } else {
+        return [...prev, code];
+      }
+    });
   };
 
   const handleSelectAll = () => {
-    const allAuth = {};
-    authMenus.forEach((menu) => {
-      allAuth[menu.key] = true;
-    });
-    setFormData((prev) => ({
-      ...prev,
-      memberAuth: allAuth,
-    }));
+    setSelectedAuthCodes(authMenus.map(menu => menu.code));
   };
 
   const handleClearAll = () => {
-    const noAuth = {};
-    authMenus.forEach((menu) => {
-      noAuth[menu.key] = false;
-    });
-    setFormData((prev) => ({
-      ...prev,
-      memberAuth: noAuth,
-    }));
+    setSelectedAuthCodes([]);
   };
 
   const isPasswordMatch =
@@ -99,7 +92,7 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
       memberEmail: formData.memberEmail,
       memberPw: formData.memberPw,
       memberPwCheck: formData.memberPwCheck,
-      memberAuth: JSON.stringify(formData.memberAuth), // JSON 문자열로 변환
+      menuAuth: selectedAuthCodes,
     };
 
     try {
@@ -212,13 +205,13 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
 
               <div className="emp-reg-checkbox">
                 {authMenus.map((menu) => (
-                  <label key={menu.key}>
+                  <label key={menu.code}>
                     <input
                       type="checkbox"
-                      checked={formData.memberAuth[menu.key] || false}
-                      onChange={() => handleCheckboxChange(menu.key)}
+                      checked={selectedAuthCodes.includes(menu.code)}
+                      onChange={() => handleCheckboxChange(menu.code)}
                     />
-                    {menu.label}
+                    {menu.displayName}
                   </label>
                 ))}
               </div>
