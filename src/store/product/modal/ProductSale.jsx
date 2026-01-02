@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import "./css/productsale.css";
-import { apiPost } from "../../../utils/apiClient";
+import { apiPost, apiGet } from "../../../utils/apiClient";
 
-const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, onRefresh }) => {
+const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) => {
     const [discountType, setDiscountType] = useState("할인률");
     const [discountRate, setDiscountRate] = useState("");
     const [discountPrice, setDiscountPrice] = useState("");
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endDateTime, setEndDateTime] = useState("");
+    const [saleTimeout, setSaleTimeout] = useState(2); // 기본값
+    const [hasSetInitialPrice, setHasSetInitialPrice] = useState(false);
 
     // 할인률 변경 시 할인가 자동 계산
     const handleDiscountRateChange = (e) => {
-        const rate = e.target.value;
-        setDiscountRate(rate);
+        const rate = Number(e.target.value);
+        setDiscountRate(rate || "");
         if (rate) {
-            let discounted = Math.floor(productPrice * (1 - rate / 100));
+            let discounted = Math.floor((productPrice * (100 - rate)) / 100);
             if (discounted < 1) discounted = 1;
             if (discounted > productPrice) discounted = productPrice;
             setDiscountPrice(discounted);
@@ -26,13 +28,49 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
 
     // 할인방식이 "할인가"로 전환될 때 처리
     useEffect(() => {
-        if (discountType === "할인가") {
-            // 할인율로 이미 계산된 가격이 있으면 그대로 유지, 없으면 원가로 설정
-            if (!discountPrice) {
-                setDiscountPrice(productPrice);
-            }
+        if (discountType === "할인가" && !hasSetInitialPrice && !discountPrice) {
+            setDiscountPrice(productPrice);
+            setHasSetInitialPrice(true);
         }
-    }, [discountType, productPrice, discountPrice]);
+    }, [discountType, productPrice, discountPrice, hasSetInitialPrice]);
+
+    // API에서 제한 시간 가져오기
+    useEffect(() => {
+        const fetchTimeout = async () => {
+            try {
+                const response = await apiGet('/store/sale/time');
+                if (response.ok) {
+                    const limitTime = await response.json();
+                    setSaleTimeout(limitTime);
+                } else {
+                    console.error('Failed to fetch timeout');
+                }
+            } catch (error) {
+                console.error('Error fetching timeout:', error);
+            }
+        };
+        fetchTimeout();
+    }, []);
+
+    // 모달 열릴 때 현재 시간으로 시작 날짜/시간 설정
+    useEffect(() => {
+        const now = new Date();
+        const currentDate = now.toISOString().slice(0, 10);
+        const currentTime = now.toTimeString().slice(0, 5);
+        setStartDate(currentDate);
+        setStartTime(currentTime);
+
+        // 종료 시간 계산
+        const start = now;
+        const end = new Date(start.getTime() + saleTimeout * 60 * 60 * 1000);
+        const year = end.getFullYear();
+        const month = String(end.getMonth() + 1).padStart(2, '0');
+        const day = String(end.getDate()).padStart(2, '0');
+        const hours = String(end.getHours()).padStart(2, '0');
+        const minutes = String(end.getMinutes()).padStart(2, '0');
+        const formatted = `${year}-${month}-${day} ${hours}:${minutes}`;
+        setEndDateTime(formatted);
+    }, [saleTimeout]);
 
     // 시작/종료 시간 계산
     const handleDateTimeChange = (date, time) => {
@@ -40,8 +78,14 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
         if (time) setStartTime(time);
         if (date && time) {
             const start = new Date(`${date}T${time}`);
-            const end = new Date(start.getTime() + timeout * 60 * 60 * 1000);
-            const formatted = end.toISOString().slice(0, 16).replace("T", " ");
+            const end = new Date(start.getTime() + saleTimeout * 60 * 60 * 1000);
+            // 로컬 시간을 사용하여 포맷
+            const year = end.getFullYear();
+            const month = String(end.getMonth() + 1).padStart(2, '0');
+            const day = String(end.getDate()).padStart(2, '0');
+            const hours = String(end.getHours()).padStart(2, '0');
+            const minutes = String(end.getMinutes()).padStart(2, '0');
+            const formatted = `${year}-${month}-${day} ${hours}:${minutes}`;
             setEndDateTime(formatted);
         }
     };
@@ -61,11 +105,11 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
         val = Number(val);
 
         // 최대/최소 제한
-        if (val < 1) val = 1;
+        if (val < 0) val = 0;
         if (val > productPrice) val = productPrice;
 
         setDiscountPrice(val);
-        const newRate = Math.floor((1 - val / productPrice) * 100);
+        const newRate = Math.round(((productPrice - val) / productPrice) * 100);
         setDiscountRate(newRate);
     };
 
@@ -79,7 +123,7 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
             return;
         }
 
-        if (!discountPrice || discountPrice < 1) {
+        if (discountPrice === "" || discountPrice < 0) {
             alert("할인 판매가를 입력해주세요.");
             return;
         }
@@ -173,7 +217,7 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, timeout = 2, 
                                 <label>할인 판매가 (원)</label>
                                 <input
                                     type="number"
-                                    min="1"
+                                    min="0"
                                     max={productPrice}
                                     value={discountPrice}
                                     onChange={handleDiscountPriceChange}

@@ -79,7 +79,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
             <div className="productdetail-header">상품 상세 정보</div>
 
             <div className="productdetail-top-content">
-              <div>
+              <div className="productdetail-top-content-img-wrapper">
                 {product.imgs?.files?.length > 0 ? (
                   <img
                     src={`http://localhost:8080${product.imgs.files[0].fileUrl}`}
@@ -87,7 +87,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
                     className="productdetail-top-content-img"
                   />
                 ) : (
-                  <div>이미지 없음</div>
+                  <div className="productdetail-no-image">이미지 없음</div>
                 )}
               </div>
               <div className="productdetail-top-content-info">
