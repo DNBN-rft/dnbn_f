@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./css/authmanage.css";
 import AuthModal from "./modal/AuthModal";
+import { apiGet, apiPut, apiDelete } from "../../utils/apiClient";
 
 const AuthManage = () => {
     const [deleteMode, setDeleteMode] = useState(false);
@@ -10,75 +11,104 @@ const AuthManage = () => {
     const [checkedItems, setCheckedItems] = useState([]);
     const [hasChanges, setHasChanges] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
-    // 샘플 데이터
-    const [authList, setAuthList] = useState([
-        { id: 1, name: "관리자", description: "시스템 전체 권한", menus: ["admin-main", "admin-user", "admin-product", "store-order", "store-product"] },
-        { id: 2, name: "운영자", description: "일부 시스템 권한", menus: ["admin-notice", "admin-question", "store-notice"] },
-        { id: 3, name: "일반 사용자", description: "기본 권한", menus: ["store-mypage", "store-notice"] },
-    ]);
+    const [authList, setAuthList] = useState([]);
+    const [authMenus, setAuthMenus] = useState({});
+    const [originalAuthMenus, setOriginalAuthMenus] = useState({});
+    const [allMenus, setAllMenus] = useState([]);
+    const [isReadOnly, setIsReadOnly] = useState(false);
+    const [searchType, setSearchType] = useState("all");
+    const [searchTerm, setSearchTerm] = useState("");
 
-    // 전체 메뉴 목록 (모달에서 선택한 메뉴만 표시)
-    const allMenus = [
-        { id: "admin-main", name: "관리자 메인" },
-        { id: "admin-manager", name: "관리자 관리" },
-        { id: "admin-user", name: "회원 관리" },
-        { id: "admin-store", name: "가게 정보" },
-        { id: "admin-product", name: "상품 관리" },
-        { id: "admin-review", name: "리뷰 관리" },
-        { id: "admin-employee", name: "직원 관리" },
-        { id: "admin-notice", name: "공지사항" },
-        { id: "admin-question", name: "문의 관리" },
-        { id: "admin-report", name: "신고 관리" },
-        { id: "admin-alarm", name: "알림 관리" },
-        { id: "admin-push", name: "푸시 알림" },
-        { id: "admin-category", name: "카테고리 관리" },
-        { id: "admin-region", name: "지역 관리" },
-        { id: "admin-plan", name: "요금제 관리" },
-        { id: "admin-accept", name: "가입 승인" },
-        { id: "admin-auth", name: "권한 관리" },
-        { id: "admin-category-manage", name: "카테고리 설정" },
-        { id: "store-membership", name: "멤버십 정보" },
-        { id: "store-mypage", name: "마이페이지" },
-        { id: "store-order", name: "주문 관리" },
-        { id: "store-negotiation", name: "흥정 관리" },
-        { id: "store-static", name: "주문 통계" },
-        { id: "store-product", name: "상품 관리" },
-        { id: "store-sale", name: "판매 관리" },
-        { id: "store-review", name: "리뷰 관리" },
-        { id: "store-employee", name: "직원 관리" },
-        { id: "store-notice", name: "공지사항" },
-        { id: "store-question", name: "문의하기" },
-        { id: "store-subscription", name: "구독 플랜" },
-    ];
+    // 기본 권한 (수정 불가)
+    const DEFAULT_AUTH_IDS = [1, 2, 3];
 
-    // 각 권한별 활성화된 메뉴 (샘플)
-    const [authMenus, setAuthMenus] = useState({
-        1: ["admin-main", "admin-user", "admin-product", "store-order", "store-product"],
-        2: ["admin-notice", "admin-question", "store-notice"],
-        3: ["store-mypage", "store-notice"],
-    });
-
-    // 원본 메뉴 상태 저장 (변경 감지용)
-    const [originalAuthMenus, setOriginalAuthMenus] = useState({
-        1: ["admin-main", "admin-user", "admin-product", "store-order", "store-product"],
-        2: ["admin-notice", "admin-question", "store-notice"],
-        3: ["store-mypage", "store-notice"],
-    });
-
-    // inactive, active 메뉴 계산 - 선택한 권한의 메뉴만 표시
-    const getInactiveMenus = () => {
-        if (!selectedAuth) return [];
-        const authMenuIds = selectedAuth.menus || [];
-        const activeMenuIds = authMenus[selectedAuth.id] || [];
-        return allMenus.filter(menu => authMenuIds.includes(menu.id) && !activeMenuIds.includes(menu.id));
+    const authTypeLabels = {
+        "ADMIN": "관리자",
+        "STORE": "가맹점",
+        "CUST": "일반 사용자"
     };
 
+    // 권한 목록 조회
+    useEffect(() => {
+        const fetchAuthList = async () => {
+            try {
+                const response = await apiGet("/admin/auth");
+                if (response.ok) {
+                    const data = await response.json();
+
+                    const formattedAuthList = data.map(auth => ({
+                        id: auth.authIdx,
+                        name: auth.authNm,
+                        description: auth.authDescription,
+                        menus: auth.menuAuth.map(m => m.code),
+                        authType: auth.authType
+                    }));
+                    setAuthList(formattedAuthList);
+
+                    // allMenus 구축 (모든 권한의 메뉴를 모음)
+                    const menusMap = new Map();
+                    data.forEach(auth => {
+                        auth.menuAuth.forEach(menu => {
+                            if (!menusMap.has(menu.code)) {
+                                menusMap.set(menu.code, {
+                                    id: menu.code,
+                                    name: menu.displayName
+                                });
+                            }
+                        });
+                    });
+                    setAllMenus(Array.from(menusMap.values()));
+
+                    // originalAuthMenus 초기화
+                    const originalMenus = {};
+                    const authMenusInit = {};
+                    formattedAuthList.forEach(auth => {
+                        originalMenus[auth.id] = auth.menus;
+                        authMenusInit[auth.id] = auth.menus;
+                    });
+                    setOriginalAuthMenus(originalMenus);
+                    setAuthMenus(authMenusInit);
+                }
+            } catch (error) {
+                console.error("권한 목록 조회 실패:", error);
+            }
+        };
+        fetchAuthList();
+    }, []);
+
+    // inactive, active 메뉴 계산 - 기본 권한(1,2,3)의 권한과 비교
+    // 접근 불가능 메뉴 = 같은 authType의 기본 권한 menuAuth 중 현재 권한에 없는 메뉴
+    const getInactiveMenus = () => {
+        if (!selectedAuth) return [];
+        
+        // 같은 authType의 기본 권한 찾기
+        let baseAuthMenus = [];
+        if (!DEFAULT_AUTH_IDS.includes(selectedAuth.id)) {
+            // 선택한 권한이 기본 권한이 아닌 경우
+            const baseAuth = authList.find(auth => 
+                DEFAULT_AUTH_IDS.includes(auth.id) && auth.authType === selectedAuth.authType
+            );
+            if (baseAuth) {
+                baseAuthMenus = baseAuth.menus || [];
+            }
+        } else {
+            // 선택한 권한이 기본 권한인 경우 (수정 불가이므로 빈 배열)
+            baseAuthMenus = [];
+        }
+        
+        const currentMenuIds = authMenus[selectedAuth.id] || [];
+
+        return allMenus.filter(menu =>
+            baseAuthMenus.includes(menu.id) && !currentMenuIds.includes(menu.id)
+        );
+    };
+
+    // 접근 가능 메뉴 = 현재 authMenus에 있는 메뉴
     const getActiveMenus = () => {
         if (!selectedAuth) return [];
-        const authMenuIds = selectedAuth.menus || [];
-        const activeMenuIds = authMenus[selectedAuth.id] || [];
-        return allMenus.filter(menu => authMenuIds.includes(menu.id) && activeMenuIds.includes(menu.id));
+        const currentMenuIds = authMenus[selectedAuth.id] || [];
+
+        return allMenus.filter(menu => currentMenuIds.includes(menu.id));
     };
 
     // 권한 행 클릭
@@ -96,10 +126,17 @@ const AuthManage = () => {
                     return; // 취소하면 권한 변경하지 않음
                 }
             }
-            
+
             setSelectedAuth(auth);
             setSelectedInactive([]);
             setSelectedActive([]);
+            // 기본 권한 여부 확인
+            setIsReadOnly(DEFAULT_AUTH_IDS.includes(auth.id));
+            // 새 권한 선택 시 authMenus 초기화 (원본 menuAuth로)
+            setAuthMenus(prev => ({
+                ...prev,
+                [auth.id]: auth.menus
+            }));
         }
     };
 
@@ -109,21 +146,23 @@ const AuthManage = () => {
             setHasChanges(false);
             return;
         }
-        
+
         const current = authMenus[selectedAuth.id] || [];
         const original = originalAuthMenus[selectedAuth.id] || [];
-        
-        const changed = current.length !== original.length || 
-                       current.some(id => !original.includes(id));
-        
+
+        const changed = current.length !== original.length ||
+            current.some(id => !original.includes(id));
+
         setHasChanges(changed);
     }, [authMenus, selectedAuth, originalAuthMenus]);
 
     // inactive 메뉴 선택
     const handleInactiveSelect = (menuId) => {
+        if (isReadOnly) return; // 기본 권한이면 선택 불가
+        
         // active 선택 초기화
         setSelectedActive([]);
-        
+
         setSelectedInactive(prev => {
             if (prev.includes(menuId)) {
                 return prev.filter(id => id !== menuId);
@@ -135,9 +174,11 @@ const AuthManage = () => {
 
     // active 메뉴 선택
     const handleActiveSelect = (menuId) => {
+        if (isReadOnly) return; // 기본 권한이면 선택 불가
+        
         // inactive 선택 초기화
         setSelectedInactive([]);
-        
+
         setSelectedActive(prev => {
             if (prev.includes(menuId)) {
                 return prev.filter(id => id !== menuId);
@@ -150,7 +191,7 @@ const AuthManage = () => {
     // 오른쪽 화살표 (inactive -> active)
     const moveToActive = () => {
         if (!selectedAuth || selectedInactive.length === 0) return;
-        
+
         setAuthMenus(prev => ({
             ...prev,
             [selectedAuth.id]: [...(prev[selectedAuth.id] || []), ...selectedInactive]
@@ -161,7 +202,7 @@ const AuthManage = () => {
     // 왼쪽 화살표 (active -> inactive)
     const moveToInactive = () => {
         if (!selectedAuth || selectedActive.length === 0) return;
-        
+
         setAuthMenus(prev => ({
             ...prev,
             [selectedAuth.id]: (prev[selectedAuth.id] || []).filter(id => !selectedActive.includes(id))
@@ -170,20 +211,37 @@ const AuthManage = () => {
     };
 
     // 저장 버튼
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!selectedAuth) {
             alert("권한을 선택해주세요.");
             return;
         }
-        // 실제로는 서버로 데이터 전송
-        alert("권한 메뉴가 저장되었습니다.");
-        
-        // 원본 상태 업데이트
-        setOriginalAuthMenus(prev => ({
-            ...prev,
-            [selectedAuth.id]: [...(authMenus[selectedAuth.id] || [])]
-        }));
-        setHasChanges(false);
+
+        try {
+            const menuAuthCodes = authMenus[selectedAuth.id] || [];
+            const response = await apiPut(`/admin/auth/${selectedAuth.id}`, {
+                menuAuth: menuAuthCodes
+            });
+
+            if (response.ok) {
+                alert("권한 메뉴가 저장되었습니다.");
+
+                // 원본 상태 업데이트
+                setOriginalAuthMenus(prev => ({
+                    ...prev,
+                    [selectedAuth.id]: [...menuAuthCodes]
+                }));
+                setHasChanges(false);
+                
+                // 페이지 새로고침
+                window.location.reload();
+            } else {
+                alert("권한 저장에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("권한 저장 실패:", error);
+            alert("권한 저장 중 오류가 발생했습니다.");
+        }
     };
 
     // 초기화 버튼
@@ -222,18 +280,106 @@ const AuthManage = () => {
     };
 
     // 권한 삭제
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (checkedItems.length === 0) {
             alert("삭제할 권한을 선택해주세요.");
             return;
         }
+        
+        // 기본 권한 삭제 방지
+        const hasDefaultAuth = checkedItems.some(id => DEFAULT_AUTH_IDS.includes(id));
+        if (hasDefaultAuth) {
+            alert("기본 권한은 삭제할 수 없습니다.");
+            return;
+        }
+        
         if (window.confirm(`선택한 ${checkedItems.length}개의 권한을 삭제하시겠습니까?`)) {
-            setAuthList(authList.filter(auth => !checkedItems.includes(auth.id)));
-            setCheckedItems([]);
-            setDeleteMode(false);
-            if (selectedAuth && checkedItems.includes(selectedAuth.id)) {
-                setSelectedAuth(null);
+            try {
+                const response = await apiDelete("/admin/auth", {
+                    body: JSON.stringify({
+                        deleteAuthList: checkedItems
+                    })
+                });
+
+                if (response.ok) {
+                    alert("권한이 삭제되었습니다.");
+                    setAuthList(authList.filter(auth => !checkedItems.includes(auth.id)));
+                    setCheckedItems([]);
+                    setDeleteMode(false);
+                    if (selectedAuth && checkedItems.includes(selectedAuth.id)) {
+                        setSelectedAuth(null);
+                    }
+                } else {
+                    alert("권한 삭제에 실패했습니다.");
+                }
+            } catch (error) {
+                console.error("권한 삭제 실패:", error);
+                alert("권한 삭제 중 오류가 발생했습니다.");
             }
+        }
+    };
+
+    // 검색 함수
+    const handleSearch = async () => {
+        if (!searchTerm.trim()) {
+            alert("검색어를 입력해주세요.");
+            return;
+        }
+
+        try {
+            const queryString = `?searchType=${encodeURIComponent(searchType)}&searchTerm=${encodeURIComponent(searchTerm)}`;
+            const response = await apiGet(`/admin/auth/search${queryString}`);
+
+            console.log(queryString)
+            if (response.ok) {
+                const data = await response.json();
+                
+                const formattedAuthList = data.map(auth => ({
+                    id: auth.authIdx,
+                    name: auth.authNm,
+                    description: auth.authDescription,
+                    menus: auth.menuAuth.map(m => m.code),
+                    authType: auth.authType
+                }));
+                
+                setAuthList(formattedAuthList);
+                setSelectedAuth(null);
+                setSelectedInactive([]);
+                setSelectedActive([]);
+            } else {
+                alert("검색에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("검색 실패:", error);
+            alert("검색 중 오류가 발생했습니다.");
+        }
+    };
+
+    // 검색 초기화 함수
+    const handleSearchReset = async () => {
+        setSearchType("all");
+        setSearchTerm("");
+        
+        // 전체 목록 다시 로드
+        try {
+            const response = await apiGet("/admin/auth");
+            if (response.ok) {
+                const data = await response.json();
+
+                const formattedAuthList = data.map(auth => ({
+                    id: auth.authIdx,
+                    name: auth.authNm,
+                    description: auth.authDescription,
+                    menus: auth.menuAuth.map(m => m.code),
+                    authType: auth.authType
+                }));
+                setAuthList(formattedAuthList);
+                setSelectedAuth(null);
+                setSelectedInactive([]);
+                setSelectedActive([]);
+            }
+        } catch (error) {
+            console.error("목록 조회 실패:", error);
         }
     };
 
@@ -257,20 +403,20 @@ const AuthManage = () => {
             menus: newAuth.menus,
             isActive: newAuth.isActive
         };
-        
+
         setAuthList([...authList, authData]);
-        
+
         // 새 권한의 메뉴를 authMenus에 추가 (초기에는 모든 메뉴가 active)
         setAuthMenus(prev => ({
             ...prev,
             [newId]: newAuth.menus
         }));
-        
+
         setOriginalAuthMenus(prev => ({
             ...prev,
             [newId]: newAuth.menus
         }));
-        
+
         alert("권한이 추가되었습니다.");
     };
 
@@ -279,12 +425,32 @@ const AuthManage = () => {
             <div className="authmanage-wrap">
                 <div className="authmanage-filter-wrap">
                     <div className="authmanage-filter-left">
-                        <select name="option" id="option" className="authmanage-select">
+                        <select 
+                            name="option" 
+                            id="option" 
+                            className="authmanage-select"
+                            value={searchType}
+                            onChange={(e) => setSearchType(e.target.value)}
+                        >
                             <option value="all">전체</option>
-                            <option value="name">권한명</option>
+                            <option value="authNm">권한명</option>
                         </select>
-                        <input type="text" className="authmanage-input" placeholder="검색어를 입력하세요" />
-                        <button className="authmanage-search-btn">검색</button>
+                        <input 
+                            type="text" 
+                            className="authmanage-input" 
+                            placeholder="검색어를 입력하세요"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                        />
+                        <button className="authmanage-search-btn" onClick={handleSearch}>검색</button>
+                        <button 
+                            className="authmanage-search-reset-btn" 
+                            onClick={handleSearchReset}
+                            style={{ marginLeft: '8px', padding: '10px 14px', background: '#e9ecef', color: '#495057', border: '1px solid #dee2e6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' }}
+                        >
+                            초기화
+                        </button>
                     </div>
 
                     <div className="authmanage-filter-right">
@@ -296,7 +462,7 @@ const AuthManage = () => {
                                 삭제 확인
                             </button>
                         )}
-                        <button 
+                        <button
                             className={`authmanage-delete-btn ${deleteMode ? 'active' : ''}`}
                             onClick={toggleDeleteMode}
                         >
@@ -311,27 +477,38 @@ const AuthManage = () => {
                             <thead>
                                 <tr>
                                     {deleteMode && <th>선택</th>}
+                                    <th>권한 그룹</th>
                                     <th>권한명</th>
                                     <th>설명</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {authList.map((auth) => (
-                                    <tr 
+                                    <tr
                                         key={auth.id}
                                         onClick={() => handleAuthClick(auth)}
                                         className={selectedAuth?.id === auth.id ? 'selected' : ''}
                                     >
                                         {deleteMode && (
                                             <td onClick={(e) => e.stopPropagation()}>
-                                                <input 
+                                                <input
                                                     type="checkbox"
                                                     checked={checkedItems.includes(auth.id)}
                                                     onChange={() => handleCheckbox(auth.id)}
+                                                    disabled={DEFAULT_AUTH_IDS.includes(auth.id)}
                                                 />
                                             </td>
                                         )}
-                                        <td>{auth.name}</td>
+                                        <td>{authTypeLabels[auth.authType]}</td>
+                                        <td>
+                                            {DEFAULT_AUTH_IDS.includes(auth.id) 
+                                                ? authTypeLabels[auth.authType] 
+                                                : auth.name
+                                            }
+                                            {DEFAULT_AUTH_IDS.includes(auth.id) && (
+                                                <span style={{ marginLeft: '8px', color: '#999', fontSize: '12px' }}>(수정 불가)</span>
+                                            )}
+                                        </td>
                                         <td>{auth.description}</td>
                                     </tr>
                                 ))}
@@ -345,7 +522,7 @@ const AuthManage = () => {
                             <div className="authmanage-menu-list">
                                 {selectedAuth ? (
                                     getInactiveMenus().map(menu => (
-                                        <div 
+                                        <div
                                             key={menu.id}
                                             className={`authmanage-menu-item ${selectedInactive.includes(menu.id) ? 'selected' : ''}`}
                                             onClick={() => handleInactiveSelect(menu.id)}
@@ -360,17 +537,17 @@ const AuthManage = () => {
                         </div>
 
                         <div className="authmanage-arrow-wrap">
-                            <button 
+                            <button
                                 className="authmanage-arrow-btn"
                                 onClick={moveToActive}
-                                disabled={!selectedAuth || selectedInactive.length === 0}
+                                disabled={!selectedAuth || selectedInactive.length === 0 || isReadOnly}
                             >
                                 →
                             </button>
-                            <button 
+                            <button
                                 className="authmanage-arrow-btn"
                                 onClick={moveToInactive}
-                                disabled={!selectedAuth || selectedActive.length === 0}
+                                disabled={!selectedAuth || selectedActive.length === 0 || isReadOnly}
                             >
                                 ←
                             </button>
@@ -381,7 +558,7 @@ const AuthManage = () => {
                             <div className="authmanage-menu-list">
                                 {selectedAuth ? (
                                     getActiveMenus().map(menu => (
-                                        <div 
+                                        <div
                                             key={menu.id}
                                             className={`authmanage-menu-item ${selectedActive.includes(menu.id) ? 'selected' : ''}`}
                                             onClick={() => handleActiveSelect(menu.id)}
@@ -398,17 +575,17 @@ const AuthManage = () => {
                 </div>
 
                 <div className="authmanage-save-wrap">
-                    <button 
-                        className="authmanage-save-btn" 
+                    <button
+                        className="authmanage-save-btn"
                         onClick={handleSave}
-                        disabled={!hasChanges}
+                        disabled={!hasChanges || isReadOnly}
                     >
                         저장
                     </button>
-                    <button 
-                        className="authmanage-reset-btn" 
+                    <button
+                        className="authmanage-reset-btn"
                         onClick={handleReset}
-                        disabled={!hasChanges}
+                        disabled={!hasChanges || isReadOnly}
                     >
                         초기화
                     </button>
@@ -416,7 +593,7 @@ const AuthManage = () => {
             </div>
 
             {isModalOpen && (
-                <AuthModal 
+                <AuthModal
                     onClose={handleCloseModal}
                     onSave={handleSaveAuth}
                 />
