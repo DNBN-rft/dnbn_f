@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./css/layout.css";
 
@@ -7,6 +7,7 @@ const Sidebar = () => {
   const [isCustomerServiceOpen, setIsCustomerServiceOpen] = useState(false);
   const [isSalesOpen, setIsSalesOpen] = useState(false);
   const [isNegoOpen, setIsNegoOpen] = useState(false);
+  // const [권한, set권한] = useState([로컬스토리지.권한배열]);
   return (
     <div id="layoutSidenav_nav">
       <nav
