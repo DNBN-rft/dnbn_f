@@ -447,7 +447,6 @@ const AuthManage = () => {
                         <button 
                             className="authmanage-search-reset-btn" 
                             onClick={handleSearchReset}
-                            style={{ marginLeft: '8px', padding: '10px 14px', background: '#e9ecef', color: '#495057', border: '1px solid #dee2e6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' }}
                         >
                             초기화
                         </button>
@@ -506,7 +505,7 @@ const AuthManage = () => {
                                                 : auth.name
                                             }
                                             {DEFAULT_AUTH_IDS.includes(auth.id) && (
-                                                <span style={{ marginLeft: '8px', color: '#999', fontSize: '12px' }}>(수정 불가)</span>
+                                                <span className="authmanage-readonly-badge">(수정 불가)</span>
                                             )}
                                         </td>
                                         <td>{auth.description}</td>
