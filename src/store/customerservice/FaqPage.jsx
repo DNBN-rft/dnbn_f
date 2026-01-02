@@ -24,6 +24,7 @@ const FaqPage = () => {
       setFaqs(data);
     } catch (e) {
     }
+  }
 
     const toggleAccordion = (index) => {
       setOpenIndex(openIndex === index ? null : index);
@@ -86,5 +87,5 @@ const FaqPage = () => {
       </div>
     );
   };
-}
+
 export default FaqPage;
