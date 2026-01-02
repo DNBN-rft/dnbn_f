@@ -19,7 +19,7 @@ const Sidebar = () => {
   }, []);
 
   const hasPermission = (code) => {
-    return menuAuth.some((auth) => auth.code === code);
+    return menuAuth.includes(code);
   };
   return (
     <div id="layoutSidenav_nav">
@@ -41,19 +41,6 @@ const Sidebar = () => {
               </div>
               대시보드
             </Link>
-
-            {/* 멤버십 정보 */}
-            {hasPermission("STORE_MEMBERSHIP") && (
-              <>
-                <div className="sb-sidenav-menu-heading">멤버십</div>
-                <Link className="nav-link" to="/store/plan">
-                  <div className="sb-nav-link-icon">
-                    <i className="fas fa-crown"></i>
-                  </div>
-                  멤버십 정보
-                </Link>
-              </>
-            )}
 
             {/* 마이페이지 */}
             {hasPermission("STORE_MYPAGE") && (
@@ -226,19 +213,6 @@ const Sidebar = () => {
                     )}
                   </nav>
                 </div>
-              </>
-            )}
-
-            {/* 구독 플랜 */}
-            {hasPermission("STORE_SUBSCRIPTION") && (
-              <>
-                <div className="sb-sidenav-menu-heading">구독</div>
-                <Link className="nav-link" to="/store/subscription">
-                  <div className="sb-nav-link-icon">
-                    <i className="fas fa-credit-card"></i>
-                  </div>
-                  구독 플랜
-                </Link>
               </>
             )}
           </div>
