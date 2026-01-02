@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import "./css/adminnotice.css";
 import AdminNoticeDetail from "./modal/AdminNoticeDetail";
 import AdminNoticeAdd from "./modal/AdminNoticeAdd";
-import { getNotices, deleteNotices, searchNotices } from "../../utils/adminNoticeService";
+import {
+  getNotices,
+  deleteNotices,
+  searchNotices,
+} from "../../utils/adminNoticeService";
 
 const AdminNotice = () => {
   const [selectedNotice, setSelectedNotice] = useState(null);
@@ -50,9 +54,9 @@ const AdminNotice = () => {
   };
 
   const handleCheckboxChange = (noticeIdx) => {
-    setSelectedNotices(prev => {
+    setSelectedNotices((prev) => {
       if (prev.includes(noticeIdx)) {
-        return prev.filter(idx => idx !== noticeIdx);
+        return prev.filter((idx) => idx !== noticeIdx);
       } else {
         return [...prev, noticeIdx];
       }
@@ -70,7 +74,11 @@ const AdminNotice = () => {
       return;
     }
 
-    if (!window.confirm(`선택한 ${selectedNotices.length}개의 공지사항을 삭제하시겠습니까?`)) {
+    if (
+      !window.confirm(
+        `선택한 ${selectedNotices.length}개의 공지사항을 삭제하시겠습니까?`
+      )
+    ) {
       return;
     }
 
@@ -147,14 +155,18 @@ const AdminNotice = () => {
                 id="notice-date-start"
                 className="adminnotice-date-input"
                 value={filters.startDate}
-                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, startDate: e.target.value })
+                }
               />
               <span className="adminnotice-date-separator">~</span>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 className="adminnotice-date-input"
                 value={filters.endDate}
-                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, endDate: e.target.value })
+                }
               />
             </div>
 
@@ -164,7 +176,12 @@ const AdminNotice = () => {
                   type="checkbox"
                   className="adminnotice-checkbox"
                   checked={filters.isPinned === true}
-                  onChange={(e) => setFilters({ ...filters, isPinned: e.target.checked ? true : null })}
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      isPinned: e.target.checked ? true : null,
+                    })
+                  }
                 />
                 <span>고정공지만 보기</span>
               </label>
@@ -178,7 +195,9 @@ const AdminNotice = () => {
                 id="notice-option"
                 className="adminnotice-select-type"
                 value={filters.searchType}
-                onChange={(e) => setFilters({ ...filters, searchType: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, searchType: e.target.value })
+                }
               >
                 <option value="all">전체</option>
                 <option value="title">제목</option>
@@ -191,10 +210,16 @@ const AdminNotice = () => {
                 className="adminnotice-input"
                 placeholder="검색어를 입력하세요"
                 value={filters.searchKeyword}
-                onChange={(e) => setFilters({ ...filters, searchKeyword: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, searchKeyword: e.target.value })
+                }
               />
-              <button className="adminnotice-search-btn" onClick={handleSearch}>검색</button>
-              <button className="adminnotice-search-btn" onClick={handleReset}>초기화</button>
+              <button className="adminnotice-search-btn" onClick={handleSearch}>
+                검색
+              </button>
+              <button className="adminnotice-search-btn" onClick={handleReset}>
+                초기화
+              </button>
             </div>
           </div>
         </div>
@@ -202,28 +227,35 @@ const AdminNotice = () => {
         <div className="adminnotice-table-wrap">
           <div className="adminnotice-table-header">
             <div className="adminnotice-table-info">
-              총 <span className="adminnotice-count-bold">{totalElements}</span>건
+              총 <span className="adminnotice-count-bold">{totalElements}</span>
+              건
             </div>
             <div className="adminnotice-table-actions">
+              {showCheckbox ? (
+                ""
+              ) : (
+                <button
+                  className="adminnotice-write-btn"
+                  onClick={() => setIsAddModalOpen(true)}
+                >
+                  공지작성
+                </button>
+              )}
               {showCheckbox && (
-                <button 
+                <button
                   className="adminnotice-delete-confirm-btn"
                   onClick={handleDelete}
                 >
                   삭제 확인
                 </button>
               )}
-              <button 
-                className={`adminnotice-delete-btn ${showCheckbox ? 'active' : ''}`}
+              <button
+                className={`adminnotice-delete-btn ${
+                  showCheckbox ? "active" : ""
+                }`}
                 onClick={toggleDeleteMode}
               >
-                {showCheckbox ? '취소' : '공지 삭제'}
-              </button>
-              <button 
-                className="adminnotice-write-btn"
-                onClick={() => setIsAddModalOpen(true)}
-              >
-                공지작성
+                {showCheckbox ? "취소" : "공지 삭제"}
               </button>
             </div>
           </div>
@@ -251,7 +283,9 @@ const AdminNotice = () => {
                         <input
                           type="checkbox"
                           checked={selectedNotices.includes(notice.noticeIdx)}
-                          onChange={() => handleCheckboxChange(notice.noticeIdx)}
+                          onChange={() =>
+                            handleCheckboxChange(notice.noticeIdx)
+                          }
                         />
                       </td>
                     )}
@@ -283,7 +317,10 @@ const AdminNotice = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={showCheckbox ? "9" : "8"} style={{ textAlign: "center" }}>
+                  <td
+                    colSpan={showCheckbox ? "9" : "8"}
+                    style={{ textAlign: "center" }}
+                  >
                     등록된 공지사항이 없습니다.
                   </td>
                 </tr>
@@ -293,40 +330,46 @@ const AdminNotice = () => {
 
           {/* 페이지네이션 */}
           <div className="adminnotice-pagination">
-            <button 
-              className="adminnotice-pagination-btn"
+            <button
+              className="adminnotice-page-btn"
               onClick={() => {
                 if (currentPage > 0) {
                   const newPage = currentPage - 1;
                   setCurrentPage(newPage);
-                  isSearchMode ? handleSearchInternal(newPage) : fetchNotices(newPage);
+                  isSearchMode
+                    ? handleSearchInternal(newPage)
+                    : fetchNotices(newPage);
                 }
               }}
               disabled={currentPage === 0}
             >
               이전
             </button>
-            <div className="adminnotice-pagination-numbers">
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={index}
-                  className={`adminnotice-page-number ${currentPage === index ? 'adminnotice-page-active' : ''}`}
-                  onClick={() => {
-                    setCurrentPage(index);
-                    isSearchMode ? handleSearchInternal(index) : fetchNotices(index);
-                  }}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-            <button 
-              className="adminnotice-pagination-btn"
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`adminnotice-page-btn ${
+                  currentPage === index ? "active" : ""
+                }`}
+                onClick={() => {
+                  setCurrentPage(index);
+                  isSearchMode
+                    ? handleSearchInternal(index)
+                    : fetchNotices(index);
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              className="adminnotice-page-btn"
               onClick={() => {
                 if (currentPage < totalPages - 1) {
                   const newPage = currentPage + 1;
                   setCurrentPage(newPage);
-                  isSearchMode ? handleSearchInternal(newPage) : fetchNotices(newPage);
+                  isSearchMode
+                    ? handleSearchInternal(newPage)
+                    : fetchNotices(newPage);
                 }
               }}
               disabled={currentPage === totalPages - 1}

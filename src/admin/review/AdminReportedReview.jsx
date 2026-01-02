@@ -488,7 +488,7 @@ const AdminReportedReview = () => {
                   isSearchMode ? handleSearchInternal(newPage) : loadReviews(newPage);
                 }
               }}
-              disabled={currentPage === totalPages - 1}
+              disabled={currentPage === totalPages - 1 || totalPages === 0}
             >
               다음
             </button>
