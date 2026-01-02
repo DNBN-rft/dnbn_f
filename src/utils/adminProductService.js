@@ -140,8 +140,10 @@ export const restrictProducts = async (productCodes) => {
  */
 export const deleteProducts = async (productCodes) => {
   try {
-    const response = await apiDelete(`/admin/product`, JSON.stringify({ productCodes }));
-
+    const response = await apiDelete(`/admin/product`, {
+      body: JSON.stringify({ productCodes }),
+    });
+    
     if (response.ok) {
       const message = await response.text();
       return {
