@@ -140,7 +140,9 @@ export const createNotice = async (data) => {
  */
 export const deleteNotices = async (noticeDeleteList) => {
   try {
-    const response = await apiDelete("/admin/notice", JSON.stringify({ noticeDeleteList }));
+    const response = await apiDelete("/admin/notice",{
+      body:JSON.stringify({ noticeDeleteList })
+    });
 
     if (response.ok) {
       const message = await response.text();

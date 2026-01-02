@@ -140,7 +140,9 @@ export const unhideReview = async (reviewIdx) => {
  */
 export const deleteReviews = async (reviewDeleteList) => {
   try {
-    const response = await apiDelete("/admin/review", JSON.stringify({ reviewDeleteList }));
+    const response = await apiDelete("/admin/review",{
+      body:JSON.stringify({ reviewDeleteList })
+    });
 
     if (response.ok) {
       const message = await response.text();

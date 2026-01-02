@@ -178,8 +178,6 @@ const AdminEmp = () => {
       {
         empIdList: selectedEmployees,
       },
-      currentPage,
-      pageSize
     );
 
     if (result.success) {

@@ -132,9 +132,11 @@ export const changeEmployeeStatus = async (statusData) => {
  * @param {number} page - 페이지 번호
  * @param {number} size - 페이지 크기
  */
-export const deleteEmployeeList = async (deleteData, page = 0, size = 10) => {
+export const deleteEmployeeList = async (deleteData) => {
   try {
-    const response = await apiDelete(`/admin/employee?page=${page}&size=${size}`, JSON.stringify(deleteData));
+    const response = await apiDelete(`/admin/employee`,{
+      body: JSON.stringify(deleteData)
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

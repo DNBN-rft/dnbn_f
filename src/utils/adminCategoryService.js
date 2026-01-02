@@ -94,8 +94,13 @@ export const deleteCategory = async (categoryIdx) => {
 // 여러 카테고리 일괄 삭제
 export const deleteCategories = async (categoryIdxList) => {
   try {
-    const deletePromises = categoryIdxList.map(idx => deleteCategory(idx));
-    await Promise.all(deletePromises);
+    const response = await apiDelete(API_BASE_URL, {
+      body: JSON.stringify({ categoryDeleteList: categoryIdxList })
+    });
+    if (!response.ok) {
+      throw new Error("카테고리 일괄 삭제 실패");
+    }
+    return true;
   } catch (error) {
     console.error("카테고리 일괄 삭제 실패:", error);
     throw error;
