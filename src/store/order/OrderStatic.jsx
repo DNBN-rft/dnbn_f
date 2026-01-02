@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiCall, apiPost } from "../../utils/apiClient";
+import { apiPost } from "../../utils/apiClient";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +13,7 @@ import {
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import "./css/orderstatic.css";
-import { formatDate } from "../../utils/commonService";
+import { formatDateToInput } from "../../utils/commonService";
 
 ChartJS.register(
   CategoryScale,
@@ -58,13 +58,13 @@ const OrderStatic = () => {
       endDate = new Date(year, month + 1, 0);
     }
 
-    setStartDate(formatDate(startDate));
-    setEndDate(formatDate(endDate));
+    setStartDate(formatDateToInput(startDate));
+    setEndDate(formatDateToInput(endDate));
     setDateType(type);
   };
 
   const handleRecentDateClickWrapper = (e) => {
-    const { name } = e.target;
+    const { name } = e.currentTarget;
     handleRecentDateClick(name);
   };
 

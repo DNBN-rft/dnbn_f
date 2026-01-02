@@ -37,6 +37,14 @@ const QuestionDetailModal = ({ onClose, id }) => {
         );
     }
 
+    const questionTypeMap = {
+        "QR": "QR 코드 문의",
+        "PAYMENT": "결제 문의",
+        "REFUND": "환불 문의",
+        "MOD_REQUEST": "개인정보 수정 문의",
+        "ETC": "기타 문의"
+    }
+
     return (
         <div className="modal-backdrop">
             <div className="question-detail-wrap"
@@ -44,7 +52,7 @@ const QuestionDetailModal = ({ onClose, id }) => {
                 <div className="question-detail-header">
                     <div className="question-detail-title">{question.questionTitle}</div>
                     <div className="question-detail-date-time">{formatDate(question.questionRegDateTime)}</div>
-                    <div className="question-detail-question-type">문의 유형: {question.questionRequestType || "-"}</div>
+                    <div className="question-detail-question-type">문의 유형: {questionTypeMap[question.questionRequestType] || "-"}</div>
                 </div>
                 <div className="question-detail-contents">
                     <div className="question-detail-question-content">{question.questionContent}</div>

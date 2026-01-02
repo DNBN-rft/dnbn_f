@@ -118,7 +118,7 @@ const Notices = () => {
                                 loadNotices(currentPage + 1);
                             }
                         }}
-                        disabled={currentPage === totalPages - 1}
+                        disabled={currentPage === totalPages - 1 || totalPages === 0}
                     >
                         다음
                     </button>

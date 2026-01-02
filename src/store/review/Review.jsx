@@ -188,9 +188,16 @@ const Review = () => {
             </tr>
           </thead>
           <tbody>
-            {reviewData.map((p, idx) => {
-              return (
-                <tr key={p.reviewIdx}>
+            {reviewData.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={{textAlign: 'center', padding: '40px 0'}}>
+                  등록된 리뷰가 없습니다
+                </td>
+              </tr>
+            ) : (
+              reviewData.map((p, idx) => {
+                return (
+                  <tr key={p.reviewIdx}>
                   <td>{currentPage * pageSize + idx + 1}</td>
                   <td className="review-review-info">
                     {p.reviewImg && <div className="review-thumb" style={{backgroundImage: `url(${p.reviewImg})`}} />}
@@ -235,7 +242,8 @@ const Review = () => {
                   </td>
                 </tr>
               );
-            })}
+            })
+            )}
           </tbody>
         </table>
 
@@ -260,7 +268,7 @@ const Review = () => {
             <button 
               className="review-page"
               onClick={() => fetchReviews(currentPage + 1)}
-              disabled={currentPage === totalPages - 1}
+              disabled={currentPage === totalPages - 1 || totalPages === 0}
             >
               다음
             </button>
