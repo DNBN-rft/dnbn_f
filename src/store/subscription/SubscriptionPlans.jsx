@@ -14,9 +14,12 @@ const SubscriptionPlans = () => {
       try {
         const response = await apiCall('/store/planinfo');
         const data = await response.json();
-        setPlanData(data);
+        // 배열인지 확인하고, 배열이 아니면 빈 배열로 설정
+        setPlanData(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('플랜 정보 조회 실패:', error);
+        // 에러 발생 시 빈 배열로 설정
+        setPlanData([]);
       }
     };
     
@@ -25,9 +28,21 @@ const SubscriptionPlans = () => {
 
   const getPlanIcon = (planName) => {
     switch (planName) {
-      case 'Basic':
-      case 'Standard':
-      case 'Premium plan':
+    case 'Free':
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M232,80V64a8,8,0,0,0-8-8H32a8,8,0,0,0-8,8V80a8,8,0,0,0,8,8H224A8,8,0,0,0,232,80ZM224,96H32a8,8,0,0,0-8,8v88a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V104A8,8,0,0,0,224,96Z" opacity="0.2"></path>
+          <path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,144H32V64H224V192Z"></path>
+        </svg>
+      );
+    case 'Basic':
+    case 'Standard':
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z" opacity="0.2"></path>
+          <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm37.66,130.34a8,8,0,1,1-11.32,11.32L128,149.32l-26.34,26.34a8,8,0,1,1-11.32-11.32L116.68,128,90.34,101.66a8,8,0,1,1,11.32-11.32L128,106.68l26.34-26.34a8,8,0,1,1,11.32,11.32L139.32,128Z"></path>
+        </svg>
+      );
       case 'Wide Area':
         return (
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256">
@@ -54,13 +69,14 @@ const SubscriptionPlans = () => {
     }
   };
 
-  const freePlan = planData.find(plan => 
-    plan.planNm === 'Default'
-  ) || planData[0];
+  // planData가 배열인지 확인 후 처리
+  const freePlan = Array.isArray(planData) && planData.length > 0
+    ? (planData.find(plan => plan.planNm === 'Default') || planData[0])
+    : null;
   
-  const paidPlans = planData.filter(plan => 
-    plan.planNm !== 'Default'
-  );
+  const paidPlans = Array.isArray(planData)
+    ? planData.filter(plan => plan.planNm !== 'Default')
+    : [];
 
   // 기능 목록을 통합 및 변환하는 함수
   const transformFunctionList = (functionList) => {
@@ -74,7 +90,7 @@ const SubscriptionPlans = () => {
       // "요금" 항목 처리
       if (funcNm === '요금') {
         if (func.usageLimit === 0) {
-          mergedFunctions['요금'] = { funcNm: '요금', usageLimit: 'Free', usageUnit: '' };
+          mergedFunctions['요금'] = { funcNm: '요금', usageLimit: '무료', usageUnit: '' };
         } else {
           mergedFunctions['요금'] = func;
         }
@@ -151,7 +167,7 @@ const SubscriptionPlans = () => {
                   <div className="subscriptionplans-free-left">
                     <span className="subscriptionplans-free-badge">기본</span>
                     <span className="subscriptionplans-free-title">
-                      {freePlan.planNm}
+                      {freePlan.planNm === 'Default' ? '무료 플랜' : freePlan.planNm}
                     </span>
                     <span className="subscriptionplans-free-price">무료</span>
                   </div>

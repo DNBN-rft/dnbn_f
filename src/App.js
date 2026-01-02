@@ -7,6 +7,7 @@ import {
 import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminPrivateRoute from "./components/AdminPrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "./store/layout/Layout";
 import Membership from "./store/dashboard/Membership";
@@ -118,7 +119,13 @@ function App() {
               element={<MembershipChange />}
             />
           </Route>
-          <Route element={<AdminLayout />}>
+          <Route
+            element={
+              <AdminPrivateRoute>
+                <AdminLayout />
+              </AdminPrivateRoute>
+            }
+          >
             <Route path="/admin" element={<AdminMain />} />
             <Route path="/admin/product" element={<AdminProduct />} />
             <Route path="/admin/cust" element={<AdminCust />} />

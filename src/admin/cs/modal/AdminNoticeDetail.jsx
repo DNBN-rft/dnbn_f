@@ -1,27 +1,119 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getNoticeDetail, updateNotice } from "../../../utils/adminNoticeService";
 import "./css/adminnoticedetail.css";
 
-const AdminNoticeDetail = ({ notice, onClose }) => {
+const AdminNoticeDetail = ({ noticeIdx, onClose, onUpdate }) => {
+  const [notice, setNotice] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedNotice, setEditedNotice] = useState({
-    title: notice.title,
-    content: notice.content,
-    isPinned: notice.isPinned,
+    title: "",
+    content: "",
+    isPinned: false,
   });
 
-  const handleSave = () => {
-    // 저장 로직 추가 예정
-    setIsEditMode(false);
+  // 공지사항 상세 정보 조회
+  useEffect(() => {
+    const fetchNoticeDetail = async () => {
+      setLoading(true);
+      const result = await getNoticeDetail(noticeIdx);
+      if (result.success) {
+        setNotice(result.data);
+        setEditedNotice({
+          title: result.data.title,
+          content: result.data.content,
+          isPinned: result.data.isPinned,
+        });
+      } else {
+        alert(result.error || "공지사항을 불러오는데 실패했습니다.");
+      }
+      setLoading(false);
+    };
+
+    fetchNoticeDetail();
+  }, [noticeIdx]);
+
+  const handleSave = async () => {
+    const result = await updateNotice(noticeIdx, editedNotice);
+    if (result.success) {
+      alert("공지사항이 수정되었습니다.");
+      setIsEditMode(false);
+      // 수정 후 목록 새로고침
+      if (onUpdate) {
+        onUpdate();
+      }
+      // 상세 정보 다시 조회
+      const updatedResult = await getNoticeDetail(noticeIdx);
+      if (updatedResult.success) {
+        setNotice(updatedResult.data);
+      }
+    } else {
+      alert(result.error || "공지사항 수정에 실패했습니다.");
+    }
   };
 
   const handleCancel = () => {
-    setEditedNotice({
-      title: notice.title,
-      content: notice.content,
-      isPinned: notice.isPinned,
-    });
+    if (notice) {
+      setEditedNotice({
+        title: notice.title,
+        content: notice.content,
+        isPinned: notice.isPinned,
+      });
+    }
     setIsEditMode(false);
   };
+
+  // 로딩 중
+  if (loading) {
+    return (
+      <div className="adminnoticedetail-backdrop" onClick={onClose}>
+        <div
+          className="adminnoticedetail-wrap"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="adminnoticedetail-header">
+            <h2 className="adminnoticedetail-title">공지사항 상세</h2>
+            <button className="adminnoticedetail-close-btn" onClick={onClose}>
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
+          <div className="adminnoticedetail-content">
+            <p>로딩 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 데이터 없음
+  if (!notice) {
+    return (
+      <div className="adminnoticedetail-backdrop" onClick={onClose}>
+        <div
+          className="adminnoticedetail-wrap"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="adminnoticedetail-header">
+            <h2 className="adminnoticedetail-title">공지사항 상세</h2>
+            <button className="adminnoticedetail-close-btn" onClick={onClose}>
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
+          <div className="adminnoticedetail-content">
+            <p>공지사항 정보를 불러올 수 없습니다.</p>
+          </div>
+          <div className="adminnoticedetail-footer">
+            <button
+              className="adminnoticedetail-btn adminnoticedetail-btn-close"
+              onClick={onClose}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="adminnoticedetail-backdrop" onClick={onClose}>

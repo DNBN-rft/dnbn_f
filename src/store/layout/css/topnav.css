@@ -35,3 +35,40 @@
     color: white;
     border-color: rgba(241, 129, 30, 1);
 }
+
+/* Alarm button */
+.topnav-alarm-item {
+    position: relative;
+}
+
+.topnav-alarm-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Dropdown toggle arrow color */
+.topnav-dropdown-toggle::after {
+    color: black;
+}
+
+/* Welcome message alignment */
+.dropdown-info {
+    text-align: center;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    line-height: 0.7;
+}
+
+/* Dropdown items center alignment */
+.topnav-dropdown-item {
+    text-align: center;
+}
+
+/* Logout button */
+.topnav-logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
