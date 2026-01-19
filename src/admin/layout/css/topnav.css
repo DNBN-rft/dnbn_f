@@ -25,6 +25,30 @@
     color: white;
 }
 
+/* Alarm button */
+.admin-topnav-alarm-item {
+    position: relative;
+}
+
+.admin-topnav-alarm-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Alarm badge (red dot) */
+.admin-topnav-alarm-badge {
+    position: absolute;
+    top: 10px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
 .admin-topnav-left-section {
     display: flex;
     align-items: center;

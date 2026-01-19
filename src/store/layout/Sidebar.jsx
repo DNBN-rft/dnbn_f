@@ -6,7 +6,8 @@ const Sidebar = () => {
   const location = useLocation();
   const [isCustomerServiceOpen, setIsCustomerServiceOpen] = useState(false);
   const [isSalesOpen, setIsSalesOpen] = useState(false);
-  const [isNegoOpen, setIsNegoOpen] = useState(false);
+  const [isProductOpen, setIsProductOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   
   const menuAuth = useMemo(() => {
     try {
@@ -59,50 +60,73 @@ const Sidebar = () => {
             {hasPermission("STORE_PRODUCT") && (
               <>
                 <div className="sb-sidenav-menu-heading">상품</div>
-                <Link
-                  className={`nav-link ${
-                    location.pathname === "/store/product" ? "active" : ""
-                  }`}
-                  to="/store/product"
+                <a
+                  className={`nav-link ${isProductOpen ? "active" : "collapsed"}`}
+                  href="#!"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsProductOpen(!isProductOpen);
+                  }}
                 >
                   <div className="sb-nav-link-icon">
                     <i className="fas fa-box"></i>
                   </div>
-                  상품등록/관리
-                </Link>
-              </>
-            )}
-
-            {/* 할인/네고 */}
-            {(hasPermission("STORE_SALE") || hasPermission("STORE_NEGOTIATION")) && (
-              <>
-                <div className="sb-sidenav-menu-heading">할인/네고</div>
-                <a
-                  className={`nav-link ${isNegoOpen ? "active" : "collapsed"}`}
-                  href="#!"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsNegoOpen(!isNegoOpen);
-                  }}
-                >
-                  <div className="sb-nav-link-icon">
-                    <i className="fas fa-percentage"></i>
-                  </div>
-                  할인/네고
+                  상품
                   <div className="sb-sidenav-collapse-arrow">
                     <i className="fas fa-angle-down"></i>
                   </div>
                 </a>
-                <div className={`collapse ${isNegoOpen ? "show" : ""}`}>
+                <div className={`collapse ${isProductOpen ? "show" : ""}`}>
                   <nav className="sb-sidenav-menu-nested nav">
+                    <Link className="nav-link" to="/store/product">
+                      일반상품
+                    </Link>
                     {hasPermission("STORE_SALE") && (
                       <Link className="nav-link" to="/store/sale">
-                        할인목록
+                        할인
                       </Link>
                     )}
                     {hasPermission("STORE_NEGOTIATION") && (
                       <Link className="nav-link" to="/store/negotiation">
-                        네고목록
+                        네고
+                      </Link>
+                    )}
+                  </nav>
+                </div>
+              </>
+            )}
+
+            {/* 이력 */}
+            {(hasPermission("STORE_SALE") || hasPermission("STORE_NEGOTIATION")) && (
+              <>
+                <div className="sb-sidenav-menu-heading">이력</div>
+                <a
+                  className={`nav-link ${isHistoryOpen ? "active" : "collapsed"}`}
+                  href="#!"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsHistoryOpen(!isHistoryOpen);
+                  }}
+                >
+                  <div className="sb-nav-link-icon">
+                    <i className="fas fa-history"></i>
+                  </div>
+                  이력
+                  <div className="sb-sidenav-collapse-arrow">
+                    <i className="fas fa-angle-down"></i>
+                  </div>
+                </a>
+                <div className={`collapse ${isHistoryOpen ? "show" : ""}`}>
+                  <nav className="sb-sidenav-menu-nested nav">
+
+                    {hasPermission("STORE_SALE") && (
+                      <Link className="nav-link" to="/store/sale/history">
+                        할인
+                      </Link>
+                    )}
+                    {hasPermission("STORE_NEGOTIATION") && (
+                      <Link className="nav-link" to="/store/negotiation/history">
+                        네고
                       </Link>
                     )}
                   </nav>

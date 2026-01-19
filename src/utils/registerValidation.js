@@ -12,6 +12,48 @@ const passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
 const phoneRegex = /^[0-9]+$/;
 
 /**
+ * 비밀번호 실시간 검증 메시지 생성
+ * @param {string} password - 비밀번호
+ * @returns {Object} - { message: string, status: string }
+ */
+export const getPasswordCheckMessage = (password) => {
+  if (!password) {
+    return { message: "", status: null };
+  }
+
+  const hasLength = password.length >= 8 && password.length <= 16;
+  const hasNumber = /[0-9]/.test(password);
+  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasSpecial = /\W/.test(password);
+
+  const errors = [];
+  if (!hasLength) errors.push("8~16자");
+  if (!hasNumber) errors.push("숫자");
+  if (!hasLetter) errors.push("영문");
+  if (!hasSpecial) errors.push("특수문자");
+
+  if (errors.length === 0) {
+    return { message: "사용 가능한 비밀번호입니다.", status: "success" };
+  } else {
+    return { message: `비밀번호는 ${errors.join(", ")}을(를) 포함해야 합니다.`, status: "error" };
+  }
+};
+
+/**
+ * Step 0: 약관 동의 (Agreement) 검증
+ * @param {Object} agreement - 약관 동의 객체
+ * @returns {Object} - { isValid: boolean, message: string }
+ */
+export const validateAgreement = (agreement = {}) => {
+  // 필수 약관 체크 (marketing은 선택사항)
+  if (!agreement.terms || !agreement.privacy || !agreement.seller) {
+    return { isValid: false, message: "필수 약관에 모두 동의해주세요." };
+  }
+
+  return { isValid: true, message: "" };
+};
+
+/**
  * Step 1: 회원 정보 (MemberInfo) 검증
  * @param {Object} formData - 폼 데이터
  * @param {string} idCheckStatus - 아이디 중복 체크 상태
@@ -61,9 +103,25 @@ export const validateMemberInfo = (formData, idCheckStatus, passwordConfirm) => 
 /**
  * Step 2: 사업자 정보 (BizInfo) 검증
  * @param {Object} formData - 폼 데이터
+ * @param {boolean} bizNoDuplicate - 사업자번호 중복 여부 (false: 사용가능, true: 중복, null: 미확인)
  * @returns {Object} - { isValid: boolean, message: string }
  */
-export const validateBizInfo = (formData) => {
+export const validateBizInfo = (formData, bizNoDuplicate = null) => {
+  // 업종/업태 검증
+  if (!formData.bizType || !formData.bizType.trim()) {
+    return { isValid: false, message: "업종/업태를 입력해주세요." };
+  }
+
+  // 계좌번호 검증
+  if (!formData.storeAccNo || !formData.storeAccNo.trim()) {
+    return { isValid: false, message: "계좌번호를 입력해주세요." };
+  }
+
+  // 사업자번호 중복 체크 검증
+  if (bizNoDuplicate !== false) {
+    return { isValid: false, message: "사업자번호 중복 확인을 해주세요." };
+  }
+
   // 대표 이름 검증
   if (!formData.ownerNm || !formData.ownerNm.trim()) {
     return { isValid: false, message: "대표 이름을 입력해주세요." };

@@ -168,9 +168,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
         <div className="fileinfo-header">
           <div className="fileinfo-header-title">회원가입</div>
           <div className="fileinfo-header-text">4/4</div>
-          <progress value="4" max="4">
-            100%
-          </progress>
+          <progress className="fileinfo-progress" value="4" max="4">100%</progress>
         </div>
 
         <div className="fileinfo-middle-content">

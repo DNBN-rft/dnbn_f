@@ -1,9 +1,11 @@
 import "./css/agreement.css";
+import { validateAgreement } from "../../utils/registerValidation";
 
 const Agreement = ({formData, setFormData, next}) => {
 
   const {agreement = {}} = formData;
-  const allMandatoryChecked = agreement.terms && agreement.privacy && agreement.seller && agreement.marketing;
+  // 전체 약관 체크 여부 (marketing 포함)
+  const allChecked = agreement.terms && agreement.privacy && agreement.seller && agreement.marketing;
   
   const handleAllCheck = (e) => {
     const isChecked = e.target.checked;
@@ -25,18 +27,21 @@ const Agreement = ({formData, setFormData, next}) => {
       [field]: e.target.checked
     };
     
-    const allMandatoryChecked = newAgreement.terms && newAgreement.privacy && newAgreement.seller;
+    // 필수 항목만 체크 (marketing은 선택 사항이므로 제외)
+    const mandatoryChecked = newAgreement.terms && newAgreement.privacy && newAgreement.seller;
     
     setFormData({
       ...formData,
       agreement: newAgreement,
-      agreed: allMandatoryChecked
+      agreed: mandatoryChecked
     });
   };
 
   const handleNext = () => {
-    if (!allMandatoryChecked) {
-      alert('필수 약관에 모두 동의해주세요.');
+    // validation util 사용
+    const validation = validateAgreement(agreement);
+    if (!validation.isValid) {
+      alert(validation.message);
       return;
     }
     next();
@@ -57,7 +62,7 @@ const Agreement = ({formData, setFormData, next}) => {
               <input 
                 type="checkbox" 
                 className="register-middle-checkbox"
-                checked={allMandatoryChecked}
+                checked={allChecked}
                 onChange={handleAllCheck}
               />
             </div>
@@ -67,8 +72,8 @@ const Agreement = ({formData, setFormData, next}) => {
             <div className="register-middle-check">
               서비스 이용을 위한 동의가 필요합니다.
             </div>
-            <div className="register-middle-checkinfo">
-              <div>
+            <div className="register-middle-checkinfo first">
+              <div className="register-checkinfo-checkbox">
                 <input type="checkbox"
                 className="register-middle-checkbox"
                 checked={agreement.terms || false}
@@ -76,10 +81,14 @@ const Agreement = ({formData, setFormData, next}) => {
                 />
               </div>
               <div className="register-agreement">[필수]이용약관 동의</div>
-              <div>화살표</div>
+              <div className="register-checkinfo-arrow">
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+                  <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
             <div className="register-middle-checkinfo">
-              <div>
+              <div className="register-checkinfo-checkbox">
                 <input type="checkbox" 
                 className="register-middle-checkbox"
                 checked={agreement.privacy || false}
@@ -87,10 +96,14 @@ const Agreement = ({formData, setFormData, next}) => {
                 />
               </div>
               <div className="register-agreement">[필수]개인정보 수집이용 동의</div>
-              <div>화살표</div>
+              <div className="register-checkinfo-arrow">
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+                  <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
             <div className="register-middle-checkinfo">
-              <div>
+              <div className="register-checkinfo-checkbox">
                 <input type="checkbox" 
                 className="register-middle-checkbox"
                 checked={agreement.seller || false}
@@ -98,10 +111,14 @@ const Agreement = ({formData, setFormData, next}) => {
                 />    
               </div>
               <div className="register-agreement">[필수]판매회원 이용약관 동의</div>
-              <div>화살표</div>
+              <div className="register-checkinfo-arrow">
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+                  <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
-                        <div className="register-middle-checkinfo">
-              <div>
+                        <div className="register-middle-checkinfo last">
+              <div className="register-checkinfo-checkbox">
                 <input type="checkbox" 
                 className="register-middle-checkbox"
                 checked={agreement.marketing || false}
@@ -109,7 +126,11 @@ const Agreement = ({formData, setFormData, next}) => {
                 />    
               </div>
               <div className="register-agreement">[선택]마케팅 정보 및 알림 수신 동의</div>
-              <div>화살표</div>
+              <div className="register-checkinfo-arrow">
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+                  <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
           </div>
         </div>

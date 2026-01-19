@@ -54,9 +54,9 @@ const ProductManage = () => {
           price: p.productPrice,
           stock: p.productAmount,
           status: p.productState,
-          negotiation: p.isNego ? "네고상품" : "미네고",
-          sale: p.isSale ? "할인상품" : "미할인",
-          classify: p.isAdult ? "성인" : "일반",
+          negotiation: p.isNego || false, // undefined 처리
+          sale: p.isSale || false,
+          classify: p.isAdult ? "O" : "X",
           registered: formatDateTime(p.productRegDateTime) || "",
           type: p.isStock ? "일반" : "서비스",
           description: p.productDetailDescription,
@@ -109,8 +109,8 @@ const ProductManage = () => {
           price: p.productPrice,
           stock: p.productAmount,
           status: p.productState,
-          negotiation: p.isNego ? "네고상품" : "미네고",
-          sale: p.isSale ? "할인상품" : "미할인",
+          negotiation: p.isNego || false, // undefined 처리
+          sale: p.isSale || false,
           classify: p.isAdult ? "성인" : "일반",
           registered: formatDateTime(p.productRegDateTime) || "",
           type: p.isStock ? "일반" : "서비스",
@@ -183,7 +183,7 @@ const ProductManage = () => {
     if (e.target.checked) {
       const newMap = new Map();
       products.forEach(p => {
-        newMap.set(p.code, { productCode: p.code, isSale: p.sale === "할인상품" });
+        newMap.set(p.code, { productCode: p.code, isSale: p.sale });
       });
       setSelectedCheckboxes(newMap);
     } else {
@@ -351,22 +351,22 @@ const ProductManage = () => {
             <tr>
               <th><input type="checkbox" onChange={handleSelectAll} checked={selectedCheckboxes.size === products.length && products.length > 0} /></th>
               <th>상품정보</th>
-              <th>카테고리</th>
               <th>가격</th>
               <th>재고</th>
-              <th>상태</th>
-              <th>추천여부</th>
+              <th>판매상태</th>
+              <th>서비스상품</th>
+              <th>성인상품</th>
               <th>등록일</th>
               <th>할인</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="9" style={{textAlign: 'center', padding: '20px'}}>로딩 중...</td></tr>
+              <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px'}}>로딩 중...</td></tr>
             ) : error ? (
-              <tr><td colSpan="9" style={{textAlign: 'center', padding: '20px', color: 'red'}}>{error}</td></tr>
+              <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px', color: 'red'}}>{error}</td></tr>
             ) : products.length === 0 ? (
-              <tr><td colSpan="9" style={{textAlign: 'center', padding: '20px'}}>상품이 없습니다.</td></tr>
+              <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px'}}>상품이 없습니다.</td></tr>
             ) : (
               products.map((p) => (
                 <tr key={p.code} onClick={() => handleProductClick(p)} style={{ cursor: 'pointer' }}>
@@ -374,7 +374,7 @@ const ProductManage = () => {
                     <input 
                       type="checkbox" 
                       checked={selectedCheckboxes.has(p.code)}
-                      onChange={() => handleCheckboxChange(p.code, p.sale === "할인상품")}
+                      onChange={() => handleCheckboxChange(p.code, p.sale)}
                     />
                   </td>
                   <td className="product-product-info">
@@ -387,13 +387,21 @@ const ProductManage = () => {
                         />
                       ) : null}
                     </div>
-                    <div className="product-name">{p.name}</div>
+                    <div>
+                      <div className="product-badge-group">
+                        {p.sale && <span className="product-badge sale">할인</span>}
+                        {p.negotiation && <span className="product-badge nego">네고</span>}
+                        {!p.sale && !p.negotiation && <span className="product-badge normal">일반</span>}
+                      </div>
+                      <div className="productmanage-category">{p.category}</div>
+                      <div className="productmanage-name">{p.name}</div>
+                    </div>
                   </td>
-                  <td>{p.category}</td>
                   <td>{p.price.toLocaleString()}원</td>
                   <td>{p.stock}</td>
                   <td>{p.status}</td>
-                  <td>{p.sale}</td>
+                  <td>{p.type}</td>
+                  <td>{p.classify}</td>
                   <td>{p.registered}</td>
                   <td>
                     <button className="product-sale-add-btn"
