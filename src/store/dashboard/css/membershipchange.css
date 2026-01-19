@@ -181,6 +181,11 @@
   color: rgba(0, 0, 0, 0.6);
 }
 
+.membership-change-plan-box-price-note {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgb(241, 30, 30);
+}
 /*플랜 박스 액션 버튼*/
 .membership-change-plan-box-actions {
   display: flex;

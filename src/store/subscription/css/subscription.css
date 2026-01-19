@@ -67,12 +67,14 @@
     gap: 2rem;
     flex: 1;
     flex-wrap: wrap;
+    padding: '10px 0';
 }
 
 .subscriptionplans-free-feature {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    padding: '8px 0';
 }
 
 .subscriptionplans-change-btn {
@@ -94,6 +96,26 @@
     box-shadow: 0 4px 12px rgba(241, 129, 30, 0.3);
 }
 
+.subscriptionplans-payment-date-card{
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+.subscriptionplans-payment-date-body{
+    padding: 20px;
+    text-align: center;
+}
+.subscriptionplans-payment-date-label{
+    font-size: 16px;
+    font-weight: 500;
+    color: #495057;
+}
+.subscriptionplans-payment-date-value{
+    font-size: 20px;
+    font-weight: 600;
+    color: #212529;
+}
+
 .subscriptionplans-free-feature-label {
     font-size: 0.8rem;
     color: #666;
@@ -113,6 +135,16 @@
     transition: transform 0.3s ease;
     height: 100%;
     border: 1px solid rgba(241, 129, 30, 0.2);
+    max-width: 450px;
+    margin: 0 auto;
+}
+.current-subscriptionplans-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+    border: 3px solid rgb(6, 178, 0);
     max-width: 450px;
     margin: 0 auto;
 }
@@ -193,7 +225,7 @@
 }
 
 .subscriptionplans-features-list {
-    padding: 0;
+    padding: 10px 0;
     margin: 0;
     list-style: none;
     width: 100%;
@@ -201,6 +233,7 @@
 
 .subscriptionplans-feature-item {
     margin-bottom: 0.5rem;
+    padding: 8px 0;
 }
 
 .subscriptionplans-feature-content {
