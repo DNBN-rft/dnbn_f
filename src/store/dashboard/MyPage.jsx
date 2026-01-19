@@ -298,11 +298,11 @@ const MyPage = () => {
                         {storeData.membershipInfo && storeData.membershipInfo.length > 0 ? (
                           storeData.membershipInfo.map((membership, index) => (
                             <tr key={index}>
-                              <td>{formatDate(membership.membershipStartDate)} ~ {formatDate(membership.membershipEndDate)}</td>
-                              <td>{membership.planNm || '-'}</td>
-                              <td>{membership.planType || '-'}</td>
-                              <td>₩{membership.planPrice?.toLocaleString() || 0}</td>
-                              <td>{formatDate(membership.paymentDateTime)}</td>
+                              <td>{formatDate(membership.MembershipStartDate)} ~ {formatDate(membership.MembershipEndDate)}</td>
+                              <td>{membership.PlanNm || '-'}</td>
+                              <td>{membership.PlanType || '-'}</td>
+                              <td>₩{membership.PlanPrice?.toLocaleString() || 0}</td>
+                              <td>{formatDate(membership.PaymentDateTime)}</td>
                             </tr>
                           ))
                         ) : (
