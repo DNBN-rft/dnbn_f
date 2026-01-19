@@ -11,6 +11,7 @@ const AuthManage = () => {
     const [checkedItems, setCheckedItems] = useState([]);
     const [hasChanges, setHasChanges] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDefaultAuthModalOpen, setIsDefaultAuthModalOpen] = useState(false);
     const [authList, setAuthList] = useState([]);
     const [authMenus, setAuthMenus] = useState({});
     const [originalAuthMenus, setOriginalAuthMenus] = useState({});
@@ -454,6 +455,13 @@ const AuthManage = () => {
                     </div>
 
                     <div className="authmanage-filter-right">
+                        <button 
+                            className="authmanage-help-btn" 
+                            onClick={() => setIsDefaultAuthModalOpen(true)}
+                            title="기본 권한 정보 보기"
+                        >
+                            ?
+                        </button>
                         {!deleteMode && (
                             <button className="authmanage-add-btn" onClick={handleOpenModal}>권한 추가</button>
                         )}
@@ -483,7 +491,7 @@ const AuthManage = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {authList.map((auth) => (
+                                {authList.filter(auth => !DEFAULT_AUTH_IDS.includes(auth.id)).map((auth) => (
                                     <tr
                                         key={auth.id}
                                         onClick={() => handleAuthClick(auth)}
@@ -500,15 +508,7 @@ const AuthManage = () => {
                                             </td>
                                         )}
                                         <td>{authTypeLabels[auth.authType]}</td>
-                                        <td>
-                                            {DEFAULT_AUTH_IDS.includes(auth.id) 
-                                                ? authTypeLabels[auth.authType] 
-                                                : auth.name
-                                            }
-                                            {DEFAULT_AUTH_IDS.includes(auth.id) && (
-                                                <span className="authmanage-readonly-badge">(수정 불가)</span>
-                                            )}
-                                        </td>
+                                        <td>{auth.name}</td>
                                         <td>{auth.description}</td>
                                     </tr>
                                 ))}
@@ -597,6 +597,56 @@ const AuthManage = () => {
                     onClose={handleCloseModal}
                     onSave={handleSaveAuth}
                 />
+            )}
+
+            {/* 기본 권한 정보 모달 */}
+            {isDefaultAuthModalOpen && (
+                <div className="authmanage-modal-backdrop" onClick={() => setIsDefaultAuthModalOpen(false)}>
+                    <div className="authmanage-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="authmanage-modal-header">
+                            <h2>기본 권한 정보</h2>
+                            <button 
+                                className="authmanage-modal-close-btn" 
+                                onClick={() => setIsDefaultAuthModalOpen(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="authmanage-modal-body">
+                            <p className="authmanage-modal-desc">
+                                다음은 시스템 기본 권한으로 수정 및 삭제가 불가능합니다.
+                            </p>
+                            <div className="authmanage-modal-content">
+                                {authList.filter(auth => DEFAULT_AUTH_IDS.includes(auth.id)).map(auth => (
+                                    <div key={auth.id} className="authmanage-default-auth-item">
+                                        <div className="authmanage-default-auth-name">
+                                            {authTypeLabels[auth.authType]}
+                                        </div>
+                                        <div className="authmanage-default-auth-description">
+                                            {auth.description}
+                                        </div>
+                                        <div className="authmanage-default-auth-menus">
+                                            <span className="authmanage-menus-label">보유 권한:</span>
+                                            <div className="authmanage-menus-list">
+                                                {auth.menus && allMenus.filter(menu => auth.menus.includes(menu.id)).map(menu => (
+                                                    <span key={menu.id} className="authmanage-menu-badge">{menu.name}</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="authmanage-modal-footer">
+                            <button 
+                                className="authmanage-modal-close-footer-btn" 
+                                onClick={() => setIsDefaultAuthModalOpen(false)}
+                            >
+                                닫기
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

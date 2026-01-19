@@ -106,9 +106,9 @@ export const updateProduct = async (productCode, productData) => {
  * 상품 제재 처리
  * @param {Array<string>} productCodes - 제재할 상품 코드 목록
  */
-export const restrictProducts = async (productCodes) => {
+export const restrictProducts = async (productCodes, restrictReason = "") => {
   try {
-    const response = await apiPut(`/admin/product/restrictProduct`, { productCodes });
+    const response = await apiPut(`/admin/product/restrictProduct`, { productCodes, restrictionReason: restrictReason });
 
     if (response.ok) {
       const message = await response.text();

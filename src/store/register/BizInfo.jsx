@@ -49,12 +49,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
     }
   };
 
-  const handleBizTypeChange = (type) => {
-    setFormData({
-      ...formData,
-      bizType: type,
-    });
-  };
+
 
   const handleBizNoCheck = async () => {
     if (!formData.bizNo.trim()) {
@@ -85,7 +80,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
 
   const handleNext = async () => {
     if (!formData.bizType) {
-      alert("사업자구분을 선택해주세요.");
+      alert("업태를 입력해주세요.");
       return;
     }
 
@@ -141,30 +136,15 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
 
         <div className="bizinfo-middle-title">사업자 정보 입력</div>
         <div className="bizinfo-middle-content">
-          <div className="bizinfo-middle-subtitle">사업자구분</div>
-          <div className="bizinfo-middle-radio-div">
-            <label>
-              <input
-                type="radio"
-                className="bizinfo-radio"
-                name="bizType"
-                value="개인"
-                checked={formData.bizType === "개인"}
-                onChange={() => handleBizTypeChange("개인")}
-              />
-              개인사업자
-            </label>
-            <label>
-              <input
-                type="radio"
-                className="bizinfo-radio"
-                name="bizType"
-                value="법인"
-                checked={formData.bizType === "법인"}
-                onChange={() => handleBizTypeChange("법인")}
-              />
-              법인사업자
-            </label>
+          <div className="bizinfo-middle-subtitle">업태</div>
+          <div>
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              placeholder="업태를 입력해주세요."
+              value={formData.bizType}
+              onChange={(e) => handleInputChange("bizType", e.target.value)}
+            />
           </div>
 
           <div className="bizinfo-middle-subtitle">사업자명</div>

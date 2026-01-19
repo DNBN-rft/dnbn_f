@@ -1,6 +1,6 @@
 import "./css/storeinfo.css";
 import StepButton from "../register/component/StepButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { validateStoreInfo } from "../../utils/registerValidation";
 
 const StoreInfo = ({ formData, setFormData, next, prev }) => {
@@ -14,11 +14,31 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
     SUN: false
   });
 
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === 'ADDRESS_SELECTED') {
+        const { zonecode, roadAddress, jibunAddress } = event.data.data;
+        setFormData({
+          ...formData,
+          storeZipCode: zonecode,
+          storeAddr: roadAddress || jibunAddress
+        });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [formData, setFormData]);
+
   const handleInputChange = (field, value) => {
     setFormData({
       ...formData,
       [field]: value
     });
+  };
+
+  const handleAddressSearch = () => {
+    window.open('/address-search.html', 'addressSearch', 'width=500,height=500,top=50');
   };
 
   const handleOpenDayChange = (day) => {
@@ -93,7 +113,12 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
                 disabled
                 value={formData.storeZipCode}
               />
-              <div className="storeinfo-middle-addr-search">주소검색</div>
+              <div 
+                className="storeinfo-middle-addr-search"
+                onClick={handleAddressSearch}
+              >
+                주소검색
+              </div>
             </div>
             <div className="storeinfo-middle-subtitle">주소</div>
             <div className="storeinfo-middle-addr-div">

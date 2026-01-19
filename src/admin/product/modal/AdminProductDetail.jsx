@@ -3,14 +3,22 @@ import "./css/adminproductdetail.css";
 import { getProductDetail, updateProduct } from "../../../utils/adminProductService";
 import { getCategoryList } from "../../../utils/commonService";
 
-// 한글 상태 -> 영문 enum 매핑
+// 한글 상태 -> ENUM 코드 매핑
 const STATE_MAP = {
-  "판매중": "ON_SALE",
-  "판매 중": "ON_SALE",
-  "품절": "SOLDOUT",
-  "제재": "REJECTED",
   "대기": "PENDING",
-  "판매종료": "ENDED",
+  "판매 중": "ON_SALE",
+  "판매 종료": "ENDED",
+  "품절": "SOLDOUT",
+  "판매 제재": "REJECTED",
+};
+
+// ENUM 코드 -> 한글 상태 매핑
+const ENUM_STATE_MAP = {
+  "PENDING": "대기",
+  "ON_SALE": "판매 중",
+  "ENDED": "판매 종료",
+  "SOLDOUT": "품절",
+  "REJECTED": "판매 제재",
 };
 
 const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
@@ -48,20 +56,21 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
   useEffect(() => {
     if (productData && categoryList.length > 0) {
       const foundCategory = categoryList.find(cat => cat.categoryNm === productData.categoryNm);
-      // productState를 한글에서 영문 enum으로 변환 (초기값 설정용)
-      const stateValue = STATE_MAP[productData.productState] || productData.productState;
-      
+      // 한글 상태를 ENUM 코드로 변환
+      const stateEnum = STATE_MAP[productData.productState] || productData.productState;
+
       setEditForm({
-        productNm: productData.productNm,
+        productNm: productData.productNm || '',
         categoryIdx: foundCategory?.categoryIdx || null,
-        categoryNm: productData.categoryNm,
+        categoryNm: foundCategory?.categoryNm || productData.categoryNm || '',
         isAdult: productData.isAdult,
-        productPrice: productData.productPrice,
-        productAmount: productData.productAmount,
-        productState: stateValue,
+        productPrice: productData.productPrice || 0,
+        productAmount: productData.productAmount || 0,
+        productState: stateEnum,
         isNego: productData.isNego,
         isSale: productData.isSale,
-        productDescription: productData.productDescription,
+        productDescription: productData.productDescription || '',
+        restrictReason: productData.restrictReason || '',
       });
     }
   }, [productData, categoryList]);
@@ -81,20 +90,20 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
   };
 
   const handleCancel = () => {
-    // productState를 한글에서 영문 enum으로 변환
-    const stateValue = STATE_MAP[productData.productState] || productData.productState;
-    
+    const stateEnum = STATE_MAP[productData.productState] || productData.productState;
+
     setEditForm({
-      productNm: productData.productNm,
-      categoryIdx: productData.categoryIdx,
-      categoryNm: productData.categoryNm,
+      productNm: productData.productNm || '',
+      categoryIdx: categoryList.find(cat => cat.categoryNm === productData.categoryNm)?.categoryIdx || null,
+      categoryNm: productData.categoryNm || '',
       isAdult: productData.isAdult,
-      productPrice: productData.productPrice,
-      productAmount: productData.productAmount,
-      productState: stateValue,
+      productPrice: productData.productPrice || 0,
+      productAmount: productData.productAmount || 0,
+      productState: stateEnum,
       isNego: productData.isNego,
       isSale: productData.isSale,
-      productDescription: productData.productDescription,
+      productDescription: productData.productDescription || '',
+      restrictReason: productData.restrictReason || '',
     });
     setIsEditMode(false);
   };
@@ -105,7 +114,7 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
     <div className="adminproductdetail-backdrop" onClick={onClose}>
       <div className="adminproductdetail-img">
         {productData.imgs?.files && productData.imgs.files.length > 0 ? (
-          <img 
+          <img
             src={`http://localhost:8080${productData.imgs.files[0].fileUrl}`}
             alt={productData.productNm}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
@@ -126,9 +135,250 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
         </div>
 
         <div className="adminproductdetail-content">
+          {/* 상품 정보 섹션 */}
+          <section className="adminproductdetail-section">
+            <div className="adminproductdetail-section-header">
+              <h3 className="adminproductdetail-section-title">상품 정보</h3>
+              {isEditMode ? (
+                <div className="adminproductdetail-section-actions">
+                  <button
+                    className="adminproductdetail-btn adminproductdetail-save-btn"
+                    onClick={handleSave}
+                  >
+                    저장
+                  </button>
+                  <button
+                    className="adminproductdetail-btn adminproductdetail-cancel-btn"
+                    onClick={handleCancel}
+                  >
+                    취소
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="adminproductdetail-btn adminproductdetail-edit-btn"
+                  onClick={() => setIsEditMode(true)}
+                >
+                  수정
+                </button>
+              )}
+            </div>
+            <div className="adminproductdetail-grid">
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">상품명</label>
+                {isEditMode ? (
+                  <input
+                    type="text"
+                    value={editForm.productNm}
+                    onChange={(e) => setEditForm({ ...editForm, productNm: e.target.value })}
+                    className="adminproductdetail-input"
+                  />
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.productNm}
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">상품 코드</label>
+                <span className="adminproductdetail-value">
+                  {productData.productCode}
+                </span>
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">카테고리</label>
+                {isEditMode ? (
+                  <select
+                    value={String(editForm.categoryIdx || '')}
+                    onChange={(e) => {
+                      const selectedCategory = categoryList.find(cat => cat.categoryIdx === parseInt(e.target.value));
+                      setEditForm({
+                        ...editForm,
+                        categoryIdx: parseInt(e.target.value),
+                        categoryNm: selectedCategory?.categoryNm || ''
+                      });
+                    }}
+                    className="adminproductdetail-select"
+                  >
+                    <option value="">카테고리 선택</option>
+                    {categoryList.map(category => (
+                      <option key={category.categoryIdx} value={String(category.categoryIdx)}>
+                        {category.categoryNm}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.categoryNm}
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">성인상품</label>
+                {isEditMode ? (
+                  <select
+                    value={String(editForm.isAdult)}
+                    onChange={(e) => setEditForm({ ...editForm, isAdult: e.target.value === 'true' })}
+                    className="adminproductdetail-select"
+                  >
+                    <option value="false">일반</option>
+                    <option value="true">성인</option>
+                  </select>
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.isAdult ? "성인" : "일반"}
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">가격</label>
+                {isEditMode ? (
+                  <input
+                    type="number"
+                    value={editForm.productPrice}
+                    onChange={(e) => setEditForm({ ...editForm, productPrice: parseInt(e.target.value) })}
+                    className="adminproductdetail-input"
+                  />
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.productPrice?.toLocaleString()}원
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">재고</label>
+                {isEditMode ? (
+                  <input
+                    type="number"
+                    value={editForm.productAmount}
+                    onChange={(e) => setEditForm({ ...editForm, productAmount: parseInt(e.target.value) })}
+                    className="adminproductdetail-input"
+                  />
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.productAmount}
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">판매상태</label>
+                {isEditMode ? (
+                  <select
+                    value={String(editForm.productState)}
+                    onChange={(e) => setEditForm({ ...editForm, productState: e.target.value })}
+                    className="adminproductdetail-select"
+                  >
+                    <option value="PENDING">대기</option>
+                    <option value="ON_SALE">판매 중</option>
+                    <option value="ENDED">판매 종료</option>
+                    <option value="SOLDOUT">품절</option>
+                    <option value="REJECTED">판매 제재</option>
+                  </select>
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {ENUM_STATE_MAP[productData.productState] || productData.productState}
+                  </span>
+                )}
+              </div>
+
+              {isEditMode && editForm.productState === 'REJECTED' && (
+                <div className="adminproductdetail-field adminproductdetail-field-full">
+                  <label className="adminproductdetail-label">제재사유</label>
+                  <textarea
+                    value={editForm.restrictReason || ''}
+                    onChange={(e) => setEditForm({ ...editForm, restrictReason: e.target.value })}
+                    className="adminproductdetail-textarea"
+                    placeholder="제재 사유를 입력해주세요"
+                    rows="3"
+                  />
+                </div>
+              )}
+
+              {!isEditMode && editForm.productState === 'REJECTED' && (
+                <div className="adminproductdetail-field adminproductdetail-field-full">
+                  <label className="adminproductdetail-label">제재사유</label>
+                  {productData.restrictReason ? (
+                    <span className="adminproductdetail-value">
+                      {productData.restrictReason}
+                    </span>
+                  ) : (
+                    <span className="adminproductdetail-value" style={{ color: '#999' }}>
+                      제재사유 없음
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">할인</label>
+                {isEditMode ? (
+                  <select
+                    value={String(editForm.isSale)}
+                    onChange={(e) => setEditForm({ ...editForm, isSale: e.target.value === 'true' })}
+                    className="adminproductdetail-select"
+                  >
+                    <option value="false">미사용</option>
+                    <option value="true">사용</option>
+                  </select>
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.isSale ? "사용" : "미사용"}
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">네고</label>
+                {isEditMode ? (
+                  <select
+                    value={String(editForm.isNego)}
+                    onChange={(e) => setEditForm({ ...editForm, isNego: e.target.value === 'true' })}
+                    className="adminproductdetail-select"
+                  >
+                    <option value="false">미사용</option>
+                    <option value="true">사용</option>
+                  </select>
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.isNego ? "사용" : "미사용"}
+                  </span>
+                )}
+              </div>
+
+              <div className="adminproductdetail-field">
+                <label className="adminproductdetail-label">등록일</label>
+                <span className="adminproductdetail-value">
+                  {new Date(productData.productRegDateTime).toLocaleString()}
+                </span>
+              </div>
+
+              <div className="adminproductdetail-field adminproductdetail-field-full">
+                <label className="adminproductdetail-label">상품 설명</label>
+                {isEditMode ? (
+                  <textarea
+                    value={editForm.productDescription}
+                    onChange={(e) => setEditForm({ ...editForm, productDescription: e.target.value })}
+                    className="adminproductdetail-textarea"
+                    rows="4"
+                  />
+                ) : (
+                  <span className="adminproductdetail-value">
+                    {productData.productDescription}
+                  </span>
+                )}
+              </div>
+            </div>
+          </section>
+
           {/* 가맹점 정보 섹션 */}
           <section className="adminproductdetail-section">
-            <h3 className="adminproductdetail-section-title">가맹점 정보</h3>
+            <h3 className="adminproductdetail-section-header">가맹점 정보</h3>
             <div className="adminproductdetail-grid">
               <div className="adminproductdetail-field">
                 <label className="adminproductdetail-label">가맹점명</label>
@@ -176,7 +426,7 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
 
           {/* 상품 등록자 정보 섹션 */}
           <section className="adminproductdetail-section">
-            <h3 className="adminproductdetail-section-title">상품 등록자</h3>
+            <h3 className="adminproductdetail-section-header">상품 등록자</h3>
             <div className="adminproductdetail-grid">
               <div className="adminproductdetail-field">
                 <label className="adminproductdetail-label">등록자 ID</label>
@@ -190,218 +440,6 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
                 <span className="adminproductdetail-value">
                   {productData.memberNm}
                 </span>
-              </div>
-            </div>
-          </section>
-
-          {/* 상품 정보 섹션 */}
-          <section className="adminproductdetail-section">
-            <div className="adminproductdetail-section-header">
-              <h3 className="adminproductdetail-section-title">상품 정보</h3>
-              {isEditMode ? (
-                <div className="adminproductdetail-section-actions">
-                  <button 
-                    className="adminproductdetail-btn adminproductdetail-save-btn"
-                    onClick={handleSave}
-                  >
-                    저장
-                  </button>
-                  <button 
-                    className="adminproductdetail-btn adminproductdetail-cancel-btn"
-                    onClick={handleCancel}
-                  >
-                    취소
-                  </button>
-                </div>
-              ) : (
-                <button 
-                  className="adminproductdetail-btn adminproductdetail-edit-btn"
-                  onClick={() => setIsEditMode(true)}
-                >
-                  수정
-                </button>
-              )}
-            </div>
-            <div className="adminproductdetail-grid">
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">상품명</label>
-                {isEditMode ? (
-                  <input
-                    type="text"
-                    value={editForm.productNm}
-                    onChange={(e) => setEditForm({...editForm, productNm: e.target.value})}
-                    className="adminproductdetail-input"
-                  />
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.productNm}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">상품 코드</label>
-                <span className="adminproductdetail-value">
-                  {productData.productCode}
-                </span>
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">카테고리</label>
-                {isEditMode ? (
-                  <select
-                    value={String(editForm.categoryIdx || '')}
-                    onChange={(e) => {
-                      const selectedCategory = categoryList.find(cat => cat.categoryIdx === parseInt(e.target.value));
-                      setEditForm({
-                        ...editForm, 
-                        categoryIdx: parseInt(e.target.value),
-                        categoryNm: selectedCategory?.categoryNm || ''
-                      });
-                    }}
-                    className="adminproductdetail-select"
-                  >
-                    {categoryList.map(category => (
-                      <option key={category.categoryIdx} value={String(category.categoryIdx)}>
-                        {category.categoryNm}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.categoryNm}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">성인상품</label>
-                {isEditMode ? (
-                  <select
-                    value={editForm.isAdult}
-                    onChange={(e) => setEditForm({...editForm, isAdult: e.target.value === 'true'})}
-                    className="adminproductdetail-select"
-                  >
-                    <option value="false">일반</option>
-                    <option value="true">성인</option>
-                  </select>
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.isAdult ? "성인" : "일반"}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">가격</label>
-                {isEditMode ? (
-                  <input
-                    type="number"
-                    value={editForm.productPrice}
-                    onChange={(e) => setEditForm({...editForm, productPrice: parseInt(e.target.value)})}
-                    className="adminproductdetail-input"
-                  />
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.productPrice?.toLocaleString()}원
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">재고</label>
-                {isEditMode ? (
-                  <input
-                    type="number"
-                    value={editForm.productAmount}
-                    onChange={(e) => setEditForm({...editForm, productAmount: parseInt(e.target.value)})}
-                    className="adminproductdetail-input"
-                  />
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.productAmount}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">판매상태</label>
-                {isEditMode ? (
-                  <select
-                    value={editForm.productState}
-                    onChange={(e) => setEditForm({...editForm, productState: e.target.value})}
-                    className="adminproductdetail-select"
-                  >
-                    <option value="ON_SALE">판매중</option>
-                    <option value="SOLDOUT">품절</option>
-                    <option value="REJECTED">제재</option>
-                    <option value="PENDING">대기</option>
-                    <option value="ENDED">판매종료</option>
-                  </select>
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.productState}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">할인</label>
-                {isEditMode ? (
-                  <select
-                    value={editForm.isSale}
-                    onChange={(e) => setEditForm({...editForm, isSale: e.target.value === 'true'})}
-                    className="adminproductdetail-select"
-                  >
-                    <option value="false">미사용</option>
-                    <option value="true">사용</option>
-                  </select>
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.isSale ? "사용" : "미사용"}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">네고</label>
-                {isEditMode ? (
-                  <select
-                    value={editForm.isNego}
-                    onChange={(e) => setEditForm({...editForm, isNego: e.target.value === 'true'})}
-                    className="adminproductdetail-select"
-                  >
-                    <option value="false">미사용</option>
-                    <option value="true">사용</option>
-                  </select>
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.isNego ? "사용" : "미사용"}
-                  </span>
-                )}
-              </div>
-
-              <div className="adminproductdetail-field">
-                <label className="adminproductdetail-label">등록일</label>
-                <span className="adminproductdetail-value">
-                  {new Date(productData.productRegDateTime).toLocaleString()}
-                </span>
-              </div>
-
-              <div className="adminproductdetail-field adminproductdetail-field-full">
-                <label className="adminproductdetail-label">상품 설명</label>
-                {isEditMode ? (
-                  <textarea
-                    value={editForm.productDescription}
-                    onChange={(e) => setEditForm({...editForm, productDescription: e.target.value})}
-                    className="adminproductdetail-textarea"
-                    rows="4"
-                  />
-                ) : (
-                  <span className="adminproductdetail-value">
-                    {productData.productDescription}
-                  </span>
-                )}
               </div>
             </div>
           </section>
