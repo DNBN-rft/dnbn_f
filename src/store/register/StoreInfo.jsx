@@ -83,7 +83,7 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
   };
 
   const handleAddressSearch = () => {
-    window.open('/address-search.html', 'addressSearch', 'width=500,height=500,top=50');
+    setSearchOpen(true);
   };
 
   const handleOpenDayChange = (day) => {
