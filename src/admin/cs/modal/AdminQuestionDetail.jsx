@@ -83,7 +83,7 @@ const AdminQuestionDetail = ({ questionIdx, onClose }) => {
   const getUserType = () => {
     if (!questionDetail) return "-";
     if (questionDetail.storeIdx) return "가맹점";
-    if (questionDetail.custIdx) return "일반사용자";
+    if (questionDetail.custCode) return "일반사용자";
     return "-";
   };
   if (loading) {
