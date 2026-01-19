@@ -29,8 +29,8 @@ const AdminReview = () => {
 
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // const [startDate, setStartDate] = useState("");
+  // const [endDate, setEndDate] = useState("");
 
   // 필터 상태
   const [filters, setFilters] = useState({

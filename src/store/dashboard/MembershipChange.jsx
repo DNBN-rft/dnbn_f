@@ -136,9 +136,20 @@ const MembershipChange = () => {
                       </span>
                     )}
                   </div>
+                  
                   <span className="membership-change-plan-box-price">
                     {plan.memberShipPlanNm === "Default" ? "무료" : plan.memberShipPlanNm === "Free" ? "최초 1회 무료" : `월 ${plan.memberShipPlanPrice?.toLocaleString()}원`}
                   </span>
+                  
+                  {selectedPlan?.memberShipPlanIdx === plan.memberShipPlanIdx && plan.memberShipPlanPrice > currentPlan?.price ? (
+                    <div className="membership-change-plan-box-price-note">
+                      즉시 변경된 멤버쉽 정보가 반영되고, 각 기능의 잔여 사용량에 멤버쉽 간 차이 만큼 추가 지급됩니다. 익월 요금에 추가 요금이 부과됩니다.
+                    </div>
+                  ) : selectedPlan?.memberShipPlanIdx === plan.memberShipPlanIdx && plan.memberShipPlanPrice < currentPlan?.price ? (
+                    <div className="membership-change-plan-box-price-note">
+                      익월부터 멤버쉽 정보가 반영됩니다.
+                    </div>
+                  ) : ""}
                 </div>
                 <div className="membership-change-plan-box-actions">
                   <button
