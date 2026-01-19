@@ -78,7 +78,7 @@ const AdminQuestion = () => {
   // 사용자 구분 결정
   const getUserType = (question) => {
     if (question.storeCode) return "가맹점";
-    if (question.custIdx) return "일반사용자";
+    if (question.custCode) return "일반사용자";
     return "-";
   };
   const handleDetailClick = (questionIdx) => {

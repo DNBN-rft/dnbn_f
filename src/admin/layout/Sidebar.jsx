@@ -147,7 +147,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                   알림
                 </Link>
                 <Link className="nav-link" to="/admin/push" onClick={handleLinkClick}>
-                  푸시
+                  앱푸시
                 </Link>
               </nav>
             </div>

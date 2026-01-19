@@ -64,6 +64,10 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
     });
   };
 
+  const handleAddressSearch = () => {
+    window.open('/address-search.html', 'addressSearch', 'width=500,height=500,top=50');
+  };
+
   const handleOpenDayChange = (day) => {
     const newOpenDays = {
       ...openDays,
@@ -136,7 +140,12 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
                 disabled
                 value={formData.storeZipCode}
               />
-              <div className="storeinfo-middle-addr-search">주소검색</div>
+              <div 
+                className="storeinfo-middle-addr-search"
+                onClick={handleAddressSearch}
+              >
+                주소검색
+              </div>
             </div>
             <div className="storeinfo-middle-subtitle">주소</div>
             <div className="storeinfo-middle-addr-div">
