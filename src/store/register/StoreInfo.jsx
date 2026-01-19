@@ -1,7 +1,11 @@
 import "./css/storeinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState, useMemo, useEffect } from "react";
-import { validateStoreInfo } from "../../utils/registerValidation";
+import { 
+  validateStoreInfo,
+  restrictBusinessName,
+  restrictPhone
+} from "../../utils/registerValidation";
 
 const StoreInfo = ({ formData, setFormData, next, prev }) => {
   const [openDays, setOpenDays] = useState({
@@ -58,9 +62,18 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
   }, [formData.storeOpenTime, timeOptions]);
 
   const handleInputChange = (field, value) => {
+    // 필드별 입력 제한 적용
+    let restrictedValue = value;
+    
+    if (field === 'storeNm') {
+      restrictedValue = restrictBusinessName(value);
+    } else if (field === 'storeTelNo') {
+      restrictedValue = restrictPhone(value);
+    }
+    
     setFormData({
       ...formData,
-      [field]: value
+      [field]: restrictedValue
     });
   };
 
@@ -121,10 +134,7 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
                 className="storeinfo-middle-tel-input"
                 placeholder="숫자만 입력 가능"
                 value={formData.storeTelNo}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, '');
-                  handleInputChange('storeTelNo', value);
-                }}
+                onChange={(e) => handleInputChange('storeTelNo', e.target.value)}
               />
             </div>
 
