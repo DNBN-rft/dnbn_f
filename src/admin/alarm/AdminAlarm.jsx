@@ -22,7 +22,7 @@ const AdminAlarm = () => {
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const [isSearchMode, setIsSearchMode] = useState(false);
+  // const [isSearchMode, setIsSearchMode] = useState(false);
 
   const fetchAlarms = useCallback(async (page = 0) => {
   setLoading(true);
@@ -102,7 +102,7 @@ useEffect(() => {
         setCurrentPage(result.data.number);
         setTotalPages(result.data.totalPages);
         setTotalElements(result.data.totalElements);
-        setIsSearchMode(true);
+        // setIsSearchMode(true);
       } else {
         setError(result.error);
         alert(result.error);
