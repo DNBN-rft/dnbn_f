@@ -1,7 +1,13 @@
 import "./css/memberinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState, useEffect } from "react";
-import { validateMemberInfo, getPasswordCheckMessage } from "../../utils/registerValidation";
+import { 
+  validateMemberInfo, 
+  getPasswordCheckMessage,
+  restrictLoginId,
+  restrictPassword,
+  restrictEmail
+} from "../../utils/registerValidation";
 import { apiGet } from "../../utils/apiClient";
 
 const MemberInfo = ({ formData, setFormData, next, prev }) => {
@@ -40,30 +46,42 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
   }, [formData.loginId, checkedLoginId, setFormData]);
 
   const handleInputChange = (field, value) => {
+    // 필드별 입력 제한 적용
+    let restrictedValue = value;
+    
+    if (field === 'loginId') {
+      restrictedValue = restrictLoginId(value);
+    } else if (field === 'password') {
+      restrictedValue = restrictPassword(value);
+    }
+    
     setFormData({
       ...formData,
-      [field]: value
+      [field]: restrictedValue
     });
 
     // 비밀번호 입력 시 실시간 검증 (util 함수 사용)
     if (field === 'password') {
-      const { message, status } = getPasswordCheckMessage(value);
+      const { message, status } = getPasswordCheckMessage(restrictedValue);
       setPasswordCheckMessage(message);
       setPasswordCheckStatus(status);
     }
   };
 
   const handleEmailChange = (type, value) => {
+    // 이메일 입력 제한 적용
+    const restrictedValue = restrictEmail(value);
+    
     if (type === 'id') {
       const emailDomain = formData.email.split('@')[1] || '';
-      const newEmail = emailDomain ? `${value}@${emailDomain}` : value;
+      const newEmail = emailDomain ? `${restrictedValue}@${emailDomain}` : restrictedValue;
       setFormData({
         ...formData,
         email: newEmail
       });
     } else if (type === 'domain') {
       const emailId = formData.email.split('@')[0] || '';
-      const newEmail = `${emailId}@${value}`;
+      const newEmail = `${emailId}@${restrictedValue}`;
       setFormData({
         ...formData,
         email: newEmail
