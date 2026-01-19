@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiCall, apiPut } from "../../../utils/apiClient";
+import { apiPut } from "../../../utils/apiClient";
 import "./css/reasoninputmodal.css";
 
 const ReasonInputModal = ({ type, onClose, onSubmit, orderDetailIdx, existingReason }) => {

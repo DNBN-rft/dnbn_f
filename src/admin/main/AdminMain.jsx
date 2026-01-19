@@ -39,11 +39,11 @@ const AdminMain = () => {
         setError(err.message || '데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
-        console.log('대시보드 데이터:', dashboardData);
       }
     };
 
     fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {

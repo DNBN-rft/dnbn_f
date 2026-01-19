@@ -37,13 +37,13 @@ const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
       <div className="ms-auto"></div>
       {/* Navbar*/}
       <ul className="navbar-nav ms-md-0 me-3 me-lg-4">
-        <li className="nav-item" style={{ position: 'relative' }}>
+        <li className="nav-item admin-topnav-alarm-item">
           <button 
-            className="nav-link" 
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            className="nav-link admin-topnav-alarm-btn"
             onClick={() => setIsAlarmModalOpen(!isAlarmModalOpen)}
           >
-            <i className={`${hasAlarms ? 'fa-solid' : 'fa-regular'} fa-alarm-clock fa-fw admin-topnav-i`}></i>
+            <i className="fa-regular fa-alarm-clock fa-fw admin-topnav-i"></i>
+            {hasAlarms && <span className="admin-topnav-alarm-badge"></span>}
           </button>
           {isAlarmModalOpen && <AdminAlarmModal onClose={() => setIsAlarmModalOpen(false)} />}
         </li>

@@ -40,9 +40,39 @@ export const login = async (username, password) => {
       let errorMessage = "로그인에 실패했습니다.";
       
       if (response.status === 401) {
-        errorMessage = "아이디 또는 비밀번호가 잘못되었습니다.";
+        // 401 에러 시 공통 메시지 사용
+        errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
       } else if (errorText) {
-        errorMessage = errorText;
+        // JSON 형식의 에러 메시지 파싱
+        try {
+          const errorObj = JSON.parse(errorText);
+          if (errorObj.message) {
+            // 비밀번호/아이디/직원정보 관련 에러는 공통 메시지로 통일
+            if (errorObj.message.includes("비밀번호") || 
+                errorObj.message.includes("아이디") || 
+                errorObj.message.includes("직원") ||
+                errorObj.message.includes("찾을 수 없습니다")) {
+              errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
+            } else {
+              errorMessage = errorObj.message;
+            }
+          }
+        } catch {
+          // JSON 파싱 실패 시 원본 텍스트에서 message 추출 시도
+          const messageMatch = errorText.match(/"message"\s*:\s*"([^"]+)"/);
+          if (messageMatch && messageMatch[1]) {
+            if (messageMatch[1].includes("비밀번호") || 
+                messageMatch[1].includes("아이디") ||
+                messageMatch[1].includes("직원") ||
+                messageMatch[1].includes("찾을 수 없습니다")) {
+              errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
+            } else {
+              errorMessage = messageMatch[1];
+            }
+          } else {
+            errorMessage = errorText;
+          }
+        }
       }
 
       return {

@@ -8,7 +8,7 @@ const AdminPayoutCompleted = () => {
   const [error, setError] = useState(null);
 
   const [payouts, setPayouts] = useState([]);
-  const [selectedPayouts, setSelectedPayouts] = useState([]);
+  // const [selectedPayouts, setSelectedPayouts] = useState([]);
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);

@@ -29,7 +29,7 @@ const AdminPlan = () => {
     const currentMonth = new Date().getMonth(); // 0-11
     const [selectedPlan, setSelectedPlan] = useState("all");
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-    const [selectedType, setSelectedType] = useState("sign");
+    // const [selectedType, setSelectedType] = useState("sign");
     const [chartData, setChartData] = useState(null);
 
     // 플랜 이름 매핑
@@ -133,7 +133,7 @@ const AdminPlan = () => {
             fetchChartData();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedPlan, selectedMonth, selectedType]);
+    }, [selectedPlan, selectedMonth]);
 
     // 컴포넌트 마운트 시 초기 데이터 로드
     useEffect(() => {

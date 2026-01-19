@@ -93,12 +93,12 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                 <Link className="nav-link" to="/admin/region" onClick={handleLinkClick}>
                   지역 통계
                 </Link>
-                <Link className="nav-link" to="/admin/plan" onClick={handleLinkClick}>
+                {/* <Link className="nav-link" to="/admin/plan" onClick={handleLinkClick}>
                   구독 통계
                 </Link>
                 <Link className="nav-link" to="/admin/category" onClick={handleLinkClick}>
                   카테고리 통계
-                </Link>
+                </Link> */}
               </nav>
             </div>
 

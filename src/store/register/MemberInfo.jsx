@@ -1,7 +1,7 @@
 import "./css/memberinfo.css";
 import StepButton from "../register/component/StepButton";
-import { useState } from "react";
-import { validateMemberInfo } from "../../utils/registerValidation";
+import { useState, useEffect } from "react";
+import { validateMemberInfo, getPasswordCheckMessage } from "../../utils/registerValidation";
 import { apiGet } from "../../utils/apiClient";
 
 const MemberInfo = ({ formData, setFormData, next, prev }) => {
@@ -11,29 +11,33 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
   const [passwordCheckMessage, setPasswordCheckMessage] = useState("");
   const [passwordCheckStatus, setPasswordCheckStatus] = useState(null);
   const [isEmailDisabled, setIsEmailDisabled] = useState(false);
+  const [checkedLoginId, setCheckedLoginId] = useState(""); // 중복체크한 아이디 저장
 
-  const getPasswordCheckMessage = (password) => {
-    if (!password) {
-      return { message: "", status: null };
+  // 컴포넌트 마운트 시 이전 중복체크 결과 복원
+  useEffect(() => {
+    if (formData.idCheckStatus && formData.checkedLoginId === formData.loginId) {
+      setIdCheckStatus(formData.idCheckStatus);
+      setCheckedLoginId(formData.checkedLoginId);
+      if (formData.idCheckStatus === "success") {
+        setIdCheckMessage("사용 가능한 아이디입니다.");
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const hasLength = password.length >= 8 && password.length <= 16;
-    const hasNumber = /[0-9]/.test(password);
-    const hasLetter = /[a-zA-Z]/.test(password);
-    const hasSpecial = /\W/.test(password);
-
-    const errors = [];
-    if (!hasLength) errors.push("8~16자");
-    if (!hasNumber) errors.push("숫자");
-    if (!hasLetter) errors.push("영문");
-    if (!hasSpecial) errors.push("특수문자");
-
-    if (errors.length === 0) {
-      return { message: "사용 가능한 비밀번호입니다.", status: "success" };
-    } else {
-      return { message: `비밀번호는 ${errors.join(", ")}을(를) 포함해야 합니다.`, status: "error" };
+  // loginId 변경 시 중복체크 초기화
+  useEffect(() => {
+    if (checkedLoginId && formData.loginId !== checkedLoginId) {
+      setIdCheckStatus(null);
+      setIdCheckMessage("");
+      setCheckedLoginId("");
+      setFormData(prev => ({
+        ...prev,
+        idCheckStatus: null,
+        checkedLoginId: ""
+      }));
     }
-  };
+  }, [formData.loginId, checkedLoginId, setFormData]);
 
   const handleInputChange = (field, value) => {
     setFormData({
@@ -41,7 +45,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
       [field]: value
     });
 
-    // 비밀번호 입력 시 실시간 검증
+    // 비밀번호 입력 시 실시간 검증 (util 함수 사용)
     if (field === 'password') {
       const { message, status } = getPasswordCheckMessage(value);
       setPasswordCheckMessage(message);
@@ -82,15 +86,29 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
         if (data.includes("사용가능")) {
           setIdCheckMessage("사용 가능한 아이디입니다.");
           setIdCheckStatus("success");
+          setCheckedLoginId(formData.loginId);
+          // formData에 저장하여 페이지 이동 후에도 유지
+          setFormData({
+            ...formData,
+            idCheckStatus: "success",
+            checkedLoginId: formData.loginId
+          });
         } else {
           setIdCheckMessage("이미 사용 중인 아이디입니다.");
           setIdCheckStatus("error");
+          setCheckedLoginId("");
+          setFormData({
+            ...formData,
+            idCheckStatus: "error",
+            checkedLoginId: ""
+          });
         }
       }
     } catch (error) {
       console.error("ID 중복 체크 실패:", error);
       setIdCheckMessage("중복 체크 실패. 다시 시도해주세요.");
       setIdCheckStatus("error");
+      setCheckedLoginId("");
     }
   };
 
@@ -165,21 +183,23 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
                   <input 
                     type="text" 
-                    name="email" 
+                    name="email-username" 
                     className="memberinfo-middle-email-input" 
                     placeholder="이메일 아이디"
                     value={formData.email.split("@")[0] || ""}
                     onChange={(e) => handleEmailChange('id', e.target.value)}
+                    autoComplete="off"
                   />
                   <div className="memberinfo-middle-email-icon">@</div>
                   <input 
                     type="text" 
-                    name="email-detail" 
+                    name="email-domain" 
                     className="memberinfo-middle-email-detail-input" 
                     placeholder="이메일 주소"
                     value={formData.email.split("@")[1] || ""}
                     onChange={(e) => handleEmailChange('domain', e.target.value)}
                     disabled={isEmailDisabled}
+                    autoComplete="off"
                   />
                 </div>
                 <div>

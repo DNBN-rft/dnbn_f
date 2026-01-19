@@ -2,7 +2,7 @@ import { Card } from 'react-bootstrap';
 import './css/subscription.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { apiCall } from '../../utils/apiClient';
+import { apiGet } from '../../utils/apiClient';
 
 const SubscriptionPlans = () => {
 
@@ -12,10 +12,12 @@ const SubscriptionPlans = () => {
   useEffect(() => {
     const fetchPlanInfo = async () => {
       try {
-        const response = await apiCall('/store/planinfo');
+        let userInfo = localStorage.getItem('user');
+        const storeCode = JSON.parse(userInfo).storeCode;
+        const response = await apiGet(`/store/planinfo/${storeCode}`)
         const data = await response.json();
         // 배열인지 확인하고, 배열이 아니면 빈 배열로 설정
-        setPlanData(Array.isArray(data) ? data : []);
+        setPlanData(data);
       } catch (error) {
         console.error('플랜 정보 조회 실패:', error);
         // 에러 발생 시 빈 배열로 설정
@@ -69,14 +71,6 @@ const SubscriptionPlans = () => {
     }
   };
 
-  // planData가 배열인지 확인 후 처리
-  const freePlan = Array.isArray(planData) && planData.length > 0
-    ? (planData.find(plan => plan.planNm === 'Default') || planData[0])
-    : null;
-  
-  const paidPlans = Array.isArray(planData)
-    ? planData.filter(plan => plan.planNm !== 'Default')
-    : [];
 
   // 기능 목록을 통합 및 변환하는 함수
   const transformFunctionList = (functionList) => {
@@ -146,6 +140,7 @@ const SubscriptionPlans = () => {
     
     return sortedFunctions;
   };
+  
 
   return (
     <div className="container-fluid px-4 py-3">
@@ -158,31 +153,52 @@ const SubscriptionPlans = () => {
           </div>
         </div>
         
-        {/* Free Plan - 넓고 낮은 박스 */}
-        {freePlan && (
+      
           <div className="col-12 mb-4">
             <Card className="subscriptionplans-free-card">
               <Card.Body className="subscriptionplans-free-body">
                 <div className="subscriptionplans-free-content">
                   <div className="subscriptionplans-free-left">
-                    <span className="subscriptionplans-free-badge">기본</span>
+                    {planData?.storeMembershipPlanNm === 'Default' && (
+                      <span className="subscriptionplans-free-badge">기본</span>
+                    )}
                     <span className="subscriptionplans-free-title">
-                      {freePlan.planNm === 'Default' ? '무료 플랜' : freePlan.planNm}
+                      {planData?.storeMembershipPlanNm === 'Default' ? '무료 플랜' : planData?.storeMembershipPlanNm}
                     </span>
-                    <span className="subscriptionplans-free-price">무료</span>
+                    <span className="subscriptionplans-free-price">
+                      {!planData?.storeMembershipPlanPrice || planData?.storeMembershipPlanPrice === 0 
+                        ? '무료' 
+                        : `${planData?.storeMembershipPlanPrice.toLocaleString()}원`
+                      }
+                    </span>
                   </div>
                   <div className="subscriptionplans-free-divider"></div>
-                  <div className="subscriptionplans-free-features" style={{ padding: '10px 0' }}>
-                    {transformFunctionList(freePlan.membershipPlanFunctionList || []).filter(func => func.funcNm === '상품 등록').map((planFunction, idx) => (
-                      <div key={idx} className="subscriptionplans-free-feature" style={{ padding: '8px 0' }}>
+                  <div className="subscriptionplans-free-features">
+                      <div className="subscriptionplans-free-feature">
                         <span className="subscriptionplans-free-feature-label">
-                          {planFunction.funcNm}
+                          할인/네고 등록 횟수
                         </span>
                         <span className="subscriptionplans-free-feature-value">
-                          무제한
+                          {planData?.storeMembershipPlanCountLimit === -1 ? '무제한' : planData?.storeMembershipPlanCountLimit + '회'}
                         </span>
                       </div>
-                    ))}
+                      <div className="subscriptionplans-free-feature">
+                        <span className="subscriptionplans-free-feature-label">
+                          할인/네고 등록 시간
+                        </span>
+                        <span className="subscriptionplans-free-feature-value">
+                          {planData?.storeMembershipPlanTimeLimit === -1 ? '무제한' : planData?.storeMembershipPlanTimeLimit + '시간'}
+                        </span>
+                      </div>
+                      <div className="subscriptionplans-free-feature">
+                        <span className="subscriptionplans-free-feature-label">
+                          상품 노출 반경
+                        </span>
+                        <span className="subscriptionplans-free-feature-value">
+                          {planData?.storeMembershipPlanRangeLimit === -1 ? '무제한' : planData?.storeMembershipPlanRangeLimit + 'km'}
+                        </span>
+                      </div>
+                    
                   </div>
                   <button className="subscriptionplans-change-btn" onClick={() => navigate("/store/membership-change")}>
                     변경
@@ -191,21 +207,16 @@ const SubscriptionPlans = () => {
               </Card.Body>
             </Card>
           </div>
-        )}
 
         {/* 예상 다음 결제일 박스 */}
         <div className="col-12 mb-4">
-          <Card style={{ 
-            backgroundColor: '#f8f9fa', 
-            border: '1px solid #dee2e6',
-            borderRadius: '8px'
-          }}>
-            <Card.Body style={{ padding: '20px', textAlign: 'center' }}>
-              <div style={{ fontSize: '16px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>
+          <Card className="subscriptionplans-payment-date-card">
+            <Card.Body className="subscriptionplans-payment-date-body">
+              <div className="subscriptionplans-payment-date-label">
                 예상 다음 결제일
               </div>
-              <div style={{ fontSize: '20px', fontWeight: '600', color: '#212529' }}>
-                {new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString('ko-KR')}
+              <div className="subscriptionplans-payment-date-value">
+                {planData.nextBillingDate ? new Date(planData.nextBillingDate).toLocaleDateString('ko-KR') : ''}
               </div>
             </Card.Body>
           </Card>
@@ -214,9 +225,9 @@ const SubscriptionPlans = () => {
         {/* Paid Plans - 3개씩 정렬 */}
         <div className="col-xl-12">
           <div className="row d-flex align-items-stretch justify-content-center">
-            {paidPlans.map((plan, index) => (
+            {planData?.membershipInfoList?.filter(plan => plan.planNm !== 'Default').map((plan, index) => (
               <div key={index} className="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <Card className="subscriptionplans-card">
+                <Card className={plan?.planNm === planData?.storeMembershipPlanNm ? 'current-subscriptionplans-card' : 'subscriptionplans-card'}>
                   <Card.Body className="subscriptionplans-card-body">
                     <span className="subscriptionplans-icon-wrapper">
                       {getPlanIcon(plan.planNm)}
@@ -227,15 +238,15 @@ const SubscriptionPlans = () => {
                     <div className="subscriptionplans-price-description-box">
                       <p className="subscriptionplans-price">
                         {plan.planPrice === 0 ? '최초 1회 무료 / 2Month' : `${plan.planPrice.toLocaleString()}원`}
-                        {plan.planPrice !== 0 && <span className="subscriptionplans-price-unit">/ Month</span>}
+                        {plan.planPrice !== 0 && <span className="subscriptionplans-price-unit">/ {plan.paymentCycle}</span>}
                       </p>
                       <span className="subscriptionplans-description">
                         {plan.planDescription}
                       </span>
                     </div>
-                    <ul className="subscriptionplans-features-list" style={{ padding: '10px 0' }}>
+                    <ul className="subscriptionplans-features-list">
                       {transformFunctionList(plan.membershipPlanFunctionList || []).map((planFunction, idx) => (
-                        <li key={idx} className="subscriptionplans-feature-item" style={{ padding: '8px 0' }}>
+                        <li key={idx} className="subscriptionplans-feature-item">
                           <div className="subscriptionplans-feature-content">
                             <span className="subscriptionplans-check-icon">
                               <i className="ri-check-double-line"></i>

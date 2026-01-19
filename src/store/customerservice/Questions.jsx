@@ -71,14 +71,6 @@ const Questions = () => {
           <div className="questions-header-subtitle">
             고객님의 문의 내역을 확인하실 수 있습니다
           </div>
-          <div className="questions-header-btnbox">
-            <button
-              className="questions-header-btn"
-              onClick={() => setIsRegisterModalOpen(true)}
-            >
-              문의하기
-            </button>
-          </div>
         </div>
 
         <div className="questions-contentbox">

@@ -30,7 +30,8 @@ const TopNav = () => {
             className="nav-link topnav-alarm-btn" 
             onClick={() => setIsAlarmModalOpen(!isAlarmModalOpen)}
           >
-            <i className={`${hasUnreadAlarms ? 'fa-solid' : 'fa-regular'} fa-alarm-clock fa-fw topnav-i`}></i>
+            <i className="fa-regular fa-alarm-clock fa-fw topnav-i"></i>
+            {hasUnreadAlarms && <span className="topnav-alarm-badge"></span>}
           </button>
           {isAlarmModalOpen && <StoreAlarmModal onClose={() => setIsAlarmModalOpen(false)} />}
         </li>

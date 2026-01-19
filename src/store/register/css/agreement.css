@@ -8,12 +8,17 @@
 
 .register-wrap {
     width: 25%;
-    height: 60%;
+    min-width: 400px;
+    max-width: 600px;
+    min-height: 60%;
+    max-height: 90vh;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 50px auto;
     padding: 40px;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 /*상단 영역*/
@@ -40,11 +45,14 @@
     padding: 0 10px;
     gap: 5px;
     margin: 50px 0;
+    position: relative;
 }
 
 .register-middle-check-div {
     width: 20px;
     height: 20px;
+    position: absolute;
+    left: 10px;
 }
 
 .register-middle-checkbox {
@@ -56,19 +64,53 @@
 .register-middle-text {
     font-size: 16px;
     font-weight: bold;
+    width: 100%;
+    text-align: center;
 }
 
 .register-middle-check {
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .register-middle-checkinfo {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 10px 0;
     font-size: 16px;
+    position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.register-middle-checkinfo.first {
+    border-top: none;
+}
+
+.register-middle-checkinfo.last {
+    border-bottom: none;
+}
+
+.register-checkinfo-checkbox {
+    position: absolute;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.register-middle-checkinfo .register-agreement {
+    flex: 1;
+    text-align: center;
+    width: 100%;
+}
+
+.register-checkinfo-arrow {
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
 }
 
 /*하단 버튼 영역*/

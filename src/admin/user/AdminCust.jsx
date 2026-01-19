@@ -8,7 +8,7 @@ const AdminCust = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -34,7 +34,7 @@ const AdminCust = () => {
     setCustomers(data.content);
     setTotalElements(data.totalElements);
     setTotalPages(data.totalPages);
-    setPage(pageNum);
+    setCurrentPage(pageNum);
   } catch (err) {
     setError(err.message || "고객 목록을 불러오는데 실패했습니다.");
     console.error("고객 목록 조회 오류:", err);
@@ -90,7 +90,7 @@ useEffect(() => {
       await updateCust(selectedCustomer.custCode, modRequest);
       setIsModalOpen(false);
       setSelectedCustomer(null);
-      await fetchCustomers(page);
+      await fetchCustomers(currentPage);
       alert("고객 정보가 수정되었습니다.");
     } catch (err) {
       setError(err.message);
@@ -161,7 +161,7 @@ useEffect(() => {
       setCustomers(results);
       setTotalElements(results.length);
       setTotalPages(1);
-      setPage(0);
+      setCurrentPage(0);
     } catch (err) {
       setError(err.message);
       alert("검색 실패: " + err.message);
@@ -181,17 +181,7 @@ useEffect(() => {
     await fetchCustomers(0);
   };
 
-  const handlePreviousPage = () => {
-    if (page > 0) {
-      fetchCustomers(page - 1);
-    }
-  };
 
-  const handleNextPage = () => {
-    if (page < totalPages - 1) {
-      fetchCustomers(page + 1);
-    }
-  };
 
   return (
     <div className="admincust-container">
@@ -325,7 +315,7 @@ useEffect(() => {
                             onChange={() => handleSelectCustomer(customer.custCode)}
                           />
                         </td>
-                        <td>{page * pageSize + index + 1}</td>
+                        <td>{currentPage * pageSize + index + 1}</td>
                         <td>{customer.custSocialId || "-"}</td>
                         <td>{customer.custCode}</td>
                         <td>{customer.custNm}</td>
@@ -360,29 +350,41 @@ useEffect(() => {
           <div className="admincust-pagination">
             <button
               className="admincust-pagination-btn"
-              onClick={handlePreviousPage}
-              disabled={page === 0}
+              onClick={() => {
+                if (currentPage > 0) {
+                  const newPage = currentPage - 1;
+                  setCurrentPage(newPage);
+                  isSearching ? handleSearch() : fetchCustomers(newPage);
+                }
+              }}
+              disabled={currentPage === 0}
             >
               이전
             </button>
             <div className="admincust-pagination-numbers">
-              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                const pageNum = Math.max(0, page - 2) + i;
-                return (
-                  <button
-                    key={pageNum}
-                    className={`admincust-page-number ${pageNum === page ? "admincust-page-active" : ""}`}
-                    onClick={() => fetchCustomers(pageNum)}
-                  >
-                    {pageNum + 1}
-                  </button>
-                );
-              })}
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  className={`admincust-page-number ${currentPage === index ? "admincust-page-active" : ""}`}
+                  onClick={() => {
+                    setCurrentPage(index);
+                    isSearching ? handleSearch() : fetchCustomers(index);
+                  }}
+                >
+                  {index + 1}
+                </button>
+              ))}
             </div>
             <button
               className="admincust-pagination-btn"
-              onClick={handleNextPage}
-              disabled={page === totalPages - 1}
+              onClick={() => {
+                if (currentPage < totalPages - 1) {
+                  const newPage = currentPage + 1;
+                  setCurrentPage(newPage);
+                  isSearching ? handleSearch() : fetchCustomers(newPage);
+                }
+              }}
+              disabled={currentPage === totalPages - 1}
             >
               다음
             </button>

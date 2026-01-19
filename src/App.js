@@ -24,7 +24,9 @@ import Questions from "./store/customerservice/Questions";
 import MyPage from "./store/dashboard/MyPage";
 import MyPageEdit from "./store/dashboard/MyPageEdit";
 import Sale from "./store/sale/Sale";
+import SaleHistory from "./store/sale/SaleHistory";
 import Negotiation from "./store/order/Negotiation";
+import NegotiationHistory from "./store/order/NegotiationHistory";
 import RegisterStep from "./store/register/RegisterStep";
 import MembershipChange from "./store/dashboard/MembershipChange";
 import AdminLayout from "./admin/layout/Layout";
@@ -110,9 +112,11 @@ function App() {
             <Route path="/store/questions" element={<Questions />} />
             <Route path="/store/notice/:id" element={<NoticeDetail />} />
             <Route path="/store/sale" element={<Sale />} />
+            <Route path="/store/sale/history" element={<SaleHistory />} />
             <Route path="/store/mypage" element={<MyPage />} />
             <Route path="/store/edit" element={<MyPageEdit />} />
             <Route path="/store/negotiation" element={<Negotiation />} />
+            <Route path="/store/negotiation/history" element={<NegotiationHistory />} />
             <Route path="/store/faq" element={<FaqPage />} />
             <Route
               path="/store/membership-change"

@@ -29,8 +29,8 @@ const AdminReview = () => {
 
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // const [startDate, setStartDate] = useState("");
+  // const [endDate, setEndDate] = useState("");
 
   // 필터 상태
   const [filters, setFilters] = useState({
@@ -488,7 +488,7 @@ const AdminReview = () => {
                     isSearchMode ? handleSearchInternal(newPage) : loadReviews(newPage);
                   }
                 }}
-                disabled={currentPage === totalPages - 1}
+                disabled={currentPage === totalPages - 1 || totalPages === 0}
               >
                 다음
               </button>
