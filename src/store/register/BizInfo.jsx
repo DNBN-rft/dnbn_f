@@ -1,7 +1,15 @@
 import "./css/bizinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState, useEffect } from "react";
-import { validateBizInfo } from "../../utils/registerValidation";
+import { 
+  validateBizInfo,
+  restrictBusinessNumber,
+  restrictName,
+  restrictPhone,
+  restrictBusinessType,
+  restrictBusinessName,
+  restrictAccountNumber
+} from "../../utils/registerValidation";
 import { apiGet, apiPost } from "../../utils/apiClient";
 
 const BizInfo = ({ formData, setFormData, next, prev }) => {
@@ -37,9 +45,26 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
   };
 
   const handleInputChange = (field, value) => {
+    // 필드별 입력 제한 적용
+    let restrictedValue = value;
+    
+    if (field === 'bizNo') {
+      restrictedValue = restrictBusinessNumber(value);
+    } else if (field === 'ownerNm') {
+      restrictedValue = restrictName(value);
+    } else if (field === 'ownerTelNo') {
+      restrictedValue = restrictPhone(value);
+    } else if (field === 'bizType') {
+      restrictedValue = restrictBusinessType(value);
+    } else if (field === 'bizNm') {
+      restrictedValue = restrictBusinessName(value);
+    } else if (field === 'storeAccNo') {
+      restrictedValue = restrictAccountNumber(value);
+    }
+    
     setFormData({
       ...formData,
-      [field]: value,
+      [field]: restrictedValue,
     });
 
     // 사업자번호 입력 시 중복 확인 초기화
@@ -150,10 +175,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
               className="bizinfo-middle-input"
               placeholder="숫자만 입력 가능"
               value={formData.bizNo}
-              onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, "");
-                handleInputChange("bizNo", value);
-              }}
+              onChange={(e) => handleInputChange("bizNo", e.target.value)}
             />
             <button
               type="button"
@@ -192,10 +214,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
               className="bizinfo-middle-input"
               placeholder="숫자만 입력 가능"
               value={formData.ownerTelNo}
-              onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, "");
-                handleInputChange("ownerTelNo", value);
-              }}
+              onChange={(e) => handleInputChange("ownerTelNo", e.target.value)}
             />
           </div>
 
@@ -226,10 +245,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
               className="bizinfo-middle-input"
               placeholder="숫자만 입력 가능"
               value={formData.storeAccNo}
-              onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, "");
-                handleInputChange("storeAccNo", value);
-              }}
+              onChange={(e) => handleInputChange("storeAccNo", e.target.value)}
             />
           </div>
 

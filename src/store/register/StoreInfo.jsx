@@ -1,8 +1,13 @@
 import "./css/storeinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState, useMemo, useEffect } from "react";
-import { validateStoreInfo } from "../../utils/registerValidation";
+import { 
+  validateStoreInfo,
+  restrictBusinessName,
+  restrictPhone
+} from "../../utils/registerValidation";
 import DaumPostcode from "react-daum-postcode";
+
 
 const StoreInfo = ({ formData, setFormData, next, prev }) => {
   
@@ -62,10 +67,23 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
   }, [formData.storeOpenTime, timeOptions]);
 
   const handleInputChange = (field, value) => {
+    // 필드별 입력 제한 적용
+    let restrictedValue = value;
+    
+    if (field === 'storeNm') {
+      restrictedValue = restrictBusinessName(value);
+    } else if (field === 'storeTelNo') {
+      restrictedValue = restrictPhone(value);
+    }
+    
     setFormData({
       ...formData,
-      [field]: value
+      [field]: restrictedValue
     });
+  };
+
+  const handleAddressSearch = () => {
+    window.open('/address-search.html', 'addressSearch', 'width=500,height=500,top=50');
   };
 
   const handleOpenDayChange = (day) => {
@@ -149,10 +167,7 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
                 className="storeinfo-middle-tel-input"
                 placeholder="숫자만 입력 가능"
                 value={formData.storeTelNo}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, '');
-                  handleInputChange('storeTelNo', value);
-                }}
+                onChange={(e) => handleInputChange('storeTelNo', e.target.value)}
               />
             </div>
 
@@ -164,9 +179,12 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
                 disabled
                 value={formData.storeZipCode}
               />
-            <div className="storeinfo-middle-addr-search"
-            onClick={() => setSearchOpen(true)}
-            >주소검색</div>
+              <div 
+                className="storeinfo-middle-addr-search"
+                onClick={handleAddressSearch}
+              >
+                주소검색
+              </div>
             </div>
             <div className="storeinfo-middle-subtitle">주소</div>
             <div className="storeinfo-middle-addr-div">
