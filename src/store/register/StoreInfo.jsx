@@ -1,6 +1,6 @@
 import "./css/storeinfo.css";
 import StepButton from "../register/component/StepButton";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { validateStoreInfo } from "../../utils/registerValidation";
 
 const StoreInfo = ({ formData, setFormData, next, prev }) => {
@@ -13,6 +13,49 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
     SAT: false,
     SUN: false
   });
+
+  // formData에서 영업일 복원
+  useEffect(() => {
+    if (formData.storeOpenDate && formData.storeOpenDate.length > 0) {
+      const restoredDays = {
+        MON: false,
+        TUE: false,
+        WED: false,
+        THU: false,
+        FRI: false,
+        SAT: false,
+        SUN: false
+      };
+      
+      formData.storeOpenDate.forEach(item => {
+        if (item.dayNm) {
+          restoredDays[item.dayNm] = true;
+        }
+      });
+      
+      setOpenDays(restoredDays);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+        times.push(time);
+      }
+    }
+    return times;
+  };
+
+  const timeOptions = useMemo(() => generateTimeOptions(), []);
+
+  const closeTimeOptions = useMemo(() => {
+    if (!formData.storeOpenTime) return [];
+    const startIndex = timeOptions.indexOf(formData.storeOpenTime);
+    return timeOptions.slice(startIndex + 1);
+  }, [formData.storeOpenTime, timeOptions]);
 
   const handleInputChange = (field, value) => {
     setFormData({
@@ -56,7 +99,7 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
         <div className="storeinfo-header">
           <div className="storeinfo-header-title">회원가입</div>
           <div className="storeinfo-header-text">2/4</div>
-          <progress value="2" max="4">50%</progress>
+          <progress className="storeinfo-progress" value="2" max="4">50%</progress>
         </div>
 
         <div className="storeinfo-middle-title">가게 정보 입력</div>
@@ -183,21 +226,39 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
             <div className="storeinfo-middle-subtitle">영업시간</div>
             <div className="storeinfo-middle-workhour-div">
                 <div className="storeinfo-middle-work">
-                  <input 
-                    type="time" 
-                    className="storeinfo-middle-workhour-input no-spinner"
-                    value={formData.storeOpenTime}
-                    onChange={(e) => handleInputChange('storeOpenTime', e.target.value)}
-                  />
+                  <select 
+                    className="storeinfo-middle-workhour-input"
+                    value={formData.storeOpenTime || ""}
+                    onChange={(e) => {
+                      const newOpenTime = e.target.value;
+                      const shouldResetCloseTime = formData.storeCloseTime && newOpenTime >= formData.storeCloseTime;
+                      
+                      setFormData({
+                        ...formData,
+                        storeOpenTime: newOpenTime,
+                        storeCloseTime: shouldResetCloseTime ? '' : formData.storeCloseTime
+                      });
+                    }}
+                  >
+                    <option value="">시작 시간</option>
+                    {timeOptions.map(time => (
+                      <option key={time} value={time}>{time}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="storeinfo-middle-work-wave">~</div>
                 <div className="storeinfo-middle-work">
-                  <input 
-                    type="time" 
+                  <select 
                     className="storeinfo-middle-workhour-input"
-                    value={formData.storeCloseTime}
+                    value={formData.storeCloseTime || ""}
                     onChange={(e) => handleInputChange('storeCloseTime', e.target.value)}
-                  />
+                    disabled={!formData.storeOpenTime}
+                  >
+                    <option value="">종료 시간</option>
+                    {closeTimeOptions.map(time => (
+                      <option key={time} value={time}>{time}</option>
+                    ))}
+                  </select>
                 </div>
             </div>
         </div>

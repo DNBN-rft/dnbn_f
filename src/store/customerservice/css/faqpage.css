@@ -199,6 +199,11 @@
     margin-bottom: 5px;
 }
 
+.faqpage-question-btn-group {
+    display: flex;
+    gap: 10px;
+}
+
 .faqpage-question-btn {
     width: 100px;
     height: 30px;

@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import "./css/faqpage.css";
 import { useNavigate } from "react-router-dom";
 import { apiGet } from "../../utils/apiClient";
+import QuestionRegisterModal from "./modal/QuestionRegisterModal";
 
 const FaqPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [openIndex, setOpenIndex] = useState(null);
   const [faqs, setFaqs] = useState([]);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,9 +83,22 @@ const FaqPage = () => {
 
           <div className="faqpage-question">
             <div className="faqpage-question-title">아직 궁금증이 해결되지 않으셨나요?</div>
-            <div className="faqpage-question-btnbox"><button className="faqpage-question-btn" onClick={() => navigate("/store/questions")}>1:1 문의하기</button></div>
+            <div className="faqpage-question-btn-group">
+              <button className="faqpage-question-btn" onClick={() => setIsRegisterModalOpen(true)}>1:1 문의하기</button>
+              <button className="faqpage-question-btn" onClick={() => navigate("/store/questions")}>내 문의 목록</button>
+            </div>
           </div>
         </div>
+
+        {isRegisterModalOpen && (
+          <QuestionRegisterModal
+            onClose={() => setIsRegisterModalOpen(false)}
+            onSuccess={() => {
+              setIsRegisterModalOpen(false);
+              alert("문의가 등록되었습니다. 문의 목록에서 확인하실 수 있습니다.");
+            }}
+          />
+        )}
       </div>
     );
   };

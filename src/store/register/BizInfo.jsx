@@ -49,13 +49,6 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
     }
   };
 
-  const handleBizTypeChange = (type) => {
-    setFormData({
-      ...formData,
-      bizType: type,
-    });
-  };
-
   const handleBizNoCheck = async () => {
     if (!formData.bizNo.trim()) {
       setBizNoCheckMessage("사업자번호를 입력해주세요.");
@@ -84,18 +77,8 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
   };
 
   const handleNext = async () => {
-    if (!formData.bizType) {
-      alert("사업자구분을 선택해주세요.");
-      return;
-    }
-
-    if (bizNoDuplicate !== false) {
-      alert("사업자번호 중복 확인을 해주세요.");
-      return;
-    }
-
-    // 사업자 정보 검증
-    const validation = validateBizInfo(formData);
+    // 사업자 정보 검증 (util 함수 사용)
+    const validation = validateBizInfo(formData, bizNoDuplicate);
     if (!validation.isValid) {
       alert(validation.message);
       return;
@@ -134,46 +117,29 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
         <div className="bizinfo-header">
           <div className="bizinfo-header-title">회원가입</div>
           <div className="bizinfo-header-text">3/4</div>
-          <progress value="3" max="4">
-            75%
-          </progress>
+          <progress className="bizinfo-progress" value="3" max="4">75%</progress>
         </div>
 
         <div className="bizinfo-middle-title">사업자 정보 입력</div>
         <div className="bizinfo-middle-content">
-          <div className="bizinfo-middle-subtitle">사업자구분</div>
-          <div className="bizinfo-middle-radio-div">
-            <label>
-              <input
-                type="radio"
-                className="bizinfo-radio"
-                name="bizType"
-                value="개인"
-                checked={formData.bizType === "개인"}
-                onChange={() => handleBizTypeChange("개인")}
-              />
-              개인사업자
-            </label>
-            <label>
-              <input
-                type="radio"
-                className="bizinfo-radio"
-                name="bizType"
-                value="법인"
-                checked={formData.bizType === "법인"}
-                onChange={() => handleBizTypeChange("법인")}
-              />
-              법인사업자
-            </label>
-          </div>
-
-          <div className="bizinfo-middle-subtitle">사업자명</div>
+          <div className="bizinfo-middle-subtitle">가맹명</div>
           <div>
             <input
               type="text"
               className="bizinfo-middle-input"
               value={formData.bizNm}
               onChange={(e) => handleInputChange("bizNm", e.target.value)}
+            />
+          </div>
+
+          <div className="bizinfo-middle-subtitle">업종/업태</div>
+          <div>
+            <input
+              type="text"
+              className="bizinfo-middle-input"
+              placeholder="예: 음식점/한식"
+              value={formData.bizType || ""}
+              onChange={(e) => handleInputChange("bizType", e.target.value)}
             />
           </div>
 
