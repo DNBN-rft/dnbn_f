@@ -44,7 +44,7 @@ const AdminMain = () => {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [dashboardData]);
 
   if (loading) {
     return <div className="adminmain-container">로딩 중...</div>;
