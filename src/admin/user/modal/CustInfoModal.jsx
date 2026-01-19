@@ -50,7 +50,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
 
   const [authList, setAuthList] = useState([]);
   const [selectedAuthIdx, setSelectedAuthIdx] = useState("");
-  const [selectedAuthNm, setSelectedAuthNm] = useState("");
   const [selectedMenuAuth, setSelectedMenuAuth] = useState([]);
   const [authNmToDisplay, setAuthNmToDisplay] = useState("");
   const [availableMenus, setAvailableMenus] = useState([]);
@@ -94,7 +93,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
 
     if (selectedAuth) {
       setSelectedAuthIdx(selectedIdx);
-      setSelectedAuthNm(selectedAuth.authNm);
       // menuAuth를 배열로 파싱
       const parsedMenus = parseMenuAuth(selectedAuth.menuAuth || "");
       setAvailableMenus(parsedMenus);
@@ -129,7 +127,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
       const foundAuth = authList.find(auth => auth.authNm === customerData.authNm);
       if (foundAuth) {
         setSelectedAuthIdx(foundAuth.authIdx.toString());
-        setSelectedAuthNm(foundAuth.authNm);
         const parsedMenus = parseMenuAuth(customerData?.menuAuth || "");
         setAvailableMenus(parsedMenus);
         setSelectedMenuAuth(parsedMenus);
