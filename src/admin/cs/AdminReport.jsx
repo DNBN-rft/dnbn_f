@@ -41,9 +41,15 @@ const AdminReport = () => {
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
 
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   // 필터 상태
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(getTodayDate());
   const [isAnswered, setIsAnswered] = useState(false);
   const [reportType, setReportType] = useState("");
   const [searchType, setSearchType] = useState("");
@@ -119,7 +125,7 @@ const AdminReport = () => {
   // 필터 초기화
   const handleReset = () => {
     setStartDate("");
-    setEndDate("");
+    setEndDate(getTodayDate());
     setIsAnswered(false);
     setReportType("");
     setSearchType("");

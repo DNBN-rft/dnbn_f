@@ -22,10 +22,16 @@ const AdminProduct = () => {
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
   
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+  
   // 필터 상태
   const [filters, setFilters] = useState({
     startDate: "",
-    endDate: "",
+    endDate: getTodayDate(),
     category: "all-category",
     saleStatus: "all",
     searchType: "all",
@@ -187,7 +193,7 @@ const AdminProduct = () => {
   const handleReset = () => {
     setFilters({
       startDate: "",
-      endDate: "",
+      endDate: getTodayDate(),
       category: "all-category",
       saleStatus: "all",
       searchType: "all",

@@ -16,8 +16,14 @@ const AdminAlarm = () => {
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(getTodayDate());
   const [alarmType, setAlarmType] = useState("all");
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");

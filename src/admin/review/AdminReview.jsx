@@ -32,6 +32,12 @@ const AdminReview = () => {
   // const [startDate, setStartDate] = useState("");
   // const [endDate, setEndDate] = useState("");
 
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   // 필터 상태
   const [filters, setFilters] = useState({
     status: "statusall",
@@ -39,7 +45,7 @@ const AdminReview = () => {
     searchType: "typeall",
     searchKeyword: "",
     startDate: "",
-    endDate: "",
+    endDate: getTodayDate(),
   });
 
   // 리뷰 목록 조회
@@ -210,7 +216,7 @@ const AdminReview = () => {
       searchType: "typeall",
       searchKeyword: "",
       startDate: "",
-      endDate: "",
+      endDate: getTodayDate(),
     });
     setCurrentPage(0);
     loadReviews(0);
