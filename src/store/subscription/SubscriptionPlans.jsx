@@ -8,6 +8,7 @@ const SubscriptionPlans = () => {
 
   const navigate = useNavigate();
   const [planData, setPlanData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlanInfo = async () => {
@@ -22,6 +23,8 @@ const SubscriptionPlans = () => {
         console.error('플랜 정보 조회 실패:', error);
         // 에러 발생 시 빈 배열로 설정
         setPlanData([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -154,6 +157,7 @@ const SubscriptionPlans = () => {
         </div>
         
       
+          {!isLoading && (
           <div className="col-12 mb-4">
             <Card className="subscriptionplans-free-card">
               <Card.Body className="subscriptionplans-free-body">
@@ -179,7 +183,7 @@ const SubscriptionPlans = () => {
                           할인/네고 등록 횟수
                         </span>
                         <span className="subscriptionplans-free-feature-value">
-                          {planData?.storeMembershipPlanCountLimit === -1 ? '무제한' : planData?.storeMembershipPlanCountLimit + '회'}
+                          {planData.storeMembershipPlanCountLimit === -1 ? '무제한' : planData.storeMembershipPlanCountLimit + '회'}
                         </span>
                       </div>
                       <div className="subscriptionplans-free-feature">
@@ -187,7 +191,7 @@ const SubscriptionPlans = () => {
                           할인/네고 등록 시간
                         </span>
                         <span className="subscriptionplans-free-feature-value">
-                          {planData?.storeMembershipPlanTimeLimit === -1 ? '무제한' : planData?.storeMembershipPlanTimeLimit + '시간'}
+                          {planData.storeMembershipPlanTimeLimit === -1 ? '무제한' : planData.storeMembershipPlanTimeLimit + '시간'}
                         </span>
                       </div>
                       <div className="subscriptionplans-free-feature">
@@ -195,7 +199,7 @@ const SubscriptionPlans = () => {
                           상품 노출 반경
                         </span>
                         <span className="subscriptionplans-free-feature-value">
-                          {planData?.storeMembershipPlanRangeLimit === -1 ? '무제한' : planData?.storeMembershipPlanRangeLimit + 'km'}
+                          {planData.storeMembershipPlanRangeLimit === -1 ? '무제한' : planData.storeMembershipPlanRangeLimit + 'km'}
                         </span>
                       </div>
                     
@@ -207,8 +211,10 @@ const SubscriptionPlans = () => {
               </Card.Body>
             </Card>
           </div>
+          )}
 
         {/* 예상 다음 결제일 박스 */}
+        {!isLoading && (
         <div className="col-12 mb-4">
           <Card className="subscriptionplans-payment-date-card">
             <Card.Body className="subscriptionplans-payment-date-body">
@@ -221,6 +227,7 @@ const SubscriptionPlans = () => {
             </Card.Body>
           </Card>
         </div>
+        )}
 
         {/* Paid Plans - 3개씩 정렬 */}
         <div className="col-xl-12">

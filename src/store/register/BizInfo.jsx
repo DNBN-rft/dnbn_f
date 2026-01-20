@@ -19,15 +19,10 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
 
   useEffect(() => {
     fetchBanks();
-    // bankId, storeZipCode, storeAddr 기본값 설정
-    if (!formData.bankId || !formData.storeZipCode || !formData.storeAddr) {
-      setFormData((prev) => ({
-        ...prev,
-        storeZipCode: "16915",
-        storeAddr: "경기도 용인시 기흥구 구성로 184",
-        storeType: "가맹점",
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      storeType: prev.storeType || "가맹점",
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

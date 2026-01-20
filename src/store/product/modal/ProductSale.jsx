@@ -42,6 +42,7 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                 if (response.ok) {
                     const limitTime = await response.json();
                     setSaleTimeout(limitTime);
+                    console.log('Fetched timeout:', limitTime);
                 } else {
                     console.error('Failed to fetch timeout');
                 }
@@ -66,9 +67,11 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
         const year = end.getFullYear();
         const month = String(end.getMonth() + 1).padStart(2, '0');
         const day = String(end.getDate()).padStart(2, '0');
-        const hours = String(end.getHours()).padStart(2, '0');
+        const hours = end.getHours();
         const minutes = String(end.getMinutes()).padStart(2, '0');
-        const formatted = `${year}-${month}-${day} ${hours}:${minutes}`;
+        const period = hours >= 12 ? '오후' : '오전';
+        const displayHours = hours % 12 || 12;
+        const formatted = `${year}-${month}-${day} ${period} ${displayHours}:${minutes}`;
         setEndDateTime(formatted);
     }, [saleTimeout]);
 
@@ -83,9 +86,11 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
             const year = end.getFullYear();
             const month = String(end.getMonth() + 1).padStart(2, '0');
             const day = String(end.getDate()).padStart(2, '0');
-            const hours = String(end.getHours()).padStart(2, '0');
+            const hours = end.getHours();
             const minutes = String(end.getMinutes()).padStart(2, '0');
-            const formatted = `${year}-${month}-${day} ${hours}:${minutes}`;
+            const period = hours >= 12 ? '오후' : '오전';
+            const displayHours = hours % 12 || 12;
+            const formatted = `${year}-${month}-${day} ${period} ${displayHours}:${minutes}`;
             setEndDateTime(formatted);
         }
     };
@@ -239,7 +244,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                             <label>할인 시작 시간</label>
                             <input
                                 type="time"
-                                step="300"
                                 value={startTime}
                                 onChange={(e) => handleDateTimeChange(startDate, e.target.value)}
                             />
