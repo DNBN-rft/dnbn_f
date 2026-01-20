@@ -18,11 +18,17 @@ const AdminAccept = () => {
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
 
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   // 필터 관리
   const [filters, setFilters] = useState({
     bizType: "",
     startDate: "",
-    endDate: "",
+    endDate: getTodayDate(),
     searchType: "all",
     searchKeyword: "",
   });

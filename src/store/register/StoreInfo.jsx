@@ -6,8 +6,13 @@ import {
   restrictBusinessName,
   restrictPhone
 } from "../../utils/registerValidation";
+import DaumPostcode from "react-daum-postcode";
+
 
 const StoreInfo = ({ formData, setFormData, next, prev }) => {
+  
+  const [searchOpen, setSearchOpen] = useState(false);
+  
   const [openDays, setOpenDays] = useState({
     MON: false,
     TUE: false,
@@ -77,6 +82,10 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
     });
   };
 
+  const handleAddressSearch = () => {
+    setSearchOpen(true);
+  };
+
   const handleOpenDayChange = (day) => {
     const newOpenDays = {
       ...openDays,
@@ -105,6 +114,30 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
 
     next();
   };
+
+  // 주소 검색 완료 핸들러
+  const handleComplete = (data) => {
+    let fullAddress = data.address;
+    let extraAddress = '';
+
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== '') {
+        extraAddress += (extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName);
+      }
+      fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
+    }
+
+    setFormData({
+      ...formData,
+      storeZipCode: data.zonecode,
+      storeAddr: fullAddress
+    });
+    setSearchOpen(false);
+  };
+
   return (
     <div className="storeinfo-container">
       <div className="storeinfo-wrap">
@@ -146,7 +179,12 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
                 disabled
                 value={formData.storeZipCode}
               />
-              <div className="storeinfo-middle-addr-search">주소검색</div>
+              <div 
+                className="storeinfo-middle-addr-search"
+                onClick={handleAddressSearch}
+              >
+                주소검색
+              </div>
             </div>
             <div className="storeinfo-middle-subtitle">주소</div>
             <div className="storeinfo-middle-addr-div">
@@ -275,6 +313,28 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
 
         <StepButton next={handleNext} prev={prev}/>
       </div>
+
+      {/* 주소 검색 모달 */}
+      {searchOpen && (
+        <div className="storeinfo-modal-overlay" onClick={() => setSearchOpen(false)}>
+          <div className="storeinfo-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="storeinfo-modal-header">
+              <h3>주소 검색</h3>
+              <button 
+                className="storeinfo-modal-close"
+                onClick={() => setSearchOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+            <DaumPostcode
+              onComplete={handleComplete}
+              autoClose={false}
+              style={{ height: '450px' }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

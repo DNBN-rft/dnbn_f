@@ -18,6 +18,10 @@ const AdminStoreInfo = () => {
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
   
+  // 정렬 상태
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
+  
   // 필터 상태
   const [filters, setFilters] = useState({
     approvalStatus: "",
@@ -122,6 +126,73 @@ const AdminStoreInfo = () => {
     setSelectedStore(null);
   };
 
+  // 정렬 처리 함수
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      // 같은 컬럼이면 방향 토글
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // 다른 컬럼이면 오름차순으로 시작
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  // 정렬된 리스트 반환
+  const getSortedList = () => {
+    if (!sortColumn) return storeList;
+
+    const sorted = [...storeList].sort((a, b) => {
+      let aVal = a[sortColumn];
+      let bVal = b[sortColumn];
+
+      // null/undefined 처리
+      if (aVal == null) aVal = '';
+      if (bVal == null) bVal = '';
+
+      // 구독명 커스텀 정렬
+      if (sortColumn === 'planNm') {
+        const planOrder = ['Default', 'Free', 'Basic', 'Standard', 'Premium', 'Wide Area', 'Special'];
+        const aIndex = planOrder.findIndex(p => p.toLowerCase() === String(aVal).toLowerCase());
+        const bIndex = planOrder.findIndex(p => p.toLowerCase() === String(bVal).toLowerCase());
+        
+        const aOrderIndex = aIndex === -1 ? planOrder.length : aIndex;
+        const bOrderIndex = bIndex === -1 ? planOrder.length : bIndex;
+        
+        if (sortDirection === 'asc') {
+          return aOrderIndex - bOrderIndex;
+        } else {
+          return bOrderIndex - aOrderIndex;
+        }
+      }
+
+      // 승인일 날짜 정렬
+      if (sortColumn === 'approvedDateTime') {
+        const aDate = aVal ? new Date(aVal) : new Date(0);
+        const bDate = bVal ? new Date(bVal) : new Date(0);
+        
+        return sortDirection === 'asc' ? aDate - bDate : bDate - aDate;
+      }
+
+      // 숫자인 경우 숫자로 비교
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+
+      // 문자열로 변환 후 비교
+      aVal = String(aVal).toLowerCase();
+      bVal = String(bVal).toLowerCase();
+
+      if (sortDirection === 'asc') {
+        return aVal.localeCompare(bVal, 'ko-KR');
+      } else {
+        return bVal.localeCompare(aVal, 'ko-KR');
+      }
+    });
+
+    return sorted;
+  };
+
   // const handleUpdate = () => {
   //   // 수정 후 목록 새로고침
   //   if (isSearchMode) {
@@ -152,8 +223,8 @@ const AdminStoreInfo = () => {
               </select>
             </div>
 
-            <div className="adminstoreinfo-filter-group">
-              <label htmlFor="business-type">사업자 구분</label>
+            {/* <div className="adminstoreinfo-filter-group">
+              <label htmlFor="business-type">업태</label>
               <select
                 name="business-type"
                 id="business-type"
@@ -165,7 +236,7 @@ const AdminStoreInfo = () => {
                 <option value="개인">개인</option>
                 <option value="법인">법인</option>
               </select>
-            </div>
+            </div> */}
             
             {
               /*
@@ -228,12 +299,46 @@ const AdminStoreInfo = () => {
             <thead>
               <tr>
                 <th>번호</th>
-                <th>가맹코드</th>
-                <th>가맹점명</th>
+                <th 
+                  className="adminstoreinfo-sortable"
+                  onClick={() => handleSort('storeCode')}
+                >
+                  가맹코드
+                  <span className="adminstoreinfo-sort-icon">
+                    {sortColumn === 'storeCode' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+                  </span>
+                </th>
+                <th 
+                  className="adminstoreinfo-sortable"
+                  onClick={() => handleSort('storeNm')}
+                >
+                  가맹점명
+                  <span className="adminstoreinfo-sort-icon">
+                    {sortColumn === 'storeNm' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+                  </span>
+                </th>
+                <th 
+                  className="adminstoreinfo-sortable"
+                  onClick={() => handleSort('planNm')}
+                >
+                  구독명
+                  <span className="adminstoreinfo-sort-icon">
+                    {sortColumn === 'planNm' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+                  </span>
+                </th>
+                <th>구독가격</th>
                 <th>점주명</th>
                 <th>연락처</th>
-                <th>사업자 구분</th>
-                <th>승인일</th>
+                <th>업태/업종</th>
+                <th 
+                  className="adminstoreinfo-sortable"
+                  onClick={() => handleSort('approvedDateTime')}
+                >
+                  승인일
+                  <span className="adminstoreinfo-sort-icon">
+                    {sortColumn === 'approvedDateTime' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+                  </span>
+                </th>
                 <th>승인 상태</th>
                 <th>관리</th>
               </tr>
@@ -241,22 +346,24 @@ const AdminStoreInfo = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: "center", padding: "20px" }}>
+                  <td colSpan="10" className="adminstoreinfo-empty-cell">
                     로딩 중...
                   </td>
                 </tr>
-              ) : storeList.length === 0 ? (
+              ) : getSortedList().length === 0 ? (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: "center", padding: "20px" }}>
+                  <td colSpan="10" className="adminstoreinfo-empty-cell">
                     가맹점이 없습니다.
                   </td>
                 </tr>
               ) : (
-                storeList.map((store, index) => (
+                getSortedList().map((store, index) => (
                   <tr key={store.storeCode}>
                     <td>{currentPage * pageSize + index + 1}</td>
                     <td>{store.storeCode}</td>
                     <td>{store.storeNm}</td>
+                    <td>{store.planNm}</td>
+                    <td>{store.planPrice}</td>
                     <td>{store.ownerNm}</td>
                     <td>{store.ownerTelNo}</td>
                     <td>{store.bizType}</td>

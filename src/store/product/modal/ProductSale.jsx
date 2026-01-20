@@ -177,7 +177,7 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                     <form className="product-sale-form" onSubmit={handleSubmit}>
                         {/* 할인 방식 */}
                         <div className="product-sale-type">
-                            <label>할인 방식</label>
+                            <label className="product-sale-type-label">할인 방식</label>
                             <div className="product-sale-radio">
                                 <label>
                                     <input

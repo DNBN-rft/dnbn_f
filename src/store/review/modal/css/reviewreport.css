@@ -106,7 +106,7 @@
     transition: background-color 0.2s;
 }
 .review-report-radio input[type="radio"]:checked + span {
-    background-color: #F0F0F0;
+    background-color: rgba(239, 120, 16, 0.2);
     font-weight: 600;
     color: #333;
 }
@@ -125,8 +125,7 @@
 }
 .review-report-textarea:focus {
     outline: none;
-    border-color: rgba(241, 129, 30, 1);
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    border-color: rgb(239, 120, 16);
 }
 .review-report-char-count {
     text-align: right;
@@ -152,12 +151,11 @@
     transition: all 0.2s;
 }
 .review-report-submit-button {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
 }
 .review-report-submit-button:hover:not(:disabled) {
-    background-color: rgba(241, 129, 30, 1);
-    box-shadow: 0 2px 8px rgb(223, 121, 31);
+    background-color: rgba(239, 120, 16, 1);
 }
 .review-report-submit-button:disabled {
     background-color: #ccc;

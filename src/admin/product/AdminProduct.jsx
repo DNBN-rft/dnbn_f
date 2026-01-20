@@ -10,6 +10,8 @@ const AdminProduct = () => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
+  const [isBulkRestrictionModalOpen, setIsBulkRestrictionModalOpen] = useState(false);
+  const [bulkRestrictionReason, setBulkRestrictionReason] = useState("");
   
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(0);
@@ -20,10 +22,16 @@ const AdminProduct = () => {
   // 검색 여부 플래그
   const [isSearchMode, setIsSearchMode] = useState(false);
   
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+  
   // 필터 상태
   const [filters, setFilters] = useState({
     startDate: "",
-    endDate: "",
+    endDate: getTodayDate(),
     category: "all-category",
     saleStatus: "all",
     searchType: "all",
@@ -100,14 +108,17 @@ const AdminProduct = () => {
       return;
     }
     
-    if (!window.confirm(`선택한 ${selectedProducts.length}개의 상품을 제재하시겠습니까?`)) {
-      return;
-    }
+    setIsBulkRestrictionModalOpen(true);
+  };
 
-    const result = await restrictProducts(selectedProducts);
+  // 제재 사유 입력 후 제출
+  const handleBulkRestrictionSubmit = async () => {
+    const result = await restrictProducts(selectedProducts, bulkRestrictionReason);
     if (result.success) {
       alert(result.data);
       setSelectedProducts([]);
+      setBulkRestrictionReason("");
+      setIsBulkRestrictionModalOpen(false);
       if (isSearchMode) {
         handleSearchInternal(currentPage);
       } else {
@@ -116,6 +127,12 @@ const AdminProduct = () => {
     } else {
       alert(result.error);
     }
+  };
+
+  // 제재 모달 취소
+  const handleBulkRestrictionCancel = () => {
+    setBulkRestrictionReason("");
+    setIsBulkRestrictionModalOpen(false);
   };
 
   // 상품 삭제
@@ -176,7 +193,7 @@ const AdminProduct = () => {
   const handleReset = () => {
     setFilters({
       startDate: "",
-      endDate: "",
+      endDate: getTodayDate(),
       category: "all-category",
       saleStatus: "all",
       searchType: "all",
@@ -191,7 +208,7 @@ const AdminProduct = () => {
     if (isSale && isNego) return "할인+네고";
     if (isSale) return "할인";
     if (isNego) return "네고";
-    return "일반";
+    return "할인/네고 없음";
   };
   return (
     <div className="adminproduct-container">
@@ -344,7 +361,7 @@ const AdminProduct = () => {
                     <td>{product.storeNm}</td>
                     <td>{product.productNm}</td>
                     <td>{product.categoryNm}</td>
-                    <td>{product.isAdult ? "성인" : "전체"}</td>
+                    <td>{product.isAdult ? "O" : "X"}</td>
                     <td>{product.productPrice?.toLocaleString()}원</td>
                     <td>{product.productAmount}</td>
                     <td>{product.productState}</td>
@@ -414,6 +431,46 @@ const AdminProduct = () => {
           onClose={handleCloseModal}
           onUpdate={handleUpdateSuccess}
         />
+      )}
+
+      {isBulkRestrictionModalOpen && (
+        <div className="adminproduct-modal-backdrop" onClick={handleBulkRestrictionCancel}>
+          <div className="adminproduct-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="adminproduct-modal-header">
+              <h2>상품 제재</h2>
+            </div>
+            <div className="adminproduct-modal-body">
+              <p className="adminproduct-modal-info">
+                선택한 {selectedProducts.length}개의 상품을 제재하시겠습니까?
+              </p>
+              <div className="adminproduct-form-group">
+                <label htmlFor="bulkRestrictionReason" className="adminproduct-label">제재 사유</label>
+                <textarea
+                  id="bulkRestrictionReason"
+                  className="adminproduct-textarea"
+                  value={bulkRestrictionReason}
+                  onChange={(e) => setBulkRestrictionReason(e.target.value)}
+                  placeholder="제재 사유를 입력해주세요"
+                  rows="4"
+                />
+              </div>
+            </div>
+            <div className="adminproduct-modal-footer">
+              <button 
+                className="adminproduct-btn adminproduct-btn-cancel"
+                onClick={handleBulkRestrictionCancel}
+              >
+                취소
+              </button>
+              <button 
+                className="adminproduct-btn adminproduct-btn-confirm"
+                onClick={handleBulkRestrictionSubmit}
+              >
+                제재하기
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

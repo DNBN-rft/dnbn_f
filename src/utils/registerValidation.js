@@ -193,9 +193,9 @@ export const validateStoreInfo = (formData) => {
   }
 
   // 주소 검증
-  // if (!formData.storeZipCode || !formData.storeAddr) {
-  //   return { isValid: false, message: "주소를 입력해주세요." };
-  // }
+  if (!formData.storeZipCode || !formData.storeAddr) {
+    return { isValid: false, message: "주소를 입력해주세요." };
+  }
 
   if (!formData.storeOpenDate || formData.storeOpenDate.length === 0) {
     return { isValid: false, message: "영업일을 선택해주세요." };

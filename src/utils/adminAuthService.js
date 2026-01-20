@@ -23,6 +23,7 @@ export const adminLogin = async (empId, password) => {
       const admin = {
         empId: data.empId,
         empNm: data.empNm,
+        menuAuth: data.authorities,
       };
       localStorage.setItem("admin", JSON.stringify(admin));
 

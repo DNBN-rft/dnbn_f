@@ -139,8 +139,8 @@
 }
 
 .notices-page.active {
-    background: var(--product-accent, #ff8142);
+    background: var(--product-accent, rgb(239, 120, 16));
     color: #fff;
-    border-color: var(--product-accent, #ff8142);
+    border-color: var(--product-accent, rgb(239, 120, 16));
     font-weight: 600;
 }

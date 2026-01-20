@@ -174,6 +174,7 @@
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e9ecef;
+  table-layout: fixed;
 }
 
 .adminstoreinfo-table thead {
@@ -188,6 +189,50 @@
   color: #495057;
   border-bottom: 2px solid #dee2e6;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adminstoreinfo-table th:nth-child(1) { width: 50px; } /* 번호 */
+.adminstoreinfo-table th:nth-child(2) { width: 90px; } /* 가맹코드 */
+.adminstoreinfo-table th:nth-child(3) { width: 120px; } /* 가맹점명 */
+.adminstoreinfo-table th:nth-child(4) { width: 100px; } /* 구독명 */
+.adminstoreinfo-table th:nth-child(5) { width: 80px; } /* 구독가격 */
+.adminstoreinfo-table th:nth-child(6) { width: 80px; } /* 점주명 */
+.adminstoreinfo-table th:nth-child(7) { width: 100px; } /* 연락처 */
+.adminstoreinfo-table th:nth-child(8) { width: 80px; } /* 업태 */
+.adminstoreinfo-table th:nth-child(9) { width: 120px; } /* 승인일 */
+.adminstoreinfo-table th:nth-child(10) { width: 80px; } /* 승인 상태 */
+.adminstoreinfo-table th:nth-child(11) { width: 60px; } /* 관리 */
+
+.adminstoreinfo-table td {
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: #212529;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 정렬 가능한 컬럼 */
+.adminstoreinfo-sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.adminstoreinfo-sortable:hover {
+  background-color: #eff6ff;
+  color: #4f46e5;
+}
+
+.adminstoreinfo-sort-icon {
+  font-size: 12px;
+  color: #4f46e5;
+  font-weight: bold;
+  margin-left: 4px;
 }
 
 .adminstoreinfo-table tbody tr {
@@ -317,4 +362,10 @@
   .adminstoreinfo-table td {
     padding: 12px 8px;
   }
+}
+
+/* Empty State */
+.adminstoreinfo-empty-cell {
+  text-align: center;
+  padding: 20px;
 }

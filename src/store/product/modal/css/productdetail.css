@@ -74,7 +74,7 @@
 .productdetail-top-content-tag {
     border: none;
     border-radius: 5px;
-    background-color: rgba(241, 129, 30, 0.8);
+    background-color: rgba(239, 120, 16, 0.8);
     color: white;
     font-size: 10px;
     display: flex;
@@ -121,7 +121,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(241, 129, 30, 0.8);
+    background-color: rgba(239, 120, 16, 0.8);
     color: white;
 }
 
@@ -220,9 +220,9 @@
 }
 
 .productdetail-btn-edit:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgba(239, 120, 16, 1);
 }
 
 .productdetail-btn-delete {
@@ -245,9 +245,9 @@
 }
 
 .productdetail-btn-close:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgb(239, 120, 16);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgb(239, 120, 16);
 }
 
 .productmod-input{
