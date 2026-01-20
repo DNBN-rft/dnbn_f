@@ -151,9 +151,9 @@
 }
 
 .withdrawal-confirm-modal-cancel-btn:hover:not(:disabled) {
-  background-color: rgba(241, 129, 30, 1);
+  background-color: rgba(239, 120, 16, 1);
   color: white;
-  border-color: rgba(241, 129, 30, 1);
+  border-color: rgba(239, 120, 16, 1);
 }
 
 .withdrawal-confirm-modal-withdrawal-btn {

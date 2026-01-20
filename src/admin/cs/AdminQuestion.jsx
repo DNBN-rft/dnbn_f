@@ -21,9 +21,15 @@ const AdminQuestion = () => {
 
   const [isSearchMode, setIsSearchMode] = useState(false);
 
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   const [filters, setFilters] = useState({
     startDate: "",
-    endDate: "",
+    endDate: getTodayDate(),
     isAnswered: null,
     isMod: null,
     userType: null,
@@ -139,7 +145,7 @@ const AdminQuestion = () => {
   const handleReset = () => {
     setFilters({
       startDate: "",
-      endDate: "",
+      endDate: getTodayDate(),
       isAnswered: null,
       isMod: null,
       userType: null,

@@ -81,12 +81,12 @@ const Sidebar = () => {
                     <Link className="nav-link" to="/store/product">
                       일반상품
                     </Link>
-                    {hasPermission("STORE_SALE") && (
+                    {hasPermission("STORE_PRODUCT") && (
                       <Link className="nav-link" to="/store/sale">
                         할인
                       </Link>
                     )}
-                    {hasPermission("STORE_NEGOTIATION") && (
+                    {hasPermission("STORE_PRODUCT") && (
                       <Link className="nav-link" to="/store/negotiation">
                         네고
                       </Link>
@@ -97,7 +97,7 @@ const Sidebar = () => {
             )}
 
             {/* 이력 */}
-            {(hasPermission("STORE_SALE") || hasPermission("STORE_NEGOTIATION")) && (
+            {(hasPermission("STORE_LOG")) && (
               <>
                 <div className="sb-sidenav-menu-heading">이력</div>
                 <a
@@ -119,12 +119,12 @@ const Sidebar = () => {
                 <div className={`collapse ${isHistoryOpen ? "show" : ""}`}>
                   <nav className="sb-sidenav-menu-nested nav">
 
-                    {hasPermission("STORE_SALE") && (
+                    {hasPermission("STORE_LOG") && (
                       <Link className="nav-link" to="/store/sale/history">
                         할인
                       </Link>
                     )}
-                    {hasPermission("STORE_NEGOTIATION") && (
+                    {hasPermission("STORE_LOG") && (
                       <Link className="nav-link" to="/store/negotiation/history">
                         네고
                       </Link>
@@ -148,7 +148,7 @@ const Sidebar = () => {
             )}
 
             {/* 매출/주문 관리 */}
-            {(hasPermission("STORE_ORDER") || hasPermission("STORE_STATIC")) && (
+            {(hasPermission("STORE_ORDER")) && (
               <>
                 <div className="sb-sidenav-menu-heading">매출</div>
                 <a
@@ -174,7 +174,7 @@ const Sidebar = () => {
                         매출목록
                       </Link>
                     )}
-                    {hasPermission("STORE_STATIC") && (
+                    {hasPermission("STORE_ORDER") && (
                       <Link className="nav-link" to="/store/orderstatic">
                         매출통계
                       </Link>
@@ -203,7 +203,7 @@ const Sidebar = () => {
             )}
 
             {/* 고객센터 */}
-            {(hasPermission("STORE_NOTICE") || hasPermission("STORE_QUESTION")) && (
+            {(hasPermission("STORE_CS")) && (
               <>
                 <div className="sb-sidenav-menu-heading">고객센터</div>
                 <a
@@ -225,12 +225,12 @@ const Sidebar = () => {
                 </a>
                 <div className={`collapse ${isCustomerServiceOpen ? "show" : ""}`}>
                   <nav className="sb-sidenav-menu-nested nav">
-                    {hasPermission("STORE_NOTICE") && (
+                    {hasPermission("STORE_CS") && (
                       <Link className="nav-link" to="/store/notices">
                         공지사항
                       </Link>
                     )}
-                    {hasPermission("STORE_QUESTION") && (
+                    {hasPermission("STORE_CS") && (
                       <Link className="nav-link" to="/store/faq">
                         문의
                       </Link>

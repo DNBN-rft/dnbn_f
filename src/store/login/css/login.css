@@ -91,12 +91,11 @@ html, body {
 .login-signin {
     margin-top: 15px;
     font-size: 14px;
-    color: #666;
     text-align: center;
 }
 
 .signin-link {
-    color: #007bff;
+    color: rgb(239, 120, 16);
     text-decoration: none;
 }
 
@@ -141,8 +140,7 @@ html, body {
 }
 
 .goLogin {
-    /* background-color: rgba(59, 122, 246, 0.9); */
-    background-color: rgb(241, 129, 25);
+    background-color: rgb(239, 120, 16);
     color: white;
     font-weight: bold;
     border: none;
@@ -153,7 +151,7 @@ html, body {
 }
 
 .goLogin:hover {
-    background-color: rgba(241, 129, 30, 0.9);
+    background-color: rgba(239, 120, 16, 0.9);
     color: white;
 }
 

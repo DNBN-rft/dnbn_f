@@ -16,10 +16,16 @@ const AdminPayout = () => {
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
+  // 오늘 날짜 구하기
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   // 필터 상태
   const [filters, setFilters] = useState({
     startDate: "",
-    endDate: "",
+    endDate: getTodayDate(),
   });
 
   // 정산 대기 목록 조회
@@ -67,7 +73,7 @@ const AdminPayout = () => {
   const handleReset = () => {
     setFilters({
       startDate: "",
-      endDate: "",
+      endDate: getTodayDate(),
     });
     setCurrentPage(0);
     loadPayouts(0);

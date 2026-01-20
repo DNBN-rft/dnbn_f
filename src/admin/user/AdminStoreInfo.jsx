@@ -329,7 +329,7 @@ const AdminStoreInfo = () => {
                 <th>구독가격</th>
                 <th>점주명</th>
                 <th>연락처</th>
-                <th>업태</th>
+                <th>업태/업종</th>
                 <th 
                   className="adminstoreinfo-sortable"
                   onClick={() => handleSort('approvedDateTime')}
@@ -346,13 +346,13 @@ const AdminStoreInfo = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="10" style={{ textAlign: "center", padding: "20px" }}>
+                  <td colSpan="10" className="adminstoreinfo-empty-cell">
                     로딩 중...
                   </td>
                 </tr>
               ) : getSortedList().length === 0 ? (
                 <tr>
-                  <td colSpan="10" style={{ textAlign: "center", padding: "20px" }}>
+                  <td colSpan="10" className="adminstoreinfo-empty-cell">
                     가맹점이 없습니다.
                   </td>
                 </tr>
