@@ -363,3 +363,9 @@
     padding: 12px 8px;
   }
 }
+
+/* Empty State */
+.adminstoreinfo-empty-cell {
+  text-align: center;
+  padding: 20px;
+}
