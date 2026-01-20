@@ -23,8 +23,6 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
     if (!formData.bankId || !formData.storeZipCode || !formData.storeAddr) {
       setFormData((prev) => ({
         ...prev,
-        storeZipCode: "16915",
-        storeAddr: "경기도 용인시 기흥구 구성로 184",
         storeType: "가맹점",
       }));
     }

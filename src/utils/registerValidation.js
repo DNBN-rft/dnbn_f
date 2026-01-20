@@ -35,15 +35,15 @@ export const restrictBusinessNumber = (value) => {
 };
 
 export const restrictName = (value) => {
-  return value.replace(/[^가-힣a-zA-Z\s]/g, '');
+  return value.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z\s]/g, '');
 };
 
 export const restrictBusinessName = (value) => {
-  return value.replace(/[^가-힣a-zA-Z0-9\s]/g, '');
+  return value.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\s]/g, '');
 };
 
 export const restrictBusinessType = (value) => {
-  return value.replace(/[^가-힣a-zA-Z0-9()\s/\-,]/g, '');
+  return value.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9()\s/\-,]/g, '');
 };
 
 // 기존 검증 함수들
@@ -121,8 +121,8 @@ export const validateMemberInfo = (formData, idCheckStatus, passwordConfirm) => 
     return { isValid: false, message: "이메일을 입력해주세요." };
   }
 
-  if (!formData.email.includes("@")) {
-    return { isValid: false, message: "유효한 이메일을 입력해주세요." };
+  if (!emailRegex.test(formData.email)) {
+    return { isValid: false, message: "유효한 이메일 형식이 아닙니다. (예: user@example.com)" };
   }
 
   return { isValid: true, message: "" };
@@ -193,9 +193,9 @@ export const validateStoreInfo = (formData) => {
   }
 
   // 주소 검증
-  // if (!formData.storeZipCode || !formData.storeAddr) {
-  //   return { isValid: false, message: "주소를 입력해주세요." };
-  // }
+  if (!formData.storeZipCode || !formData.storeAddr) {
+    return { isValid: false, message: "주소를 입력해주세요." };
+  }
 
   if (!formData.storeOpenDate || formData.storeOpenDate.length === 0) {
     return { isValid: false, message: "영업일을 선택해주세요." };
