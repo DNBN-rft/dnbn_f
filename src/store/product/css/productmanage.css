@@ -1,6 +1,6 @@
 :root {
-  --product-accent: rgb(241, 129, 25);
-  --product-accent-dark: rgba(241, 129, 25, 0.9);
+  --product-accent: rgb(239, 120, 16);
+  --product-accent-dark: rgba(239, 120, 16, 0.9);
   --product-muted: #f8f8f8;
   --product-border: #e9e9e9;
 }
@@ -141,9 +141,9 @@
 }
 
 .product-btn:hover {
-  background: rgba(241, 129, 30, 1);
+  background: rgb(239, 120, 16);
   color: white;
-  border-color: rgba(241, 129, 30, 1);
+  border-color: rgb(239, 120, 16);
 }
 
 .productmanage-search-btn {
@@ -241,8 +241,8 @@
 
 .product-badge.sale {
   background-color: #fff3e0;
-  color: #f18119;
-  border: 1px solid #f18119;
+  color: rgb(239, 120, 16);
+  border: 1px solid rgb(239, 120, 16);
 }
 
 .product-badge.nego {
@@ -271,9 +271,9 @@
 }
 
 .product-sale-add-btn:hover {
-  background: rgba(241, 129, 30, 1);
+  background: rgb(239, 120, 16);
   color: white;
-  border-color: rgba(241, 129, 30, 1);
+  border-color: rgb(239, 120, 16);
 }
 
 .product-count {

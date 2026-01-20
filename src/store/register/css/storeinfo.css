@@ -53,13 +53,13 @@
 }
 
 .storeinfo-progress::-webkit-progress-value {
-  background: rgb(241, 129, 25);
+  background: rgb(239, 120, 16);
   height: 5px;
 }
 
 /* Firefox */
 .storeinfo-progress::-moz-progress-bar {
-  background: rgb(241, 129, 25);
+  background: rgb(239, 120, 16);
   height: 5px;
 }
 
@@ -113,7 +113,7 @@
 .storeinfo-middle-addr-search {
   width: 30%;
   height: 40px;
-  background-color: rgb(241, 129, 25);
+  background-color: rgb(239, 120, 16);
   color: white;
   border: none;
   border-radius: 0 5px 5px 0;

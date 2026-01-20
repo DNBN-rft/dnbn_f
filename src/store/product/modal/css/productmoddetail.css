@@ -41,7 +41,7 @@
     gap: 20px;
 }
 
-.productdetail-top-content-info{
+.productdetail-top-content-info {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -62,7 +62,7 @@
 .productdetail-top-content-tag {
     border: none;
     border-radius: 5px;
-    background-color: rgba(241, 129, 30, 0.8);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
     font-size: 10px;
     display: flex;
@@ -108,7 +108,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(241, 129, 30, 0.8);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
 }
 
@@ -159,8 +159,8 @@
     flex-direction: row;
 }
 
-.productdetail-bottom-content-writer > div,
-.productdetail-bottom-content-editor > div {
+.productdetail-bottom-content-writer>div,
+.productdetail-bottom-content-editor>div {
     width: 25%;
     height: 40px;
     display: flex;
@@ -168,17 +168,17 @@
     align-items: center;
 }
 
-.productdetail-bottom-content-writer > div {
+.productdetail-bottom-content-writer>div {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.productdetail-bottom-content-writer > div:nth-child(odd),
-.productdetail-bottom-content-editor > div:nth-child(odd) {
+.productdetail-bottom-content-writer>div:nth-child(odd),
+.productdetail-bottom-content-editor>div:nth-child(odd) {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-.productdetail-bottom-content-writer > div:nth-child(even),
-.productdetail-bottom-content-editor > div:nth-child(even) {
+.productdetail-bottom-content-writer>div:nth-child(even),
+.productdetail-bottom-content-editor>div:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.02);
 }
 
@@ -207,9 +207,9 @@
 }
 
 .productdetail-btn-edit:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgba(239, 120, 16, 1);
 }
 
 .productdetail-btn-delete {
@@ -225,6 +225,7 @@
 }
 
 .productdetail-btn-close {
+    font-weight: bold;
     border: 1px solid #ccc;
     background-color: white;
     color: black;
@@ -232,97 +233,97 @@
 }
 
 .productdetail-btn-close:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgba(239, 120, 16, 1);
 }
 
 /* 기존 CSS에 추가할 이미지 그리드 스타일 */
 
 .productmod-image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 
 .productmod-image-item {
-  position: relative;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: white;
-  transition: transform 0.2s;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    transition: transform 0.2s;
 }
 
 .productmod-image-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .productmod-image-preview {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  display: block;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
 }
 
 .productmod-image-delete {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: rgba(255, 0, 0, 0.8);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
 }
 
 .productmod-image-delete:hover {
-  background-color: rgba(255, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 1);
 }
 
 .productmod-image-name {
-  padding: 8px;
-  font-size: 12px;
-  color: #666;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: #f5f5f5;
+    padding: 8px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: #f5f5f5;
 }
 
 .productadd-detail-info-content-body {
-  margin: 20px 0;
+    margin: 20px 0;
 }
 
 .productadd-content-title {
-  font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
 }
 
 .productadd-file {
-  width: 100%;
-  padding: 10px;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.2s;
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
 }
 
 .productadd-file:hover {
-  border-color: #888;
+    border-color: #888;
 }

@@ -77,7 +77,7 @@
 .emp-reg-left input:focus,
 .emp-reg-right input:focus,
 .emp-reg-status:focus{
-    border-color: rgba(255, 122, 0, 0.6);
+    border-color: rgba(239, 120, 16, 0.6);
     outline: none;
 }
 
@@ -101,7 +101,7 @@
 .emp-reg-auth-select {
     background: none;
     border: none;
-    color: #007bff;
+    color: rgb(239, 120, 16);
     font-weight: 600;
     cursor: pointer;
     padding: 0;
@@ -166,9 +166,9 @@
 }
 
 .emp-reg-cancel-button:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgb(239, 120, 16);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgb(239, 120, 16);
 }
 
 .emp-reg-submit-button {
@@ -183,9 +183,9 @@
 }
 
 .emp-reg-submit-button:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgba(239, 120, 16, 1);
 }
 
 .emp-reg-submit-button-not {

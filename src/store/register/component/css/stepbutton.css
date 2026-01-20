@@ -19,7 +19,7 @@
 
 .step-prev-btn:hover,
 .step-next-btn:hover {
-  background-color: rgba(241, 129, 30, 1);
+  background-color: rgb(239, 120, 16);
   color: white;
-  border-color: rgba(241, 129, 30, 1);
+  border-color: rgb(239, 120, 16);
 }

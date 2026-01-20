@@ -63,11 +63,9 @@
 }
 
 .question-register-type select:focus {
-    border-color: rgba(255, 122, 0, 0.8);
+    border-color:rgba(239, 120, 16, 0.8);
     border-radius: 6px 6px 0 0;
 }
-
-
 
 /* 제목 */
 .question-register-title {
@@ -91,7 +89,7 @@
 }
 
 .question-register-title-input:focus {
-    border-color: rgba(255, 122, 0, 0.6);
+    border-color: rgba(239, 120, 16, 0.6);
 }
 
 /* 내용 */
@@ -118,7 +116,7 @@
 }
 
 .question-register-content-input:focus {
-    border-color: rgba(255, 122, 0, 0.8);
+    border-color: rgba(239, 120, 16, 0.6);
 }
 
 .question-register-img-box {
@@ -165,9 +163,9 @@
 }
 
 .question-register-cancel-button:hover {
-  background-color: rgba(241, 129, 30, 1);
+  background-color: rgba(239, 120, 16, 1);
   color: white;
-  border-color: rgba(241, 129, 30, 1);
+  border-color: rgba(239, 120, 16, 1);
 }
 
 .question-register-submit-button {

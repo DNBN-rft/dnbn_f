@@ -54,13 +54,13 @@
 }
 
 .fileinfo-progress::-webkit-progress-value {
-  background: rgb(241, 129, 25);
+  background: rgb(239, 120, 16);
   height: 5px;
 }
 
 /* Firefox */
 .fileinfo-progress::-moz-progress-bar {
-  background: rgb(241, 129, 25);
+  background: rgb(239, 120, 16);
   height: 5px;
 }
 

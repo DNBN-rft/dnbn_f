@@ -92,7 +92,7 @@
 }
 
 .product-sale-inputs input:focus {
-    border-color: rgba(255, 122, 0, 0.6);
+    border-color: rgba(239, 120, 16, 0.6);
     outline: none;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .product-sale-date input:focus {
-    border-color: rgba(255, 122, 0, 0.6);
+    border-color: rgba(239, 120, 16, 0.6);
     outline: none;
 }
 
@@ -150,6 +150,7 @@
 
 /* 등록 버튼 */
 .product-sale-submit {
+    font-weight: bold;
     background-color: white;
     color: black;
     border: 1px solid #ccc;
@@ -161,13 +162,14 @@
 }
 
 .product-sale-submit:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgba(239, 120, 16, 1);
 }
 
 /* 취소 버튼 */
 .product-sale-cancel {
+    font-weight: bold;
     background-color: white;
     color: black;
     border: 1px solid #ccc;
@@ -179,9 +181,9 @@
 }
 
 .product-sale-cancel:hover {
-    background-color: rgba(241, 129, 30, 1);
+    background-color: rgba(239, 120, 16, 1);
     color: white;
-    border-color: rgba(241, 129, 30, 1);
+    border-color: rgba(239, 120, 16, 1);
 }
 
 /* 할인 입력 행 전체 (가로 정렬) */
@@ -202,6 +204,10 @@
   margin-bottom: 5px;
 }
 
+.product-sale-type-label{
+    font-weight: bold;
+}
+
 .product-sale-field input {
   padding: 8px;
   border: 1px solid #ccc;
@@ -209,7 +215,7 @@
 }
 
 .product-sale-field input:focus {
-  border-color: rgba(255, 122, 0, 0.6);
+  border-color: rgba(239, 120, 16, 0.6);
   outline: none;
 }
 
