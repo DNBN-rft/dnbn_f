@@ -41,12 +41,10 @@ const ProductManage = () => {
       const data = await response.json();
       
       if (response.ok) {
-        // 페이지네이션 정보 업데이트
         setCurrentPage(data.number);
         setTotalPages(data.totalPages);
         setTotalElements(data.totalElements);
         setProducts(data.content);
-        console.log("상품 조회 성공:", data);
       } else {
         setError("상품 조회에 실패했습니다.");
       }

@@ -76,9 +76,9 @@ const Sale = () => {
                     <div className="sale-sent">
                         <div className="sale-sent-box"></div>
                         <div className="sale-sent-contents">
-                            <div className="sale-sent-title">할인 완료</div>
+                            <div className="sale-sent-title">할인 대기 중</div>
                             <div className="sale-sent-number">
-                                {(Array.isArray(sales) ? sales : []).filter(s => s.saleStatus === "할인 완료").length}
+                                {(Array.isArray(sales) ? sales : []).filter(s => s.saleStatus === "할인 전").length}
                             </div>
                         </div>
                     </div>
@@ -117,7 +117,6 @@ const Sale = () => {
                     <button className="sale-search-btn" onClick={() => loadSales(0)}>새로고침</button>
                 </div>
 
-                {/* 테이블 */}
                 <table className="sale-table">
                     <thead>
                         <tr>
