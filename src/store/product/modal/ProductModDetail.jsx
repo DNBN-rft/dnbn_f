@@ -282,7 +282,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
               <img
                 src={allImages[0].preview}
                 alt={product.productNm}
-                className="productdetail-top-content-img"
+                className="productmoddetail-top-content-img"
               />
             ) : (
               <div>이미지 없음</div>

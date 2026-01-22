@@ -381,10 +381,10 @@ const ProductManage = () => {
                     <div className="product-thumb">
                       {p.imgs && p.imgs.length > 0 ? (
                         <img 
-                          src={`http://localhost:8080${p.imgs[0].fileUrl}`} 
+                          src={p.imgs[0].fileUrl} 
                           alt={p.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
+                        />  
                       ) : null}
                     </div>
                     <div>
