@@ -4,8 +4,8 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://dnbn.onrender.com
 // 토큰 갱신 중인지 추적
 let isRefreshing = false;
 let failedQueue = [];
-// 주기적 토큰 갱신 (Access Token 만료 전 자동 갱신)
 let refreshInterval = null;
+
 // 현재 로그인 타입 확인 (store 또는 admin)
 const getLoginType = () => {
   const user = localStorage.getItem("user");
@@ -14,50 +14,28 @@ const getLoginType = () => {
   if (user) return "store";
   return null;
 };
+
 // 로그인 타입에 따른 refresh endpoint 반환
 const getRefreshEndpoint = () => {
   const loginType = getLoginType();
   if (loginType === "admin") return "/admin/refresh";
   return "/store/refresh";
 };
+
 // 로그인 타입에 따른 로그인 페이지 반환
 const getLoginPage = () => {
   const loginType = getLoginType();
   if (loginType === "admin") return "/admin/login";
   return "/store/login";
 };
-// Access Token 만료 전 자동 갱신 (10분마다 체크)
-const startTokenRefresh = () => {
-  if (refreshInterval) return; // 이미 실행 중이면 중복 실행 방지
-  refreshInterval = setInterval(async () => {
-    try {
-      const refreshEndpoint = getRefreshEndpoint();
-      const response = await fetch(`${API_BASE_URL}${refreshEndpoint}`, {
-        method: "POST",
-        credentials: "include",
-      });
-      if (response.ok) {
-        console.log("토큰 갱신 성공");
-      } else {
-        // Refresh Token도 만료되면 로그인 페이지로
-        console.error("토큰 갱신 실패 - 로그아웃 처리");
-        stopTokenRefresh();
-        localStorage.clear();
-        window.location.href = getLoginPage();
-      }
-    } catch (error) {
-      console.error("주기적 토큰 갱신 중 오류:", error);
-      // 네트워크 오류 등으로 실패한 경우 다음 주기에 재시도
-    }
-  }, 600000); // 10분마다 갱신 (access token 15분, refresh token 7일)
+
+// 토큰 만료 시 공통 처리
+const handleTokenExpired = () => {
+  localStorage.clear();
+  window.location.href = getLoginPage();
 };
-// 토큰 갱신 중지
-const stopTokenRefresh = () => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval);
-    refreshInterval = null;
-  }
-};
+
+// 대기 중인 요청 처리
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -69,6 +47,71 @@ const processQueue = (error, token = null) => {
   isRefreshing = false;
   failedQueue = [];
 };
+
+// 401 응답 처리 (공통)
+const handle401Response = async (url, options) => {
+  if (!isRefreshing) {
+    isRefreshing = true;
+    try {
+      const refreshEndpoint = getRefreshEndpoint();
+      const refreshResponse = await fetch(`${API_BASE_URL}${refreshEndpoint}`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (refreshResponse.ok) {
+        processQueue(null);
+        return fetch(url, options);
+      } else {
+        processQueue(new Error("Token refresh failed"));
+        isRefreshing = false;
+        handleTokenExpired();
+        return refreshResponse;
+      }
+    } catch (error) {
+      processQueue(error);
+      isRefreshing = false;
+      handleTokenExpired();
+      throw error;
+    }
+  } else {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    }).then(() => fetch(url, options));
+  }
+};
+
+// Access Token 만료 전 자동 갱신 (10분마다 체크)
+const startTokenRefresh = () => {
+  if (refreshInterval) return;
+  refreshInterval = setInterval(async () => {
+    try {
+      const refreshEndpoint = getRefreshEndpoint();
+      const response = await fetch(`${API_BASE_URL}${refreshEndpoint}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        console.log("토큰 갱신 성공");
+      } else {
+        console.error("토큰 갱신 실패 - 로그아웃 처리");
+        stopTokenRefresh();
+        handleTokenExpired();
+      }
+    } catch (error) {
+      console.error("주기적 토큰 갱신 중 오류:", error);
+    }
+  }, 600000); // 10분마다 갱신 (access token 15분, refresh token 7일)
+};
+
+// 토큰 갱신 중지
+const stopTokenRefresh = () => {
+  if (refreshInterval) {
+    clearInterval(refreshInterval);
+    refreshInterval = null;
+  }
+};
+
 /**
  * API 요청 래퍼 함수
  * Access Token은 쿠키에서 자동 포함
@@ -81,47 +124,17 @@ export const apiCall = async (endpoint, options = {}) => {
       "Content-Type": "application/json",
       ...options.headers,
     },
-    credentials: "include", // Access Token 쿠키 자동 포함
+    credentials: "include",
     ...options,
   };
+
   try {
     let response = await fetch(url, defaultOptions);
-    // Access Token 만료 (401) 응답 처리
+
     if (response.status === 401) {
-      if (!isRefreshing) {
-        isRefreshing = true;
-        try {
-          // Refresh Token은 백엔드 DB에서 관리
-          // 로그인 타입에 따라 적절한 refresh endpoint 호출
-          const refreshEndpoint = getRefreshEndpoint();
-          const refreshResponse = await fetch(`${API_BASE_URL}${refreshEndpoint}`, {
-            method: "POST",
-            credentials: "include", // 쿠키의 refreshToken 포함
-          });
-          if (refreshResponse.ok) {
-            // 토큰 갱신 성공 - 원래 요청 재시도
-            processQueue(null);
-            response = await fetch(url, defaultOptions);
-            return response;
-          } else {
-            // Refresh Token도 만료됨 - 로그인 페이지로 리다이렉트
-            processQueue(new Error("Token refresh failed"));
-            window.location.href = getLoginPage();
-            return response;
-          }
-        } catch (error) {
-          processQueue(error);
-          window.location.href = "/store/login";
-          console.error("토큰 갱신 중 오류 발생:", error);
-          throw error;
-        }
-      } else {
-        // 이미 갱신 중인 경우 대기
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => fetch(url, defaultOptions));
-      }
+      response = await handle401Response(url, defaultOptions);
     }
+
     return response;
   } catch (error) {
     console.error("API 요청 실패:", error);
@@ -166,123 +179,49 @@ export const apiDelete = async (endpoint, options = {}) => {
     method: "DELETE",
   });
 };
+
 /**
- * FormData를 사용한 POST 요청 (파일 업로드 등)
+ * FormData를 사용한 API 요청 (파일 업로드 등)
  */
-export const apiPostFormData = async (endpoint, formData, options = {}) => {
+const apiFormDataCall = async (endpoint, formData, method, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
+
   try {
     let response = await fetch(url, {
-      method: "POST",
-      credentials: "include", // 쿠키 자동 포함
+      method,
+      credentials: "include",
       body: formData,
       ...options,
     });
-    // Access Token 만료 처리
+
     if (response.status === 401) {
-      if (!isRefreshing) {
-        isRefreshing = true;
-        try {
-          const refreshResponse = await fetch(`${API_BASE_URL}/store/refresh`, {
-            method: "POST",
-            credentials: "include",
-          });
-          if (refreshResponse.ok) {
-            processQueue(null);
-            response = await fetch(url, {
-              method: "POST",
-              credentials: "include",
-              body: formData,
-            });
-            return response;
-          } else {
-            processQueue(new Error("Token refresh failed"));
-            window.location.href = "/store/login";
-            localStorage.clear();
-            return response;
-          }
-        } catch (error) {
-          processQueue(error);
-          window.location.href = "/store/login";
-          localStorage.clear();
-          throw error;
-        }
-      } else {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() =>
-          fetch(url, {
-            method: "POST",
-            credentials: "include",
-            body: formData,
-          })
-        );
-      }
+      response = await handle401Response(url, {
+        method,
+        credentials: "include",
+        body: formData,
+        ...options,
+      });
     }
+
     return response;
   } catch (error) {
     console.error("FormData API 요청 실패:", error);
     throw error;
   }
 };
+
+/**
+ * FormData를 사용한 POST 요청 (파일 업로드 등)
+ */
+export const apiPostFormData = async (endpoint, formData, options = {}) => {
+  return apiFormDataCall(endpoint, formData, "POST", options);
+};
+
 /**
  * FormData를 사용한 PUT 요청 (파일 업로드 등)
  */
 export const apiPutFormData = async (endpoint, formData, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
-  try {
-    let response = await fetch(url, {
-      method: "PUT",
-      credentials: "include", // 쿠키 자동 포함
-      body: formData,
-      ...options,
-    });
-    // Access Token 만료 처리
-    if (response.status === 401) {
-      if (!isRefreshing) {
-        isRefreshing = true;
-        try {
-          const refreshResponse = await fetch(`${API_BASE_URL}/admin/refresh`, {
-            method: "POST",
-            credentials: "include",
-          });
-          if (refreshResponse.ok) {
-            processQueue(null);
-            response = await fetch(url, {
-              method: "PUT",
-              credentials: "include",
-              body: formData,
-            });
-            return response;
-          } else {
-            processQueue(new Error("Token refresh failed"));
-            window.location.href = "/store/login";
-            localStorage.clear();
-            return response;
-          }
-        } catch (error) {
-          processQueue(error);
-          window.location.href = "/store/login";
-          localStorage.clear();
-          throw error;
-        }
-      } else {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() =>
-          fetch(url, {
-            method: "PUT",
-            credentials: "include",
-            body: formData,
-          })
-        );
-      }
-    }
-    return response;
-  } catch (error) {
-    console.error("FormData API 요청 실패:", error);
-    throw error;
-  }
+  return apiFormDataCall(endpoint, formData, "PUT", options);
 };
 const apiClient = {
   apiCall,
