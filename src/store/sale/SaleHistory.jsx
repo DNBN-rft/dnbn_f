@@ -19,7 +19,7 @@ const SaleHistory = () => {
     const loadSales = async (page = 0) => {
         setLoading(true);
         try {
-            const response = await apiGet(`/store/sale/history?page=${page}&size=${pageSize}`);
+            const response = await apiGet(`/store/sale/log-list?page=${page}&size=${pageSize}`);
             if (response.ok) {
                 const data = await response.json();
                 setSales(data.content || []);
@@ -45,13 +45,11 @@ const SaleHistory = () => {
 
     return (
         <div className="sale-wrap">
-            {/* 헤더 */}
             <div className="sale-header">
                 <div className="sale-header-title">할인 이력</div>
             </div>
 
             <div className="sale-contents">
-                {/* 대시보드 */}
                 <div className="sale-dashboard">
                     <div className="sale-sent">
                         <div className="sale-sent-box"></div>
@@ -95,7 +93,6 @@ const SaleHistory = () => {
                     <button className="sale-search-btn" onClick={() => loadSales(0)}>새로고침</button>
                 </div>
 
-                {/* 테이블 */}
                 <table className="sale-table">
                     <thead>
                         <tr>
@@ -150,7 +147,7 @@ const SaleHistory = () => {
                                     <td className="sale-request-date">{formatDateTime(sale.startDateTime)}</td>
                                     <td className="sale-sent-date">{formatDateTime(sale.endDateTime)}</td>
                                     <td className="sale-status">
-                                        <p className="sale-status-text">{sale.saleStatus}</p>
+                                        <p className="sale-status-text">{sale.saleLogStatus}</p>
                                     </td>
                                 </tr>
                             ))

@@ -1,11 +1,11 @@
 :root {
-  --negotiation-accent: rgb(239, 120, 16);
-  --negotiation-accent-dark: rgba(239, 120, 16, 0.9);
-  --negotiation-muted: #f8f8f8;
-  --negotiation-border: #e9e9e9;
+  --negotiationHistory-accent: rgb(239, 120, 16);
+  --negotiationHistory-accent-dark: rgba(239, 120, 16, 0.9);
+  --negotiationHistory-muted: #f8f8f8;
+  --negotiationHistory-border: #e9e9e9;
 }
 
-.negotiation-container {
+.negotiationHistory-container {
   background: #fff;
   padding-bottom: 30px;
   width: 90%;
@@ -14,7 +14,7 @@
 }
 
 /*헤더영역*/
-.negotiation-header {
+.negotiationHistory-header {
     width: 100%;
     height: 50px;
     display: flex;
@@ -22,21 +22,21 @@
     margin-bottom: 10px;
 }
 
-.negotiation-header-title {
+.negotiationHistory-header-title {
     font-size: 20px;
     font-weight: bold;
     line-height: 50px;
 }
 
 /* 탭 스타일 */
-.negotiation-tabs {
+.negotiationHistory-tabs {
   display: flex;
   gap: 0;
   margin-bottom: 20px;
-  border-bottom: 2px solid var(--negotiation-border);
+  border-bottom: 2px solid var(--negotiationHistory-border);
 }
 
-.negotiation-tab {
+.negotiationHistory-tab {
   padding: 12px 24px;
   background: none;
   border: none;
@@ -50,47 +50,47 @@
   bottom: -2px;
 }
 
-.negotiation-tab:hover {
-  color: var(--negotiation-accent);
+.negotiationHistory-tab:hover {
+  color: var(--negotiationHistory-accent);
 }
 
-.negotiation-tab.active {
-  color: var(--negotiation-accent);
-  border-bottom-color: var(--negotiation-accent);
+.negotiationHistory-tab.active {
+  color: var(--negotiationHistory-accent);
+  border-bottom-color: var(--negotiationHistory-accent);
   font-weight: 600;
 }
 
-.negotiation-tab-content {
+.negotiationHistory-tab-content {
   width: 100%;
 }
 
-.negotiation-filter {
-  border: 1px solid var(--negotiation-border);
+.negotiationHistory-filter {
+  border: 1px solid var(--negotiationHistory-border);
   padding: 18px 20px;
   border-radius: 8px;
   margin-bottom: 16px;
   background: #fff;
 }
 
-.negotiation-date-range {
+.negotiationHistory-date-range {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.negotiation-date-range-inner {
+.negotiationHistory-date-range-inner {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.negotiation-date-range label {
+.negotiationHistory-date-range label {
   font-weight: 600;
   min-width: 80px;
   color: #333;
 }
 
-.negotiation-date-range input {
+.negotiationHistory-date-range input {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -100,12 +100,12 @@
   text-align: center;
 }
 
-.negotiation-date-sep {
+.negotiationHistory-date-sep {
   margin: 0 4px;
   color: #666;
 }
 
-.negotiation-search {
+.negotiationHistory-search {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -113,7 +113,7 @@
   margin-left: 50px;
 }
 
-.negotiation-search-input {
+.negotiationHistory-search-input {
   flex: 1;
   max-width: 500px;
   padding: 8px 12px;
@@ -123,7 +123,7 @@
   text-align: left !important;
 }
 
-.negotiation-search select {
+.negotiationHistory-search select {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -133,7 +133,7 @@
   cursor: pointer;
 }
 
-.negotiation-btn {
+.negotiationHistory-btn {
   padding: 8px 16px;
   border-radius: 5px;
   border: 1px solid #ddd;
@@ -145,80 +145,80 @@
   transition: all 0.2s ease;
 }
 
-.negotiation-btn:hover {
+.negotiationHistory-btn:hover {
   background: rgb(239, 120, 16);
   color: white;
   border-color: rgb(239, 120, 16);
 }
 
-.negotiation-search-btn {
+.negotiationHistory-search-btn {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.negotiation-btn.outline {
+.negotiationHistory-btn.outline {
   background: #fff;
   border: 1px solid #cfd8dc;
 }
 
-.negotiation-btn.outline.danger {
+.negotiationHistory-btn.outline.danger {
   border-color: #ff6b6b;
   color: #ff6b6b;
 }
 
-.negotiation-btn.outline.danger:hover {
+.negotiationHistory-btn.outline.danger:hover {
   background: #ff6b6b;
   color: white;
 }
 
-.negotiation-table-wrap {
+.negotiationHistory-table-wrap {
   margin-top: 12px;
 }
 
-.negotiation-table {
+.negotiationHistory-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.negotiation-table thead th {
+.negotiationHistory-table thead th {
   text-align: center;
   padding: 12px;
   background: #fafafa;
   border-bottom: 1px solid #eee;
 }
 
-.negotiation-table tbody td {
+.negotiationHistory-table tbody td {
   padding: 12px;
   border-bottom: 1px solid #f1f1f1;
   vertical-align: middle;
   text-align: center;
 }
 
-.negotiation-count {
+.negotiationHistory-count {
   color: #666;
   font-size: 14px;
   flex: 1;
 }
 
-.negotiation-footer {
+.negotiationHistory-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 12px;
 }
 
-.negotiation-footer-spacer {
+.negotiationHistory-footer-spacer {
   flex: 1;
 }
 
-.negotiation-pagination {
+.negotiationHistory-pagination {
   display: flex;
   gap: 6px;
 }
 
-.negotiation-page {
+.negotiationHistory-page {
   padding: 6px 10px;
   border: 1px solid #ddd;
   background: #fff;
@@ -226,57 +226,57 @@
   cursor: pointer;
 }
 
-.negotiation-page.active {
-  background: var(--negotiation-accent);
+.negotiationHistory-page.active {
+  background: var(--negotiationHistory-accent);
   color: #fff;
-  border-color: var(--negotiation-accent);
+  border-color: var(--negotiationHistory-accent);
 }
 
-.negotiation-page:disabled {
+.negotiationHistory-page:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 @media (max-width: 1024px) {
-  .negotiation-date-range {
+  .negotiationHistory-date-range {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
   
-  .negotiation-search {
+  .negotiationHistory-search {
     margin-left: 0;
     flex-wrap: wrap;
   }
   
-  .negotiation-search-input {
+  .negotiationHistory-search-input {
     max-width: 100%;
   }
 }
 
 @media (max-width: 768px) {
-  .negotiation-filter {
+  .negotiationHistory-filter {
     padding: 14px 16px;
   }
   
-  .negotiation-date-range {
+  .negotiationHistory-date-range {
     width: 100%;
   }
   
-  .negotiation-date-range-inner {
+  .negotiationHistory-date-range-inner {
     width: 100%;
   }
   
-  .negotiation-date-range input {
+  .negotiationHistory-date-range input {
     flex: 1;
   }
   
-  .negotiation-search {
+  .negotiationHistory-search {
     width: 100%;
     margin-top: 12px;
   }
   
-  .negotiation-search-btn {
+  .negotiationHistory-search-btn {
     width: 100%;
     justify-content: flex-end;
     margin-top: 10px;
