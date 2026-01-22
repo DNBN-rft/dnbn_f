@@ -41,33 +41,10 @@ const ProductManage = () => {
       const data = await response.json();
       
       if (response.ok) {
-        // 페이지네이션 정보 업데이트
         setCurrentPage(data.number);
         setTotalPages(data.totalPages);
         setTotalElements(data.totalElements);
-        
-        const formattedProducts = data.content.map(p => ({
-          productCode: p.productCode,
-          name: p.productNm,
-          category: p.categoryNm,
-          code: p.productCode,
-          price: p.productPrice,
-          stock: p.productAmount,
-          status: p.productState,
-          negotiation: p.isNego || false, // undefined 처리
-          sale: p.isSale || false,
-          classify: p.isAdult ? "O" : "X",
-          registered: formatDateTime(p.productRegDateTime) || "",
-          type: p.isStock ? "일반" : "서비스",
-          description: p.productDetailDescription,
-          writer: p.regNm || "",
-          regDate: formatDateTime(p.productRegDateTime) || "",
-          editor: p.modNm || "-",
-          editDate: formatDateTime(p.productModDateTime) || "-",
-          categoryIdx: p.categoryIdx,
-          imgs: p.images?.files || []
-        }));
-        setProducts(formattedProducts);
+        setProducts(data.content);
       } else {
         setError("상품 조회에 실패했습니다.");
       }
@@ -100,29 +77,7 @@ const ProductManage = () => {
           setTotalPages(data.totalPages);
           setTotalElements(data.totalElements);
         }
-        
-        const formattedProducts = (data.content || data).map(p => ({
-          productIdx: p.productIdx,
-          name: p.productNm,
-          category: p.categoryNm,
-          code: p.productCode,
-          price: p.productPrice,
-          stock: p.productAmount,
-          status: p.productState,
-          negotiation: p.isNego || false, // undefined 처리
-          sale: p.isSale || false,
-          classify: p.isAdult ? "성인" : "일반",
-          registered: formatDateTime(p.productRegDateTime) || "",
-          type: p.isStock ? "일반" : "서비스",
-          description: p.productDetailDescription,
-          writer: p.regNm || "",
-          regDate: formatDateTime(p.productRegDateTime) || "",
-          editor: p.modNm || "-",
-          editDate: formatDateTime(p.productModDateTime) || "-",
-          categoryIdx: p.categoryIdx,
-          imgs: p.images?.files || []
-        }));
-        setProducts(formattedProducts);
+        setProducts(data.content || data);
       } else {
         setError("상품 조회에 실패했습니다.");
       }
@@ -183,7 +138,7 @@ const ProductManage = () => {
     if (e.target.checked) {
       const newMap = new Map();
       products.forEach(p => {
-        newMap.set(p.code, { productCode: p.code, isSale: p.sale });
+        newMap.set(p.productCode, { productCode: p.productCode, isSale: p.isSale });
       });
       setSelectedCheckboxes(newMap);
     } else {
@@ -369,40 +324,39 @@ const ProductManage = () => {
               <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px'}}>상품이 없습니다.</td></tr>
             ) : (
               products.map((p) => (
-                <tr key={p.code} onClick={() => handleProductClick(p)} style={{ cursor: 'pointer' }}>
+                <tr key={p.productCode} onClick={() => handleProductClick(p)} style={{ cursor: 'pointer' }}>
                   <td onClick={(e) => e.stopPropagation()} style={{ cursor: 'default' }}>
                     <input 
                       type="checkbox" 
-                      checked={selectedCheckboxes.has(p.code)}
-                      onChange={() => handleCheckboxChange(p.code, p.sale)}
+                      checked={selectedCheckboxes.has(p.productCode)}
+                      onChange={() => handleCheckboxChange(p.productCode, p.isSale)}
                     />
                   </td>
                   <td className="product-product-info">
                     <div className="product-thumb">
-                      {p.imgs && p.imgs.length > 0 ? (
+                      {p.images?.files && p.images.files.length > 0 ? (
                         <img 
-                          src={p.imgs[0].fileUrl} 
-                          alt={p.name}
+                          src={p.images.files[0].fileUrl} 
+                          alt={p.productNm}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />  
                       ) : null}
                     </div>
                     <div>
                       <div className="product-badge-group">
-                        {p.sale && <span className="product-badge sale">할인</span>}
-                        {p.negotiation && <span className="product-badge nego">네고</span>}
-                        {!p.sale && !p.negotiation && <span className="product-badge normal">일반</span>}
+                        {p.isSale && <span className="product-badge sale">할인</span>}
+                        {p.isNego && <span className="product-badge nego">네고</span>}
                       </div>
-                      <div className="productmanage-category">{p.category}</div>
-                      <div className="productmanage-name">{p.name}</div>
+                      <div className="productmanage-category">{p.categoryNm}</div>
+                      <div className="productmanage-name">{p.productNm}</div>
                     </div>
                   </td>
-                  <td>{p.price.toLocaleString()}원</td>
-                  <td>{p.stock}</td>
-                  <td>{p.status}</td>
-                  <td>{p.type}</td>
-                  <td>{p.classify}</td>
-                  <td>{p.registered}</td>
+                  <td>{p.productPrice?.toLocaleString()}원</td>
+                  <td>{p.productAmount}</td>
+                  <td>{p.productState}</td>
+                  <td>{p.isStock ? "일반" : "서비스"}</td>
+                  <td>{p.isAdult ? "O" : "X"}</td>
+                  <td>{formatDateTime(p.productRegDateTime)}</td>
                   <td>
                     <button className="product-sale-add-btn"
                       onClick={(e) => {
@@ -483,7 +437,7 @@ const ProductManage = () => {
       {isSaleModalOpen && selectedSaleProduct && (
         <ProductSale
           onClose={() => setIsSaleModalOpen(false)}
-          productPrice={selectedSaleProduct.price}
+          productPrice={selectedSaleProduct.productPrice}
           productCode={selectedSaleProduct.productCode}
           onRefresh={loadProducts}
         />

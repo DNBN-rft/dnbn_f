@@ -23,11 +23,11 @@ export const restrictEmail = (value) => {
 };
 
 export const restrictPhone = (value) => {
-  return value.replace(/[^0-9]/g, '');
+  return value.replace(/[^0-9]/g, '').slice(0, 11);
 };
 
 export const restrictAccountNumber = (value) => {
-  return value.replace(/[^0-9]/g, '');
+  return value.replace(/[^0-9]/g, '').slice(0, 15);
 };
 
 export const restrictBusinessNumber = (value) => {

@@ -19,13 +19,10 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
 
   useEffect(() => {
     fetchBanks();
-    // bankId, storeZipCode, storeAddr 기본값 설정
-    if (!formData.bankId || !formData.storeZipCode || !formData.storeAddr) {
-      setFormData((prev) => ({
-        ...prev,
-        storeType: "가맹점",
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      storeType: prev.storeType || "가맹점",
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
