@@ -43,19 +43,6 @@ const Sidebar = () => {
               대시보드
             </Link>
 
-            {/* 마이페이지 */}
-            {hasPermission("STORE_MYPAGE") && (
-              <>
-                <div className="sb-sidenav-menu-heading">내 정보</div>
-                <Link className="nav-link" to="/store/mypage">
-                  <div className="sb-nav-link-icon">
-                    <i className="fas fa-user"></i>
-                  </div>
-                  마이페이지
-                </Link>
-              </>
-            )}
-
             {/* 상품 관리 */}
             {hasPermission("STORE_PRODUCT") && (
               <>
