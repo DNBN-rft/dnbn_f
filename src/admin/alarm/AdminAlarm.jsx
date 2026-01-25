@@ -28,6 +28,25 @@ const AdminAlarm = () => {
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
 
+  // content에서 ISO 형식의 datetime을 한국식으로 포맷팅
+  const formatContentDateTime = (content) => {
+    if (!content) return content;
+    
+    // ISO 형식의 datetime 패턴 (예: 2026-01-23T10:30:00)
+    const isoDateTimePattern = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})/g;
+    
+    return content.replace(isoDateTimePattern, (match) => {
+      const date = new Date(match);
+      return date.toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    });
+  };
+
   // const [isSearchMode, setIsSearchMode] = useState(false);
 
   const fetchAlarms = useCallback(async (page = 0) => {
@@ -61,39 +80,13 @@ const AdminAlarm = () => {
 useEffect(() => {
   fetchAlarms(0);
 }, [fetchAlarms]);
-  const getAlarmTypeLabel = (type) => {
-    const typeMap = {
-      NEGO: "네고",
-      REPORT_PRODUCT: "상품 신고",
-      REPORT_STORE: "가맹점 신고",
-      REPORT_REVIEW: "리뷰 신고",
-      REVIEW: "리뷰",
-      QUESTION: "문의",
-      ORDER: "주문",
-    };
-    return typeMap[type] || type;
-  };
+
 
   const handleSearchInternal = async (page = 0) => {
     const searchParams = {
       startDate: startDate,
       endDate: endDate,
-      alarmType:
-        alarmType === "NEGO"
-          ? "NEGO"
-          : alarmType === "REPORT_PRODUCT"
-          ? "REPORT_PRODUCT"
-          : alarmType === "REPORT_STORE"
-          ? "REPORT_STORE"
-          : alarmType === "REPORT_REVIEW"
-          ? "REPORT_REVIEW"
-          : alarmType === "REVIEW"
-          ? "REVIEW"
-          : alarmType === "QUESTION"
-          ? "QUESTION"
-          : alarmType === "ORDER"
-          ? "ORDER"
-          : "all",
+      alarmType: alarmType,
       searchTerm: searchKeyword,
       searchType: searchType === "content" ? "content" : "all",
     };
@@ -131,7 +124,7 @@ useEffect(() => {
     if (!alarm.alarmLink) return;
     // 알람 타입에 따라 관리자 페이지로 이동
     switch (alarm.alarmType) {
-      case "ORDER":
+      case "주문":
         // 주문 관리 페이지로 이동
         navigate("/admin/order", {
           state: {
@@ -140,7 +133,7 @@ useEffect(() => {
           },
         });
         break;
-      case "REVIEW":
+      case "리뷰":
         // 리뷰 관리 페이지로 이동
         navigate("/admin/review", {
           state: {
@@ -149,7 +142,7 @@ useEffect(() => {
           },
         });
         break;
-      case "REPORT_PRODUCT":
+      case "상품신고":
         // 상품 신고 관리 페이지로 이동
         navigate("/admin/report", {
           state: {
@@ -159,7 +152,7 @@ useEffect(() => {
           },
         });
         break;
-      case "REPORT_REVIEW":
+      case "리뷰신고":
         // 리뷰 신고 관리 페이지로 이동
         navigate("/admin/report", {
           state: {
@@ -169,7 +162,7 @@ useEffect(() => {
           },
         });
         break;
-      case "REPORT_STORE":
+      case "가맹신고":
         // 가맹점 신고 관리 페이지로 이동
         navigate("/admin/report", {
           state: {
@@ -179,7 +172,7 @@ useEffect(() => {
           },
         });
         break;
-      case "NEGO":
+      case "네고":
         // 네고 관리 페이지로 이동
         navigate("/admin/negotiation", {
           state: {
@@ -188,7 +181,7 @@ useEffect(() => {
           },
         });
         break;
-      case "QUESTION":
+      case "문의":
         // 문의 관리 페이지로 이동
         navigate("/admin/question", {
           state: {
@@ -196,6 +189,16 @@ useEffect(() => {
             questionIdx: alarm.alarmLink,
           },
         });
+        break;
+        case "상품 제재":
+        // 상품 제재 관리 페이지로 이동
+        navigate("/admin/product", {
+          state: {
+            openModal: true,
+            productCode: alarm.alarmLink,
+          },
+        });
+        console.log("Navigating to product restrict page with productCode:", alarm.alarmLink);
         break;
       default:
         break;
@@ -252,7 +255,7 @@ useEffect(() => {
                 value={alarmType}
                 onChange={(e) => setAlarmType(e.target.value)}
               >
-                <option value="all">전체</option>
+                <option value="">전체</option>
                 <option value="NEGO">네고</option>
                 <option value="REPORT_PRODUCT">상품 신고</option>
                 <option value="REPORT_STORE">가맹점 신고</option>
@@ -260,6 +263,8 @@ useEffect(() => {
                 <option value="REVIEW">리뷰</option>
                 <option value="QUESTION">문의</option>
                 <option value="ORDER">주문</option>
+                <option value="PRODUCT_RESTRICT">상품 제재</option>
+                <option value="SALE">할인</option>
               </select>
             </div>
           </div>
@@ -273,6 +278,7 @@ useEffect(() => {
                 onChange={(e) => setSearchType(e.target.value)}
               >
                 <option value="all">전체</option>
+                <option value="storeCode">가맹코드</option>
                 <option value="content">내용</option>
               </select>
               <input
@@ -305,6 +311,7 @@ useEffect(() => {
                 <thead>
                   <tr>
                     <th>No.</th>
+                    <th>가맹코드</th>
                     <th>가맹점명</th>
                     <th>회원ID</th>
                     <th>알림타입</th>
@@ -318,7 +325,7 @@ useEffect(() => {
                   {alarms.length === 0 ? (
                     <tr>
                       <td
-                        colSpan="8"
+                        colSpan="9"
                         style={{
                           textAlign: "center",
                           padding: "40px",
@@ -332,11 +339,12 @@ useEffect(() => {
                     alarms.map((alarm, index) => (
                       <tr key={alarm.alarmIdx}>
                         <td>{currentPage * pageSize + index + 1}</td>
+                        <td>{alarm.storeCode || "-"}</td>
                         <td>{alarm.storeNm || "-"}</td>
                         <td>{alarm.memberId || "-"}</td>
-                        <td>{getAlarmTypeLabel(alarm.alarmType)}</td>
+                        <td>{alarm.alarmType}</td>
                         <td className="adminalarm-content-cell">
-                          {alarm.content}
+                          {formatContentDateTime(alarm.content)}
                         </td>
                         <td>{formatDateTime(alarm.sendDateTime)}</td>
                         <td>{formatDateTime(alarm.readDateTime)}</td>
