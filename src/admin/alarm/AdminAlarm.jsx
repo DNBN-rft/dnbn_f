@@ -198,7 +198,6 @@ useEffect(() => {
             productCode: alarm.alarmLink,
           },
         });
-        console.log("Navigating to product restrict page with productCode:", alarm.alarmLink);
         break;
       default:
         break;
