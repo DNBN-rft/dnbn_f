@@ -57,8 +57,8 @@ const CategoryModal = ({ mode, category, onSave, onClose, loading = false }) => 
         const file = e.target.files[0];
         if (file) {
             // 파일 크기 체크 (예: 5MB 이하)
-            if (file.size > 5 * 1024 * 1024) {
-                setFormError("파일 크기는 5MB 이하여야 합니다.");
+            if (file.size > 10 * 1024 * 1024) {
+                setFormError("파일 크기는 10MB 이하여야 합니다.");
                 return;
             }
 

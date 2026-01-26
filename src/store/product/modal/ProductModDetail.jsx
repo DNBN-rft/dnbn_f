@@ -57,6 +57,13 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
 
   const handleProductImageSelect = (file) => {
     if (file && file.type.startsWith('image/')) {
+      // 파일 크기 체크 (10MB = 10 * 1024 * 1024 bytes)
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         // 새로운 이미지를 allImages에 추가
