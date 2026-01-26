@@ -127,7 +127,7 @@ const SaleHistory = () => {
                                         <div className="sale-product-info-wrap">
                                             {sale.images?.files && sale.images.files.length > 0 ? (
                                                 <img
-                                                    src={`http://localhost:8080${sale.images.files[0].fileUrl}`}
+                                                    src={sale.images.files[0].fileUrl}
                                                     alt="상품 이미지"
                                                     className="sale-product-img"
                                                 />
@@ -146,8 +146,10 @@ const SaleHistory = () => {
                                     <td className="sale-price">{sale.discountedPrice?.toLocaleString()}원</td>
                                     <td className="sale-request-date">{formatDateTime(sale.startDateTime)}</td>
                                     <td className="sale-sent-date">{formatDateTime(sale.endDateTime)}</td>
-                                    <td className="sale-status">
-                                        <p className="sale-status-text">{sale.saleLogStatus}</p>
+                                    <td>
+                                        <span className={`sale-status-badge ${sale.saleLogStatus === 'CANCELED' ? 'canceled' : sale.saleLogStatus === 'COMPLETED' ? 'ended' : ''}`}>
+                                            {sale.saleLogStatus === 'CANCELED' ? '취소' : sale.saleLogStatus === 'COMPLETED' ? '종료' : sale.saleLogStatus}
+                                        </span>
                                     </td>
                                 </tr>
                             ))

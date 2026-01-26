@@ -16,33 +16,81 @@
 /*헤더영역*/
 .productmanage-header {
     width: 100%;
-    height: 50px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .productmanage-header-title {
     font-size: 20px;
     font-weight: bold;
-    line-height: 50px;
 }
 
+.productmanage-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.productmanage-header-actions .product-btn {
+    padding: 8px 16px;
+    height: 40px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+/* 상품등록 버튼 - 주황색 */
+.productmanage-header-actions .product-btn:not(.outline):not(.success) {
+    background-color: rgb(239, 120, 16);
+    color: white;
+}
+
+.productmanage-header-actions .product-btn:not(.outline):not(.success):hover {
+    background-color: rgba(239, 120, 16, 0.85);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 상품삭제 버튼 - 빨간색 */
+.productmanage-header-actions .product-btn.outline.danger {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+}
+
+.productmanage-header-actions .product-btn.outline.danger:hover {
+    background-color: #ff5252;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(255,107,107,0.3);
+}
+
+/* 엑셀 다운로드 버튼 - 녹색 */
 .productmanage-header-excel {
-    width: 120px;
-    height: 45px;
+    padding: 8px 16px;
+    height: 40px;
     background-color: #1BB052;
     color: white;
-    font-weight: bold;
-    font-size: 15px;
+    font-weight: 600;
+    font-size: 14px;
     text-align: center;
-    line-height: 45px;
-    border-radius: 10px;
+    line-height: 24px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    white-space: nowrap;
 }
 
 .productmanage-header-excel:hover {
     background-color: #16a04a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(27,176,82,0.2);
 }
 
 .product-filter {
@@ -192,6 +240,11 @@
   padding: 12px;
   border-bottom: 1px solid #f1f1f1;
   vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+.product-table tbody tr:hover td {
+  background-color: #fff8f0;
 }
 
 .product-product-info {
@@ -268,6 +321,11 @@
   border: 1px solid #bbb;
   background: white;
   color: black;
+  margin-left: 8px;
+}
+
+.product-sale-add-btn:first-child {
+  margin-left: 0;
 }
 
 .product-sale-add-btn:hover {
@@ -358,68 +416,15 @@
   }
 }
 
-.product-sub {
-  padding: 12px 20px;
-  background: #fafafa;
-  margin-bottom: 12px;
-  border-radius: 6px;
-}
-
-.product-sub-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-
-.productmanage-status-and-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.productmanage-status-and-actions label {
-  font-weight: 600;
-  color: #333;
-  min-width: 70px;
-}
-
-.product-sub select {
-  padding: 8px 12px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  min-width: 150px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
-}
-
-.product-sub .product-actions .product-btn.primary {
-  background: var(--product-accent);
-  border-color: var(--product-accent);
-  color: #fff;
-}
-
-.product-sub .product-actions .product-btn.outline.danger {
-  border-color: #ff6b6b;
-  color: #ff6b6b;
-  background: #fff;
-}
-
-.product-sub .product-actions .product-btn.outline.danger:hover {
-  background: #ff6b6b;
-  color: white;
-}
-
 @media (max-width: 600px) {
-  .product-sub-inner {
+  .productmanage-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
   }
 
-  .product-sub .product-actions {
+  .productmanage-header-actions {
     width: 100%;
-    display: flex;
     justify-content: flex-end;
   }
 }

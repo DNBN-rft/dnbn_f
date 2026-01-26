@@ -1,0 +1,335 @@
+/* ========== CSS Variables ========== */
+:root {
+  --buyerRequest-accent: rgb(239, 120, 16);
+  --buyerRequest-border: #e9e9e9;
+}
+
+/* ========== Filter Container ========== */
+.buyerRequest-filter {
+  border: 1px solid var(--buyerRequest-border);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+/* ========== Filter Layout ========== */
+.buyerRequest-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.buyerRequest-filter-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.buyerRequest-filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buyerRequest-filter-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ========== Price Range Filter ========== */
+.buyerRequest-price-range {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.buyerRequest-price-range-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.buyerRequest-price-range-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.buyerRequest-price-range-btn:hover {
+  border-color: var(--buyerRequest-accent);
+  color: var(--buyerRequest-accent);
+}
+
+.buyerRequest-price-range-btn.active {
+  background: var(--buyerRequest-accent);
+  color: white;
+  border-color: var(--buyerRequest-accent);
+}
+
+.buyerRequest-price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.buyerRequest-price-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.buyerRequest-price-unit {
+  color: #666;
+  font-size: 14px;
+}
+
+/* ========== Price Slider ========== */
+.buyerRequest-price-slider-wrapper {
+  position: relative;
+  padding: 10px 0;
+}
+
+.buyerRequest-price-slider-container {
+  position: relative;
+  height: 40px;
+}
+
+.buyerRequest-price-slider-track-active {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background: var(--buyerRequest-accent);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.buyerRequest-price-slider {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.buyerRequest-price-slider::-webkit-slider-track {
+  width: 100%;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+}
+
+.buyerRequest-price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid var(--buyerRequest-accent);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.buyerRequest-price-slider::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+}
+
+.buyerRequest-price-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid var(--buyerRequest-accent);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.buyerRequest-price-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 2px;
+}
+
+.buyerRequest-price-tick {
+  font-size: 11px;
+  color: #999;
+}
+
+/* ========== Date Range Filter ========== */
+.buyerRequest-date-range-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.buyerRequest-date-range-inner input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.buyerRequest-date-sep {
+  margin: 0 4px;
+  color: #666;
+}
+
+/* ========== Search Input ========== */
+.buyerRequest-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* ========== Buttons ========== */
+.buyerRequest-filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.buyerRequest-btn {
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.buyerRequest-btn:hover {
+  background: var(--buyerRequest-accent);
+  color: white;
+  border-color: var(--buyerRequest-accent);
+}
+
+.buyerRequest-btn.primary {
+  background: var(--buyerRequest-accent);
+  color: white;
+  border-color: var(--buyerRequest-accent);
+}
+
+.buyerRequest-btn.primary:hover {
+  background: rgba(239, 120, 16, 0.9);
+}
+
+/* ========== Table ========== */
+.buyerRequest-table-wrap {
+  margin-top: 12px;
+}
+
+.buyerRequest-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+.buyerRequest-table thead th {
+  text-align: center;
+  padding: 12px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+/* 열 너비 */
+.buyerRequest-table thead th:nth-child(1) { width: 7%; }   /* 번호 */
+.buyerRequest-table thead th:nth-child(2) { width: 25%; }  /* 상품명 */
+.buyerRequest-table thead th:nth-child(3) { width: 15%; }  /* 구매자명 */
+.buyerRequest-table thead th:nth-child(4) { width: 15%; }  /* 구매자 연락처 */
+.buyerRequest-table thead th:nth-child(5) { width: 12%; }  /* 요청가격 */
+.buyerRequest-table thead th:nth-child(6) { width: 15%; }  /* 요청일시 */
+.buyerRequest-table thead th:nth-child(7) { width: 11%; }  /* 상태 */
+
+.buyerRequest-table tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f1f1;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.buyerRequest-product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.buyerRequest-product-info span:first-child {
+  font-size: 12px;
+  color: #999;
+}
+
+.buyerRequest-product-info span:last-child {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ========== Pagination ========== */
+.buyerRequest-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.buyerRequest-count {
+  color: #666;
+  font-size: 14px;
+  flex: 1;
+}
+
+.buyerRequest-pagination {
+  display: flex;
+  gap: 6px;
+}
+
+.buyerRequest-page {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buyerRequest-page.active {
+  background: var(--buyerRequest-accent);
+  color: #fff;
+  border-color: var(--buyerRequest-accent);
+}
+
+.buyerRequest-page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buyerRequest-footer-spacer {
+  flex: 1;
+}

@@ -39,6 +39,12 @@ const ProductAdd = ({ onClose }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // 상품가격과 재고량은 10자리로 제한
+    if ((name === 'productPrice' || name === 'productAmount') && value.length > 10) {
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
@@ -47,6 +53,15 @@ const ProductAdd = ({ onClose }) => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+    
+    // 파일 크기 체크 (10MB 제한)
+    const maxSize = 10 * 1024 * 1024;
+    const oversizedFiles = files.filter(file => file.size > maxSize);
+    if (oversizedFiles.length > 0) {
+      alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       productImgs: files
@@ -158,6 +173,7 @@ const ProductAdd = ({ onClose }) => {
                   onChange={handleChange}
                   className="productadd-input"
                   placeholder="상품가격 입력"
+                  maxLength={10}
                 />
               </div>
             </div>
@@ -229,6 +245,7 @@ const ProductAdd = ({ onClose }) => {
                     disabled={!formData.isStock}
                     className="productadd-input"
                     placeholder="수량 입력"
+                    maxLength={10}
                   />
                 </div>
               </div>

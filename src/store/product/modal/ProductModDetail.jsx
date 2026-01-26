@@ -27,6 +27,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
 
   // 통합된 이미지 리스트 (기존 + 새로운)
   const [allImages, setAllImages] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleDrag = (e, type) => {
@@ -56,7 +57,20 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
   };
 
   const handleProductImageSelect = (file) => {
+    // 최대 3개 제한 체크
+    if (allImages.length >= 3) {
+      alert('이미지는 최대 3개까지만 첨부 가능합니다.');
+      return;
+    }
+    
     if (file && file.type.startsWith('image/')) {
+      // 파일 크기 체크 (10MB = 10 * 1024 * 1024 bytes)
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         // 새로운 이미지를 allImages에 추가
@@ -68,6 +82,13 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
         }]);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFileLabelClick = (e) => {
+    if (allImages.length >= 3) {
+      e.preventDefault();
+      alert('이미지는 최대 3개까지만 첨부 가능합니다. 삭제 후 추가해주세요.');
     }
   };
 
@@ -102,13 +123,15 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
           return {
             type: 'existing',
             data: img,
-            preview: `http://localhost:8080${img.fileUrl}`,
+            preview: img.fileUrl,
             name: fileName
           };
         });
         setAllImages(existingImages);
+        setSelectedImageIndex(0); // 첫 번째 이미지를 메인으로 설정
       } else {
         setAllImages([]);
+        setSelectedImageIndex(0);
       }
     }
   }, [product]);
@@ -277,15 +300,66 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
 
         {/* 상단 */}
         <div className="productdetail-top-content">
-          <div>
-            {allImages.length > 0 ? (
-              <img
-                src={allImages[0].preview}
-                alt={product.productNm}
-                className="productdetail-top-content-img"
-              />
-            ) : (
-              <div>이미지 없음</div>
+          <div className="productdetail-gallery-container">
+            {/* 메인 이미지 */}
+            <div className="productdetail-main-image-wrapper">
+              {allImages.length > 0 ? (
+                <img
+                  src={allImages[selectedImageIndex].preview}
+                  alt={product.productNm}
+                  className="productdetail-main-image"
+                />
+              ) : (
+                <div className="productdetail-image-placeholder">
+                  이미지 없음
+                </div>
+              )}
+            </div>
+            
+            {/* 서브 이미지 썸네일 갤러리 */}
+            {allImages.length > 0 && (
+              <div className="productdetail-thumbnail-container">
+                {/* 왼쪽 화살표 */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : allImages.length - 1)}
+                  className="productdetail-arrow-btn"
+                >
+                  ◀
+                </button>
+                
+                {/* 썸네일 이미지들 - 고정 영역 (항상 3개 박스 표시) */}
+                <div className="productdetail-thumbnail-list">
+                  {[0, 1, 2].map((slotIndex) => (
+                    <div
+                      key={slotIndex}
+                      className={`productdetail-thumbnail-slot ${
+                        allImages[slotIndex] && selectedImageIndex === slotIndex ? 'active' : ''
+                      } ${
+                        allImages[slotIndex] ? 'has-image' : 'empty'
+                      }`}
+                      onClick={() => allImages[slotIndex] && setSelectedImageIndex(slotIndex)}
+                    >
+                      {allImages[slotIndex] ? (
+                        <img
+                          src={allImages[slotIndex].preview}
+                          alt={`썸네일 ${slotIndex + 1}`}
+                          className="productdetail-thumbnail-image"
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* 오른쪽 화살표 */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedImageIndex(prev => prev < allImages.length - 1 ? prev + 1 : 0)}
+                  className="productdetail-arrow-btn"
+                >
+                  ▶
+                </button>
+              </div>
             )}
           </div>
 
@@ -416,7 +490,8 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
           </div>
         </div>
 
-        <div className="fileinfo-middle-subtitle">상품 이미지</div>
+        <div className="fileinfo-middle-subtitle">상품 이미지 (최대 3개)</div>
+        
         <div className="file-input-wrapper">
           <input
             type="file"
@@ -424,15 +499,28 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
             accept=".jpg,.jpeg,.png"
             className="fileinfo-middle-file-input-hidden"
             onChange={handleProductImageChange}
+            disabled={allImages.length >= 3}
           />
           <label
             htmlFor="productImage"
-            className={`file-input-label ${dragActive.product ? 'drag-active' : ''}`}
-            onDragEnter={(e) => handleDrag(e, 'product')}
-            onDragLeave={(e) => handleDrag(e, 'product')}
-            onDragOver={(e) => handleDrag(e, 'product')}
-            onDrop={(e) => handleDrop(e, 'product')}
+            className={`file-input-label ${
+              dragActive.product ? 'drag-active' : ''
+            } ${
+              allImages.length >= 3 ? 'full' : 'can-upload'
+            }`}
+            onClick={handleFileLabelClick}
+            onDragEnter={(e) => allImages.length < 3 && handleDrag(e, 'product')}
+            onDragLeave={(e) => allImages.length < 3 && handleDrag(e, 'product')}
+            onDragOver={(e) => allImages.length < 3 && handleDrag(e, 'product')}
+            onDrop={(e) => allImages.length < 3 && handleDrop(e, 'product')}
+            style={{ cursor: allImages.length >= 3 ? 'pointer' : 'pointer' }}
           >
+            {/* 상태 배지 */}
+            <div className={`productdetail-file-badge ${allImages.length < 3 ? 'can-upload' : 'full'}`}>
+              <span>{allImages.length < 3 ? '➕' : '⚠️'}</span>
+              <span>{allImages.length} / 3</span>
+            </div>
+            
             <div className="file-input-content">
               {allImages.length > 0 ? (
                 <div className="file-preview-grid">
@@ -443,6 +531,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                         className="file-remove-btn"
                         onClick={(e) => {
                           e.preventDefault();
+                          e.stopPropagation();
                           removeImageFromList(index);
                         }}
                       >
