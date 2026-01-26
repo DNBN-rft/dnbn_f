@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./css/adminproduct.css";
 import AdminProductDetail from "./modal/AdminProductDetail";
 import { getProducts, restrictProducts, deleteProducts, searchProducts } from "../../utils/adminProductService";
 import { getCategoryList } from "../../utils/commonService";
 
 const AdminProduct = () => {
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
@@ -43,6 +45,14 @@ const AdminProduct = () => {
     loadProducts();
     fetchCategories();
   }, []);
+
+  // location.state에서 productCode와 openModal을 받아서 모달 열기
+  useEffect(() => {
+    if (location.state?.openModal && location.state?.productCode) {
+      setSelectedProduct(location.state.productCode);
+      setIsModalOpen(true);
+    }
+  }, [location.state]);
 
   const loadProducts = async (page = 0) => {
     const result = await getProducts(page, pageSize);
