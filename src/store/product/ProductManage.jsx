@@ -4,6 +4,7 @@ import "./css/productmanage.css";
 import ProductDetail from "./modal/ProductDetail";
 import ProductAdd from "./modal/ProductAdd";
 import ProductSale from "./modal/ProductSale";
+import ProductNego from "./modal/ProductNego";
 import { apiGet, apiPost } from "../../utils/apiClient";
 import { formatDateTime } from "../../utils/commonService";
 
@@ -28,11 +29,12 @@ const ProductManage = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+  const [isNegoModalOpen, setIsNegoModalOpen] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSaleProduct, setSelectedSaleProduct] = useState(null);
+  const [selectedNegoProduct, setSelectedNegoProduct] = useState(null);
 
-  // 초기 상품 목록 조회 (검색 없이)
   const loadProducts = async (page = 0) => {
     setLoading(true);
     setError(null);
@@ -122,16 +124,23 @@ const ProductManage = () => {
 
   // 상품 클릭: 모달이 열려 있으면 열지 않음
   const handleProductClick = (product) => {
-    if (isDetailModalOpen || isAddModalOpen || isSaleModalOpen) return;
+    if (isDetailModalOpen || isAddModalOpen || isSaleModalOpen || isNegoModalOpen) return;
     setSelectedProduct(product.productCode);
     setIsDetailModalOpen(true);
   };
 
   // 할인등록 버튼 클릭
   const handleSaleOpen = (product) => {
-    if (isDetailModalOpen || isAddModalOpen || isSaleModalOpen) return;
+    if (isDetailModalOpen || isAddModalOpen || isSaleModalOpen || isNegoModalOpen) return;
     setSelectedSaleProduct(product);
     setIsSaleModalOpen(true);
+  };
+
+  // 네고등록 버튼 클릭
+  const handleNegoOpen = (product) => {
+    if (isDetailModalOpen || isAddModalOpen || isSaleModalOpen || isNegoModalOpen) return;
+    setSelectedNegoProduct(product);
+    setIsNegoModalOpen(true);
   };
 
   const handleSelectAll = (e) => {
@@ -228,10 +237,17 @@ const ProductManage = () => {
     <div className="product-container">
       <div className="productmanage-header">
         <div className="productmanage-header-title">상품관리</div>
-        <div className="productmanage-header-excel" onClick={excelDownload}>엑셀 다운로드</div>
+        <div className="productmanage-header-actions">
+          <button className="product-btn" onClick={() => {
+            if (!isDetailModalOpen && !isAddModalOpen && !isSaleModalOpen && !isNegoModalOpen) {
+              setIsAddModalOpen(true);
+            }
+          }}>+ 상품등록</button>
+          <button className="product-btn outline danger" onClick={handleDeleteSelected}>상품삭제</button>
+          <div className="productmanage-header-excel" onClick={excelDownload}>엑셀 다운로드</div>
+        </div>
       </div>
 
-      {/* 필터탭 */}
       <div className="product-filter">
         <div className="product-date-range">
           <div className="productmanage-date-range-inner">
@@ -271,35 +287,6 @@ const ProductManage = () => {
         </div>
       </div>
 
-      <div className="product-sub">
-        <div className="product-sub-inner">
-          <div className="productmanage-status-and-actions">
-            {/*추후 기능 구현 예정 */}
-            {/* <label>판매상태</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="product-state-select"
-            >
-              <option value="ALL">전체</option>
-              <option value="PENDING">판매대기</option>
-              <option value="ON_SALE">판매중</option>
-              <option value="ENDED">판매중지</option>
-              <option value="REJECTED">제재상품</option>
-            </select> */}
-          </div>
-
-          <div className="product-actions">
-            <button className="product-btn" onClick={() => {
-              if (!isDetailModalOpen && !isAddModalOpen && !isSaleModalOpen) {
-                setIsAddModalOpen(true);
-              }
-            }}>+ 상품등록</button>
-            <button className="product-btn outline danger" onClick={handleDeleteSelected}>상품삭제</button>
-          </div>
-        </div>
-      </div>
-
       <div className="product-table-wrap">
         <table className="product-table">
           <thead>
@@ -312,7 +299,7 @@ const ProductManage = () => {
               <th>서비스상품</th>
               <th>성인상품</th>
               <th>등록일</th>
-              <th>할인</th>
+              <th style={{ textAlign: 'center' }}>관리</th>
             </tr>
           </thead>
           <tbody>
@@ -357,7 +344,7 @@ const ProductManage = () => {
                   <td>{p.isStock ? "일반" : "서비스"}</td>
                   <td>{p.isAdult ? "O" : "X"}</td>
                   <td>{formatDateTime(p.productRegDateTime)}</td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()} style={{ cursor: 'default', textAlign: 'center' }}>
                     <button className="product-sale-add-btn"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -365,6 +352,14 @@ const ProductManage = () => {
                       }}
                     >
                       할인등록
+                    </button>
+                    <button className="product-sale-add-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNegoOpen(p);
+                      }}
+                    >
+                      네고등록
                     </button>
                   </td>
                 </tr>
@@ -439,6 +434,13 @@ const ProductManage = () => {
           onClose={() => setIsSaleModalOpen(false)}
           productPrice={selectedSaleProduct.productPrice}
           productCode={selectedSaleProduct.productCode}
+          onRefresh={loadProducts}
+        />
+      )}
+      {isNegoModalOpen && selectedNegoProduct && (
+        <ProductNego
+          onClose={() => setIsNegoModalOpen(false)}
+          productCode={selectedNegoProduct.productCode}
           onRefresh={loadProducts}
         />
       )}

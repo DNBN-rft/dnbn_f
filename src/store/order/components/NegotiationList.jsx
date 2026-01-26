@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import { apiGet } from "../../../utils/apiClient";
+import { apiGet, apiPost } from "../../../utils/apiClient";
 import { formatDateTime } from "../../../utils/commonService";
+import NegotiationFilter from "./NegotiationFilter";
 
 const NegotiationList = () => {
-  const [searchField, setSearchField] = useState("productNm");
   const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(100000);
+  const [sliderMax, setSliderMax] = useState(100000);
+  const [priceRange, setPriceRange] = useState("100000");
+  const [isManualInput, setIsManualInput] = useState(false);
 
   const [negotiations, setNegotiations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,6 +35,7 @@ const NegotiationList = () => {
         setTotalPages(data.totalPages);
         setTotalElements(data.totalElements);
         setNegotiations(data.content);
+        console.log("네고 목록 데이터:", data);
       } else {
         setError("네고 조회에 실패했습니다.");
       }
@@ -40,75 +47,104 @@ const NegotiationList = () => {
     }
   };
 
+  const searchNegotiations = async (page = 0) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // 상태 필터: ALL -> null, 그 외에는 그대로 전송 (ONGOING, UPCOMING)
+      const negoStatus = statusFilter === "ALL" ? null : statusFilter;
+
+      const searchRequest = {
+        minPriceRange: minPrice,
+        maxPriceRange: maxPrice,
+        startDateTime: startDate ? `${startDate}T00:00:00` : null,
+        endDateTime: endDate ? `${endDate}T23:59:59` : null,
+        negoStatus: negoStatus,
+        productNm: searchText || null
+      };
+
+      const response = await apiPost(
+        `/store/nego/search?page=${page}&size=${pageSize}`,
+        searchRequest
+      );
+      const data = await response.json();
+      
+      if (response.ok) {
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+        setNegotiations(data.content);
+        console.log("네고 검색 결과:", data);
+      } else {
+        setError("네고 검색에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("검색 API 요청 실패:", err);
+      setError("네고 검색 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadNegotiations();
   }, []);
 
   const handleReset = () => {
-    setSearchField("productNm");
     setSearchText("");
     setStartDate("");
     setEndDate("");
+    setStatusFilter("ALL");
+    setMinPrice(0);
+    setMaxPrice(100000);
+    setSliderMax(100000);
+    setPriceRange("100000");
+    setIsManualInput(false);
     setCurrentPage(0);
+    loadNegotiations(0);
   };
 
   const handleSearch = () => {
     setCurrentPage(0);
+    searchNegotiations(0);
   };
 
   return (
     <div>
-      <div className="negotiation-filter">
-        <div className="negotiation-date-range">
-          <div className="negotiation-date-range-inner">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <span className="negotiation-date-sep">~</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-
-          <div className="negotiation-search">
-            <select
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-            >
-              <option value="productNm">상품명</option>
-              <option value="saleNum">판매번호</option>
-              <option value="productCode">상품코드</option>
-            </select>
-            <input
-              type="text"
-              placeholder="검색어를 입력해주세요."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="negotiation-search-input"
-            />
-            <div className="negotiation-search-btn">
-              <button className="negotiation-btn" onClick={handleSearch}>검색</button>
-              <button className="negotiation-btn" onClick={handleReset}>초기화</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <NegotiationFilter
+        searchText={searchText}
+        setSearchText={setSearchText}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        minPrice={minPrice}
+        setMinPrice={setMinPrice}
+        maxPrice={maxPrice}
+        setMaxPrice={setMaxPrice}
+        sliderMax={sliderMax}
+        setSliderMax={setSliderMax}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+        isManualInput={isManualInput}
+        setIsManualInput={setIsManualInput}
+        handleSearch={handleSearch}
+        handleReset={handleReset}
+      />
 
       <div className="negotiation-table-wrap">
         <table className="negotiation-table">
           <thead>
             <tr>
               <th>번호</th>
-              <th>상품코드</th>
               <th>상품명</th>
               <th>상품가격</th>
               <th>시작일시</th>
               <th>종료일시</th>
               <th>상태</th>
+              <th>관리</th>
             </tr>
           </thead>
           <tbody>
@@ -122,16 +158,31 @@ const NegotiationList = () => {
               negotiations.map((nego, index) => (
                 <tr key={nego.negoId || index}>
                   <td>{index + 1}</td>
-                  <td>{nego.productCode}</td>
-                  <td>
-                    <div>
-                      <div>{nego.categoryNm}</div>
-                      <div>{nego.productNm}</div>
+                  <td className="negotiation-product-info">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {nego.productImage ? (
+                        <img 
+                          src={nego.productImage} 
+                          alt={nego.productNm}
+                          style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+                        />
+                      ) : (
+                        <div style={{ width: '60px', height: '60px', backgroundColor: '#e0e0e0', borderRadius: '4px', flexShrink: 0 }} />
+                      )}
+                      <div>
+                        <div className="negotiation-category">{nego.categoryNm}</div>
+                        <div className="negotiation-name">{nego.productNm}</div>
+                      </div>
                     </div>
                   </td>
                   <td>{nego.productPrice?.toLocaleString()}원</td>
                   <td>{formatDateTime(nego.startDateTime)}</td>
                   <td>{formatDateTime(nego.endDateTime)}</td>
+                  <td>
+                    <span className={`negotiation-status ${nego.negoStatus === '진행 중' ? 'ongoing' : 'upcoming'}`}>
+                      {nego.negoStatus === '진행 중' ? '진행' : '대기'}
+                    </span>
+                  </td>
                   <td>
                     <button className="negotiation-btn outline danger">취소</button>
                   </td>
@@ -159,7 +210,7 @@ const NegotiationList = () => {
             >
               이전
             </button>
-            {[...Array(totalPages)].map((_, index) => (
+            {[...Array(Math.max(1, totalPages))].map((_, index) => (
               <button
                 key={index}
                 className={`negotiation-page ${currentPage === index ? 'active' : ''}`}
@@ -180,7 +231,7 @@ const NegotiationList = () => {
                   loadNegotiations(newPage);
                 }
               }}
-              disabled={currentPage === totalPages - 1}
+              disabled={totalPages <= 1 || currentPage >= totalPages - 1}
             >
               다음
             </button>

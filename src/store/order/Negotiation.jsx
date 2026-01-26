@@ -12,7 +12,6 @@ const Negotiation = () => {
         <div className="negotiation-header-title">네고 관리</div>
       </div>
 
-      {/* 탭 메뉴 */}
       <div className="negotiation-tabs">
         <button 
           className={`negotiation-tab ${activeTab === "negotiation" ? "active" : ""}`}

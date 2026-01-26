@@ -94,7 +94,6 @@ const Sale = () => {
                     </div>
                 </div>
 
-                {/* 검색 영역 */}
                 <div className="sale-search">
                     <select 
                         className="sale-search-select"

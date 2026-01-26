@@ -1,67 +1,67 @@
 /* 배경 반투명 처리 */
 .product-sale-backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;       /* 화면 전체 덮기 */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999;          /* 다른 요소보다 위로 */
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
-
 
 /* 모달 전체 래퍼 */
 .product-sale-wrap {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 650px;
-    max-width: 90%;
-    height: auto;
-    max-height: 80vh;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    z-index: 999;
-    overflow-y: auto;
+    background: #fff;
+    width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
 }
 
 /* 상단 제목 */
 .product-sale-header {
-    width: 100%;
-    height: 70px;
-    font-size: 20px;
+    background: #333;
+    color: #fff;
+    padding: 16px 20px;
+    font-size: 18px;
     font-weight: bold;
-    line-height: 70px;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* 내부 전체 감싸는 부분 */
 .product-sale-body {
-    padding: 30px 40px;
+    padding: 24px;
 }
 
 /* 폼 전체 */
 .product-sale-form {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 20px;
+}
+
+/* 공통 label 스타일 */
+.product-sale-type-label,
+.product-sale-field label,
+.product-sale-date label,
+.product-sale-end label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
 }
 
 /* 할인 방식 (radio) 영역 */
 .product-sale-type {
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .product-sale-radio {
     display: flex;
     gap: 20px;
-    margin-top: 8px;
 }
 
 .product-sale-radio label {
@@ -73,51 +73,75 @@
     margin-right: 6px;
 }
 
-/* 할인 입력 영역 */
-.product-sale-inputs {
+/* 할인 입력 행 전체 (가로 정렬) */
+.product-sale-inputs-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.product-sale-field {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    gap: 8px;
 }
 
-.product-sale-inputs label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.product-sale-inputs input {
-    margin-bottom: 15px;
-    padding: 8px;
-    border: 1px solid #ccc;
+.product-sale-field input {
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 14px;
 }
 
-.product-sale-inputs input:focus {
+.product-sale-field input:focus {
     border-color: rgba(239, 120, 16, 0.6);
     outline: none;
+}
+
+/* 시간 선택 안내 문구 */
+.product-sale-time-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #666;
+    font-weight: 400;
+}
+
+/* 읽기 전용일 때 비활성 스타일 */
+.product-sale-field input.readonly {
+    background-color: #f5f5f5;
+    color: #777;
+    pointer-events: none;
+    border-color: #ddd;
+    cursor: not-allowed;
 }
 
 /* 날짜/시간 입력 */
 .product-sale-date {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-}
-
-.product-sale-date label {
-    font-weight: bold;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .product-sale-date input[type="date"],
-.product-sale-date input[type="time"] {
-    padding: 6px;
-    border: 1px solid #ccc;
+.product-sale-date input[type="time"],
+.product-sale-time-input {
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    width: 174px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.product-sale-date input:focus {
-    border-color: rgba(239, 120, 16, 0.6);
+.product-sale-time-input {
+    display: block;
+}
+
+.product-sale-date input:focus,
+.product-sale-time-input:focus {
+    border: 1px solid rgba(239, 120, 16, 0.6);
     outline: none;
 }
 
@@ -125,105 +149,153 @@
 .product-sale-end {
     display: flex;
     flex-direction: column;
-}
-
-.product-sale-end label {
-    font-weight: bold;
-    margin-bottom: 5px;
+    gap: 8px;
 }
 
 .product-sale-end input {
-    padding: 8px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    background-color: #f9f9f9;
-    color: #666;
+    background-color: #f5f5f5;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
 /* 버튼 영역 */
 .product-sale-buttons {
     display: flex;
-    justify-content: flex-end;
-    gap: 15px;
+    gap: 10px;
     margin-top: 10px;
 }
 
-/* 등록 버튼 */
-.product-sale-submit {
-    font-weight: bold;
-    background-color: white;
-    color: black;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 10px 14px;
+.product-sale-submit,
+.product-sale-cancel {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
     font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.2s;
+}
+
+/* 등록 버튼 - 주황색 */
+.product-sale-submit {
+    background-color: #ff8c00;
+    color: #fff;
 }
 
 .product-sale-submit:hover {
-    background-color: rgba(239, 120, 16, 1);
-    color: white;
-    border-color: rgba(239, 120, 16, 1);
+    background-color: #e67e00;
 }
 
 /* 취소 버튼 */
 .product-sale-cancel {
-    font-weight: bold;
-    background-color: white;
-    color: black;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 10px 14px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s;
+    background-color: #6c757d;
+    color: #fff;
 }
 
 .product-sale-cancel:hover {
-    background-color: rgba(239, 120, 16, 1);
+    background-color: #5a6268;
+}
+
+/* react-datepicker 커스텀 스타일 */
+.product-sale-date .react-datepicker-wrapper {
+    width: 100%;
+}
+
+.product-sale-date .react-datepicker__input-container {
+    width: 100%;
+}
+
+.product-sale-date .react-datepicker-popper {
+    z-index: 9999;
+}
+
+.product-sale-date .react-datepicker {
+    font-family: inherit;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.product-sale-date .react-datepicker__header {
+    background-color: #333;
+    border-bottom: none;
+    padding: 12px 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.product-sale-date .react-datepicker__time-container {
+    border-left: 1px solid #ddd;
+    width: 120px;
+}
+
+.product-sale-date .react-datepicker__time-container .react-datepicker__time {
+    background: white;
+    border-radius: 0 0 4px 0;
+}
+
+.product-sale-date .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+    width: 100%;
+    text-align: center;
+}
+
+.product-sale-date .react-datepicker-time__header {
     color: white;
-    border-color: rgba(239, 120, 16, 1);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
 }
 
-/* 할인 입력 행 전체 (가로 정렬) */
-.product-sale-inputs-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+.product-sale-date .react-datepicker__time-list {
+    padding: 0;
+    height: 240px !important;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ff8c00 #f5f5f5;
 }
 
-.product-sale-field {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+.product-sale-date .react-datepicker__time-list::-webkit-scrollbar {
+    width: 6px;
 }
 
-.product-sale-field label {
-  font-weight: bold;
-  margin-bottom: 5px;
+.product-sale-date .react-datepicker__time-list::-webkit-scrollbar-track {
+    background: #f5f5f5;
 }
 
-.product-sale-type-label{
-    font-weight: bold;
+.product-sale-date .react-datepicker__time-list::-webkit-scrollbar-thumb {
+    background: #ff8c00;
+    border-radius: 3px;
 }
 
-.product-sale-field input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.product-sale-date .react-datepicker__time-list::-webkit-scrollbar-thumb:hover {
+    background: #e67e00;
 }
 
-.product-sale-field input:focus {
-  border-color: rgba(239, 120, 16, 0.6);
-  outline: none;
+.product-sale-date .react-datepicker__time-list-item {
+    padding: 10px 0;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
 }
 
-/* 읽기 전용일 때 비활성 스타일 */
-.product-sale-field input.readonly {
-  background-color: #eaeaea;
-  color: #777;
-  pointer-events: none;
-  border-color: #d0d0d0;
-  cursor: not-allowed;
+.product-sale-date .react-datepicker__time-list-item:hover {
+    background-color: #f5f5f5;
+}
+
+.product-sale-date .react-datepicker__time-list-item--selected {
+    background-color: #ff8c00 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.product-sale-date .react-datepicker__time-list-item--selected:hover {
+    background-color: #e67e00 !important;
 }

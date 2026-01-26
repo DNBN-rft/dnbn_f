@@ -230,3 +230,23 @@
   color: #fff;
   border-color: var(--product-accent);
 }
+
+/* 상태 뱃지 스타일 */
+.sale-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sale-status-badge.ended {
+  color: #999;
+  border: 1px solid #ddd;
+}
+
+.sale-status-badge.canceled {
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}

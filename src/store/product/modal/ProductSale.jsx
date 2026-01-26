@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./css/productsale.css";
 import { apiPost, apiGet } from "../../../utils/apiClient";
+import { getCurrentDate, getCurrentTimePlusMinutes, calculateEndDateTime, calculateInitialEndDateTime, parseTimeToDate, formatTimeToString } from "../../../utils/commonService";
 
 const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) => {
     const [discountType, setDiscountType] = useState("할인률");
@@ -9,10 +12,9 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endDateTime, setEndDateTime] = useState("");
-    const [saleTimeout, setSaleTimeout] = useState(2); // 기본값
+    const [saleTimeout, setSaleTimeout] = useState(24);
     const [hasSetInitialPrice, setHasSetInitialPrice] = useState(false);
 
-    // 할인률 변경 시 할인가 자동 계산
     const handleDiscountRateChange = (e) => {
         const rate = Number(e.target.value);
         setDiscountRate(rate || "");
@@ -26,7 +28,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
         }
     };
 
-    // 할인방식이 "할인가"로 전환될 때 처리
     useEffect(() => {
         if (discountType === "할인가" && !hasSetInitialPrice && !discountPrice) {
             setDiscountPrice(productPrice);
@@ -34,7 +35,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
         }
     }, [discountType, productPrice, discountPrice, hasSetInitialPrice]);
 
-    // API에서 제한 시간 가져오기
     useEffect(() => {
         const fetchTimeout = async () => {
             try {
@@ -55,24 +55,11 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
 
     // 모달 열릴 때 현재 시간으로 시작 날짜/시간 설정
     useEffect(() => {
-        const now = new Date();
-        const currentDate = now.toISOString().slice(0, 10);
-        const currentTime = now.toTimeString().slice(0, 5);
+        const currentDate = getCurrentDate();
+        const currentTime = getCurrentTimePlusMinutes(5);
         setStartDate(currentDate);
         setStartTime(currentTime);
-
-        // 종료 시간 계산
-        const start = now;
-        const end = new Date(start.getTime() + saleTimeout * 60 * 60 * 1000);
-        const year = end.getFullYear();
-        const month = String(end.getMonth() + 1).padStart(2, '0');
-        const day = String(end.getDate()).padStart(2, '0');
-        const hours = end.getHours();
-        const minutes = String(end.getMinutes()).padStart(2, '0');
-        const period = hours >= 12 ? '오후' : '오전';
-        const displayHours = hours % 12 || 12;
-        const formatted = `${year}-${month}-${day} ${period} ${displayHours}:${minutes}`;
-        setEndDateTime(formatted);
+        setEndDateTime(calculateInitialEndDateTime(5, saleTimeout));
     }, [saleTimeout]);
 
     // 시작/종료 시간 계산
@@ -80,18 +67,7 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
         if (date) setStartDate(date);
         if (time) setStartTime(time);
         if (date && time) {
-            const start = new Date(`${date}T${time}`);
-            const end = new Date(start.getTime() + saleTimeout * 60 * 60 * 1000);
-            // 로컬 시간을 사용하여 포맷
-            const year = end.getFullYear();
-            const month = String(end.getMonth() + 1).padStart(2, '0');
-            const day = String(end.getDate()).padStart(2, '0');
-            const hours = end.getHours();
-            const minutes = String(end.getMinutes()).padStart(2, '0');
-            const period = hours >= 12 ? '오후' : '오전';
-            const displayHours = hours % 12 || 12;
-            const formatted = `${year}-${month}-${day} ${period} ${displayHours}:${minutes}`;
-            setEndDateTime(formatted);
+            setEndDateTime(calculateEndDateTime(date, time, saleTimeout));
         }
     };
 
@@ -99,7 +75,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
     const handleDiscountPriceChange = (e) => {
         let val = e.target.value;
 
-        // 빈 값이면 그대로 상태를 비워둠
         if (val === "") {
             setDiscountPrice("");
             setDiscountRate("");
@@ -122,9 +97,16 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 유효성 검사
         if (!startDate || !startTime) {
             alert("할인 시작 날짜와 시간을 입력해주세요.");
+            return;
+        }
+
+        const selectedStartDateTime = new Date(`${startDate}T${startTime}:00`);
+        const currentDateTime = new Date();
+        
+        if (selectedStartDateTime < currentDateTime) {
+            alert("할인 시작 시간은 현재 시간보다 이전일 수 없습니다.");
             return;
         }
 
@@ -139,7 +121,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
         }
 
         try {
-            // startDateTime을 ISO 형식으로 변환
             const startDateTime = `${startDate}T${startTime}:00`;
 
             const requestData = {
@@ -175,7 +156,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
 
                 <div className="product-sale-body">
                     <form className="product-sale-form" onSubmit={handleSubmit}>
-                        {/* 할인 방식 */}
                         <div className="product-sale-type">
                             <label className="product-sale-type-label">할인 방식</label>
                             <div className="product-sale-radio">
@@ -202,7 +182,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                             </div>
                         </div>
 
-                        {/* 할인 입력 영역 */}
                         <div className="product-sale-inputs-row">
                             <div className="product-sale-field">
                                 <label>할인률 (%)</label>
@@ -233,7 +212,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                             </div>
                         </div>
 
-                        {/* 날짜 입력 */}
                         <div className="product-sale-date">
                             <label>할인 시작 일자</label>
                             <input
@@ -242,14 +220,26 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                                 onChange={(e) => handleDateTimeChange(e.target.value, startTime)}
                             />
                             <label>할인 시작 시간</label>
-                            <input
-                                type="time"
-                                value={startTime}
-                                onChange={(e) => handleDateTimeChange(startDate, e.target.value)}
+                            <DatePicker
+                                selected={parseTimeToDate(startTime)}
+                                onChange={(date) => {
+                                    const timeString = formatTimeToString(date);
+                                    handleDateTimeChange(startDate, timeString);
+                                }}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={30}
+                                timeCaption="시간"
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
+                                className="product-sale-time-input"
+                                popperPlacement="right-start"
                             />
+                            <small className="product-sale-time-hint">
+                                ⓘ 시간은 30분 단위로 선택 가능합니다
+                            </small>
                         </div>
 
-                        {/* 종료 일시 */}
                         <div className="product-sale-end">
                             <label>할인 종료 일시</label>
                             <input
@@ -260,7 +250,6 @@ const ProductSale = ({ onClose, productCode, productPrice = 10000, onRefresh }) 
                             />
                         </div>
 
-                        {/* 버튼 */}
                         <div className="product-sale-buttons">
                             <button type="submit" className="product-sale-submit">
                                 등록
