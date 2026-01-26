@@ -116,7 +116,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
           return {
             type: 'existing',
             data: img,
-            preview: `http://localhost:8080${img.fileUrl}`,
+            preview: img.fileUrl,
             name: fileName
           };
         });
@@ -418,7 +418,6 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 <option value="PENDING">대기</option>
                 <option value="ON_SALE">판매 중</option>
                 <option value="ENDED">판매 종료</option>
-                <option value="REJECTED">판매 제재</option>
               </select>
             </div>
           </div>

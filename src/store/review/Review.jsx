@@ -13,7 +13,6 @@ const Review = () => {
   const [searchField, setSearchField] = useState("판매번호");
   const [searchText, setSearchText] = useState("");
   const [isReviewAnswerModalOpen, setIsReviewAnswerModalOpen] = useState(false);
-  const [selectedReview, setSelectedReview] = useState(null);
   const [reviewData, setReviewData] = useState([]);
   const [selectedReviewIdx, setSelectedReviewIdx] = useState(null);
   const [isReviewReportModalOpen, setIsReviewReportModalOpen] = useState(false);
@@ -58,15 +57,12 @@ const Review = () => {
   // 알람에서 전달받은 state 처리
   useEffect(() => {
     if (location.state?.openModal && location.state?.reviewIdx) {
-      const targetReview = reviewData.find(r => r.reviewIdx === parseInt(location.state.reviewIdx));
-      if (targetReview) {
-        setSelectedReview(targetReview);
-        setIsReviewAnswerModalOpen(true);
-      }
+      setSelectedReviewIdx(location.state.reviewIdx);
+      setIsReviewAnswerModalOpen(true);
       
       window.history.replaceState({}, document.title);
     }
-  }, [location, reviewData]);
+  }, [location]);
 
   const handleHideReview = async (reviewIdx) => {
     if (!window.confirm("이 리뷰를 숨김 처리하시겠습니까?")) {
@@ -211,7 +207,7 @@ const Review = () => {
                     <button 
                       className="review-btn"
                       onClick={() => {
-                        setSelectedReview(p);
+                        setSelectedReviewIdx(p.reviewIdx);
                         setIsReviewAnswerModalOpen(true);
                       }}
                     >
@@ -275,10 +271,13 @@ const Review = () => {
           </div>
         </div>
       </div>
-      {isReviewAnswerModalOpen && selectedReview && (
+      {isReviewAnswerModalOpen && selectedReviewIdx && (
         <ReviewAnswer
-          onClose={() => setIsReviewAnswerModalOpen(false)}
-          review={selectedReview}
+          onClose={() => {
+            setIsReviewAnswerModalOpen(false);
+            setSelectedReviewIdx(null);
+          }}
+          reviewIdx={selectedReviewIdx}
           refreshData={fetchReviews}
         />
       )}

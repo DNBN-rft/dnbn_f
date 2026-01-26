@@ -82,7 +82,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
               <div className="productdetail-top-content-img-wrapper">
                 {product.imgs?.files?.length > 0 ? (
                   <img
-                    src={`http://localhost:8080${product.imgs.files[0].fileUrl}`}
+                    src={product.imgs.files[0].fileUrl}
                     alt={product.productNm}
                     className="productdetail-top-content-img"
                   />

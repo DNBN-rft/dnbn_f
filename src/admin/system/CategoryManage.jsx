@@ -270,7 +270,7 @@ const CategoryManage = () => {
                                         </td>
                                         <td className="categorymanage-table-td categorymanage-table-td-image">
                                             {category.imageUrl ? (
-                                                <img src={`http://localhost:8080${category.imageUrl}`} alt={category.categoryName} className="categorymanage-thumbnail" />
+                                                <img src={category.imageUrl} alt={category.categoryName} className="categorymanage-thumbnail" />
                                             ) : (
                                                 <span className="categorymanage-no-image">이미지 없음</span>
                                             )}
