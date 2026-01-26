@@ -1,0 +1,216 @@
+.product-nego-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.product-nego-wrap {
+    background: #fff;
+    width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+.product-nego-header {
+    background: #333;
+    color: #fff;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.product-nego-body {
+    padding: 24px;
+}
+
+.product-nego-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 공통 label 스타일 */
+.product-nego-date label,
+.product-nego-end label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.product-nego-date {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.product-nego-date input[type="date"],
+.product-nego-date input[type="time"],
+.product-nego-time-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.product-nego-time-input {
+    box-sizing: border-box;
+}
+
+.product-nego-end {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.product-nego-end input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+    font-size: 14px;
+}
+
+.product-nego-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.product-nego-submit,
+.product-nego-cancel {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.product-nego-submit {
+    background-color: #ff8c00;
+    color: #fff;
+}
+
+.product-nego-submit:hover {
+    background-color: #e67e00;
+}
+
+.product-nego-cancel {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.product-nego-cancel:hover {
+    background-color: #5a6268;
+}
+
+/* react-datepicker 커스텀 스타일 */
+.product-nego-date .react-datepicker-wrapper {
+    width: 100%;
+}
+
+.product-nego-date .react-datepicker__input-container {
+    width: 100%;
+}
+
+.product-nego-date .react-datepicker-popper {
+    z-index: 9999;
+}
+
+.product-nego-date .react-datepicker {
+    font-family: inherit;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.product-nego-date .react-datepicker__header {
+    background-color: #333;
+    border-bottom: none;
+    padding: 12px 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.product-nego-date .react-datepicker__time-container {
+    border-left: 1px solid #ddd;
+    width: 120px;
+}
+
+.product-nego-date .react-datepicker__time-container .react-datepicker__time {
+    background: white;
+    border-radius: 0 0 4px 0;
+}
+
+.product-nego-date .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+    width: 100%;
+    text-align: center;
+}
+
+.product-nego-date .react-datepicker-time__header {
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+.product-nego-date .react-datepicker__time-list {
+    padding: 0;
+    height: 240px !important;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ff8c00 #f5f5f5;
+}
+
+.product-nego-date .react-datepicker__time-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.product-nego-date .react-datepicker__time-list::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}
+
+.product-nego-date .react-datepicker__time-list::-webkit-scrollbar-thumb {
+    background: #ff8c00;
+    border-radius: 3px;
+}
+
+.product-nego-date .react-datepicker__time-list::-webkit-scrollbar-thumb:hover {
+    background: #e67e00;
+}
+
+.product-nego-date .react-datepicker__time-list-item {
+    padding: 10px 0;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+}
+
+.product-nego-date .react-datepicker__time-list-item:hover {
+    background-color: #f5f5f5;
+}
+
+.product-nego-date .react-datepicker__time-list-item--selected {
+    background-color: #ff8c00 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.product-nego-date .react-datepicker__time-list-item--selected:hover {
+    background-color: #e67e00 !important;
+}

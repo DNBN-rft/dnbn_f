@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import { apiGet } from "../../../utils/apiClient";
+import { apiGet, apiPost } from "../../../utils/apiClient";
 import { formatDateTime } from "../../../utils/commonService";
+import NegotiationFilter from "./NegotiationFilter";
 
 const NegotiationHistoryList = () => {
-  const [searchField, setSearchField] = useState("productNm");
   const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(100000);
+  const [sliderMax, setSliderMax] = useState(100000);
+  const [priceRange, setPriceRange] = useState("100000");
+  const [isManualInput, setIsManualInput] = useState(false);
 
   const [negotiations, setNegotiations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,6 +35,7 @@ const NegotiationHistoryList = () => {
         setTotalPages(data.totalPages);
         setTotalElements(data.totalElements);
         setNegotiations(data.content);
+        console.log("네고 이력 데이터:", data);
       } else {
         setError("네고 조회에 실패했습니다.");
       }
@@ -40,70 +47,97 @@ const NegotiationHistoryList = () => {
     }
   };
 
+  const searchNegotiations = async (page = 0) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const negoStatus = statusFilter === "ALL" ? null : statusFilter;
+
+      const searchRequest = {
+        minPriceRange: minPrice,
+        maxPriceRange: maxPrice,
+        startDateTime: startDate ? `${startDate}T00:00:00` : null,
+        endDateTime: endDate ? `${endDate}T23:59:59` : null,
+        negoStatus: negoStatus,
+        productNm: searchText || null
+      };
+
+      const response = await apiPost(
+        `/store/nego-log/search?page=${page}&size=${pageSize}`,
+        searchRequest
+      );
+      const data = await response.json();
+      
+      if (response.ok) {
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+        setNegotiations(data.content);
+      } else {
+        setError("네고 이력 검색에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("검색 API 요청 실패:", err);
+      setError("네고 이력 검색 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadNegotiations();
   }, []);
 
   const handleReset = () => {
-    setSearchField("productNm");
     setSearchText("");
     setStartDate("");
     setEndDate("");
+    setStatusFilter("ALL");
+    setMinPrice(0);
+    setMaxPrice(100000);
+    setSliderMax(100000);
+    setPriceRange("100000");
+    setIsManualInput(false);
     setCurrentPage(0);
+    loadNegotiations(0);
   };
 
   const handleSearch = () => {
     setCurrentPage(0);
+    searchNegotiations(0);
   };
 
   return (
     <div>
-      <div className="negotiationHistory-filter">
-        <div className="negotiationHistory-date-range">
-          <div className="negotiationHistory-date-range-inner">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <span className="negotiationHistory-date-sep">~</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-
-          <div className="negotiationHistory-search">
-            <select
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-            >
-              <option value="productNm">상품명</option>
-              <option value="saleNum">판매번호</option>
-              <option value="productCode">상품코드</option>
-            </select>
-            <input
-              type="text"
-              placeholder="검색어를 입력해주세요."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="negotiationHistory-search-input"
-            />
-            <div className="negotiationHistory-search-btn">
-              <button className="negotiationHistory-btn" onClick={handleSearch}>검색</button>
-              <button className="negotiationHistory-btn" onClick={handleReset}>초기화</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <NegotiationFilter
+        searchText={searchText}
+        setSearchText={setSearchText}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        minPrice={minPrice}
+        setMinPrice={setMinPrice}
+        maxPrice={maxPrice}
+        setMaxPrice={setMaxPrice}
+        sliderMax={sliderMax}
+        setSliderMax={setSliderMax}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+        isManualInput={isManualInput}
+        setIsManualInput={setIsManualInput}
+        handleSearch={handleSearch}
+        handleReset={handleReset}
+        isHistory={true}
+      />
 
       <div className="negotiationHistory-table-wrap">
         <table className="negotiationHistory-table">
           <thead>
             <tr>
               <th>번호</th>
-              <th>상품코드</th>
               <th>상품명</th>
               <th>상품가격</th>
               <th>시작일시</th>
@@ -113,27 +147,39 @@ const NegotiationHistoryList = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="7" style={{textAlign: 'center', padding: '20px'}}>로딩 중...</td></tr>
+              <tr><td colSpan="6" style={{textAlign: 'center', padding: '20px'}}>로딩 중...</td></tr>
             ) : error ? (
-              <tr><td colSpan="7" style={{textAlign: 'center', padding: '20px', color: 'red'}}>{error}</td></tr>
+              <tr><td colSpan="6" style={{textAlign: 'center', padding: '20px', color: 'red'}}>{error}</td></tr>
             ) : negotiations.length === 0 ? (
-              <tr><td colSpan="7" style={{textAlign: 'center', padding: '20px'}}>네고 이력이 없습니다.</td></tr>
+              <tr><td colSpan="6" style={{textAlign: 'center', padding: '20px'}}>네고 이력이 없습니다.</td></tr>
             ) : (
               negotiations.map((nego, index) => (
                 <tr key={nego.negoId || index}>
                   <td>{index + 1}</td>
-                  <td>{nego.productCode}</td>
-                  <td>
-                    <div>
-                      <div>{nego.categoryNm}</div>
-                      <div>{nego.productNm}</div>
+                  <td className="negotiationHistory-product-info">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {nego.productImage ? (
+                        <img 
+                          src={nego.productImage} 
+                          alt={nego.productNm}
+                          style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+                        />
+                      ) : (
+                        <div style={{ width: '60px', height: '60px', backgroundColor: '#e0e0e0', borderRadius: '4px', flexShrink: 0 }} />
+                      )}
+                      <div>
+                        <div className="negotiationHistory-category">{nego.categoryNm}</div>
+                        <div className="negotiationHistory-name">{nego.productNm}</div>
+                      </div>
                     </div>
                   </td>
                   <td>{nego.productPrice?.toLocaleString()}원</td>
                   <td>{formatDateTime(nego.startDateTime)}</td>
                   <td>{formatDateTime(nego.endDateTime)}</td>
                   <td>
-                    <button className="negotiationHistory-btn outline danger">취소</button>
+                    <span className={`negotiationHistory-status ${nego.negoLogStatus === 'CANCELED' ? 'canceled' : 'ended'}`}>
+                      {nego.negoLogStatus === 'CANCELED' ? '취소' : nego.negoLogStatus === 'COMPLETED' ? '종료' : nego.negoStatus}
+                    </span>
                   </td>
                 </tr>
               ))

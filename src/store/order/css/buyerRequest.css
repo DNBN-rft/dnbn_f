@@ -1,18 +1,18 @@
 /* ========== CSS Variables ========== */
 :root {
-  --negotiation-accent: rgb(239, 120, 16);
-  --negotiation-border: #e9e9e9;
+  --buyerRequest-accent: rgb(239, 120, 16);
+  --buyerRequest-border: #e9e9e9;
 }
 
 /* ========== Layout ========== */
-.negotiation-container {
+.buyerRequest-container {
   background: #fff;
   width: 90%;
   margin: auto;
   padding: 20px 0 30px;
 }
 
-.negotiation-header {
+.buyerRequest-header {
   width: 100%;
   height: 50px;
   display: flex;
@@ -20,21 +20,21 @@
   margin-bottom: 10px;
 }
 
-.negotiation-header-title {
+.buyerRequest-header-title {
   font-size: 20px;
   font-weight: bold;
   line-height: 50px;
 }
 
 /* ========== Tabs ========== */
-.negotiation-tabs {
+.buyerRequest-tabs {
   display: flex;
   gap: 0;
   margin-bottom: 20px;
-  border-bottom: 2px solid var(--negotiation-border);
+  border-bottom: 2px solid var(--buyerRequest-border);
 }
 
-.negotiation-tab {
+.buyerRequest-tab {
   padding: 12px 24px;
   background: none;
   border: none;
@@ -48,30 +48,30 @@
   bottom: -2px;
 }
 
-.negotiation-tab:hover {
-  color: var(--negotiation-accent);
+.buyerRequest-tab:hover {
+  color: var(--buyerRequest-accent);
 }
 
-.negotiation-tab.active {
-  color: var(--negotiation-accent);
-  border-bottom-color: var(--negotiation-accent);
+.buyerRequest-tab.active {
+  color: var(--buyerRequest-accent);
+  border-bottom-color: var(--buyerRequest-accent);
   font-weight: 600;
 }
 
-.negotiation-tab-content {
+.buyerRequest-tab-content {
   width: 100%;
 }
 
 /* ========== Filter Container ========== */
-.negotiation-filter {
-  border: 1px solid var(--negotiation-border);
+.buyerRequest-filter {
+  border: 1px solid var(--buyerRequest-border);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 16px;
   background: #fff;
 }
 
-.negotiation-filter-header {
+.buyerRequest-filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -80,33 +80,33 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.negotiation-filter-title {
+.buyerRequest-filter-title {
   font-size: 16px;
   font-weight: 600;
   color: #333;
 }
 
 /* ========== Filter Layout ========== */
-/* 그리드 레이아웃 (NegotiationList) */
-.negotiation-filter-grid {
+/* 그리드 레이아웃 (buyerRequestList) */
+.buyerRequest-filter-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.negotiation-filter-column {
+.buyerRequest-filter-column {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.negotiation-filter-item {
+.buyerRequest-filter-item {
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
 
-.negotiation-filter-label {
+.buyerRequest-filter-label {
   font-weight: 600;
   min-width: 70px;
   color: #333;
@@ -116,13 +116,13 @@
 }
 
 /* 플렉스 레이아웃 (BuyerRequestList) */
-.negotiation-date-range {
+.buyerRequest-date-range {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.negotiation-search {
+.buyerRequest-search {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -130,7 +130,7 @@
   margin-left: 50px;
 }
 
-.negotiation-search select {
+.buyerRequest-search select {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -140,50 +140,50 @@
   cursor: pointer;
 }
 
-.negotiation-search-btn {
+.buyerRequest-search-btn {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
 /* ========== Input Fields ========== */
-.negotiation-date-range-inner {
+.buyerRequest-date-range-inner {
   display: flex;
   align-items: center;
   gap: 8px;
   flex: 1;
 }
 
-.negotiation-date-range-inner input,
-.negotiation-search-input {
+.buyerRequest-date-range-inner input,
+.buyerRequest-search-input {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
 }
 
-.negotiation-date-range-inner input {
+.buyerRequest-date-range-inner input {
   flex: 1;
   font-weight: 500;
   text-align: center;
 }
 
-.negotiation-search-input {
+.buyerRequest-search-input {
   flex: 1;
 }
 
-.negotiation-date-sep {
+.buyerRequest-date-sep {
   color: #666;
   font-weight: 500;
 }
 
 /* ========== Button Groups ========== */
-.negotiation-filter-actions {
+.buyerRequest-filter-actions {
   display: flex;
   gap: 8px;
 }
 
-.negotiation-btn {
+.buyerRequest-btn {
   padding: 8px 20px;
   border-radius: 5px;
   border: 1px solid #ddd;
@@ -196,48 +196,48 @@
   white-space: nowrap;
 }
 
-.negotiation-btn:hover {
+.buyerRequest-btn:hover {
   background: #f5f5f5;
   border-color: #ccc;
 }
 
-.negotiation-btn.primary {
-  background: var(--negotiation-accent);
+.buyerRequest-btn.primary {
+  background: var(--buyerRequest-accent);
   color: white;
-  border-color: var(--negotiation-accent);
+  border-color: var(--buyerRequest-accent);
 }
 
-.negotiation-btn.primary:hover {
+.buyerRequest-btn.primary:hover {
   background: rgba(239, 120, 16, 0.85);
 }
 
-.negotiation-btn.outline.danger {
+.buyerRequest-btn.outline.danger {
   border-color: #ff6b6b;
   color: #ff6b6b;
 }
 
-.negotiation-btn.outline.danger:hover {
+.buyerRequest-btn.outline.danger:hover {
   background: #ff6b6b;
   color: white;
 }
 
 /* ========== Status & Price Filter Buttons ========== */
-.negotiation-status-filter,
-.negotiation-price-range-buttons {
+.buyerRequest-status-filter,
+.buyerRequest-price-range-buttons {
   display: flex;
   gap: 6px;
 }
 
-.negotiation-status-filter {
+.buyerRequest-status-filter {
   flex: 1;
 }
 
-.negotiation-price-range-buttons {
+.buyerRequest-price-range-buttons {
   flex-wrap: wrap;
 }
 
-.negotiation-status-btn,
-.negotiation-price-range-btn {
+.buyerRequest-status-btn,
+.buyerRequest-price-range-btn {
   padding: 8px 16px;
   border-radius: 5px;
   border: 1px solid #ddd;
@@ -250,43 +250,43 @@
   white-space: nowrap;
 }
 
-.negotiation-status-btn {
+.buyerRequest-status-btn {
   flex: 1;
 }
 
-.negotiation-price-range-btn {
+.buyerRequest-price-range-btn {
   padding: 6px 12px;
   font-size: 12px;
 }
 
-.negotiation-status-btn:hover,
-.negotiation-price-range-btn:hover {
-  border-color: var(--negotiation-accent);
-  color: var(--negotiation-accent);
+.buyerRequest-status-btn:hover,
+.buyerRequest-price-range-btn:hover {
+  border-color: var(--buyerRequest-accent);
+  color: var(--buyerRequest-accent);
 }
 
-.negotiation-status-btn.active,
-.negotiation-price-range-btn.active {
-  background: var(--negotiation-accent);
+.buyerRequest-status-btn.active,
+.buyerRequest-price-range-btn.active {
+  background: var(--buyerRequest-accent);
   color: white;
-  border-color: var(--negotiation-accent);
+  border-color: var(--buyerRequest-accent);
 }
 
 /* ========== Price Range Inputs & Slider ========== */
-.negotiation-price-range {
+.buyerRequest-price-range {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.negotiation-price-inputs {
+.buyerRequest-price-inputs {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.negotiation-price-input {
+.buyerRequest-price-input {
   width: 120px;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -296,19 +296,19 @@
   transition: all 0.2s ease;
 }
 
-.negotiation-price-unit {
+.buyerRequest-price-unit {
   color: #666;
   font-size: 14px;
   font-weight: 500;
 }
 
-.negotiation-price-slider-wrapper {
+.buyerRequest-price-slider-wrapper {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.negotiation-price-slider-container {
+.buyerRequest-price-slider-container {
   position: relative;
   height: 30px;
   display: flex;
@@ -317,7 +317,7 @@
 }
 
 /* 전체 배경 라인 */
-.negotiation-price-slider-container::before {
+.buyerRequest-price-slider-container::before {
   content: '';
   position: absolute;
   left: 0;
@@ -329,17 +329,17 @@
 }
 
 /* 선택된 범위 트랙 */
-.negotiation-price-slider-track-active {
+.buyerRequest-price-slider-track-active {
   position: absolute;
   height: 4px;
-  background: var(--negotiation-accent);
+  background: var(--buyerRequest-accent);
   border-radius: 2px;
   pointer-events: none;
   z-index: 1;
 }
 
 /* Range Slider */
-.negotiation-price-slider {
+.buyerRequest-price-slider {
   position: absolute;
   width: 100%;
   height: 4px;
@@ -351,20 +351,20 @@
 }
 
 /* Webkit 브라우저 (Chrome, Safari, Edge) */
-.negotiation-price-slider::-webkit-slider-track {
+.buyerRequest-price-slider::-webkit-slider-track {
   width: 100%;
   height: 4px;
   background: transparent;
   border: none;
 }
 
-.negotiation-price-slider::-webkit-slider-thumb {
+.buyerRequest-price-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
   background: white;
-  border: 3px solid var(--negotiation-accent);
+  border: 3px solid var(--buyerRequest-accent);
   cursor: pointer;
   border-radius: 50%;
   pointer-events: auto;
@@ -374,24 +374,24 @@
   margin-top: 0;
 }
 
-.negotiation-price-slider::-webkit-slider-thumb:hover {
+.buyerRequest-price-slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
   box-shadow: 0 3px 8px rgba(239, 120, 16, 0.4);
 }
 
 /* Firefox */
-.negotiation-price-slider::-moz-range-track {
+.buyerRequest-price-slider::-moz-range-track {
   width: 100%;
   height: 4px;
   background: transparent;
   border: none;
 }
 
-.negotiation-price-slider::-moz-range-thumb {
+.buyerRequest-price-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   background: white;
-  border: 3px solid var(--negotiation-accent);
+  border: 3px solid var(--buyerRequest-accent);
   cursor: pointer;
   border-radius: 50%;
   pointer-events: auto;
@@ -400,51 +400,51 @@
   z-index: 3;
 }
 
-.negotiation-price-slider::-moz-range-thumb:hover {
+.buyerRequest-price-slider::-moz-range-thumb:hover {
   transform: scale(1.1);
   box-shadow: 0 3px 8px rgba(239, 120, 16, 0.4);
 }
 
 /* Slider Z-index */
-.negotiation-price-slider-max {
+.buyerRequest-price-slider-max {
   z-index: 2;
 }
 
-.negotiation-price-slider-min {
+.buyerRequest-price-slider-min {
   z-index: 2;
 }
 
 /* Slider disabled state */
-.negotiation-price-slider:disabled {
+.buyerRequest-price-slider:disabled {
   cursor: not-allowed;
 }
 
-.negotiation-price-slider:disabled::-webkit-slider-thumb {
+.buyerRequest-price-slider:disabled::-webkit-slider-thumb {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.negotiation-price-slider:disabled::-moz-range-thumb {
+.buyerRequest-price-slider:disabled::-moz-range-thumb {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
 /* 슬라이더 눈금 */
-.negotiation-price-ticks {
+.buyerRequest-price-ticks {
   display: flex;
   justify-content: space-between;
   padding: 0 2px;
   margin-top: 2px;
 }
 
-.negotiation-price-tick {
+.buyerRequest-price-tick {
   font-size: 11px;
   color: #999;
   text-align: center;
   position: relative;
 }
 
-.negotiation-price-tick::before {
+.buyerRequest-price-tick::before {
   content: '';
   position: absolute;
   top: -6px;
@@ -456,18 +456,18 @@
 }
 
 /* ========== Table Styles ========== */
-.negotiation-table-wrap {
+.buyerRequest-table-wrap {
   margin-top: 12px;
 }
 
-.negotiation-table {
+.buyerRequest-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
   table-layout: fixed;
 }
 
-.negotiation-table thead th {
+.buyerRequest-table thead th {
   text-align: center;
   padding: 12px;
   background: #fafafa;
@@ -475,15 +475,15 @@
 }
 
 /* 열 너비 */
-.negotiation-table thead th:nth-child(1) { width: 7%; }   /* 번호 */
-.negotiation-table thead th:nth-child(2) { width: 25%; }  /* 상품명 */
-.negotiation-table thead th:nth-child(3) { width: 15%; }  /* 구매자명 */
-.negotiation-table thead th:nth-child(4) { width: 15%; }  /* 구매자 연락처 */
-.negotiation-table thead th:nth-child(5) { width: 12%; }  /* 요청가격 */
-.negotiation-table thead th:nth-child(6) { width: 15%; }  /* 요청일시 */
-.negotiation-table thead th:nth-child(7) { width: 11%; }  /* 상태 */
+.buyerRequest-table thead th:nth-child(1) { width: 7%; }   /* 번호 */
+.buyerRequest-table thead th:nth-child(2) { width: 25%; }  /* 상품명 */
+.buyerRequest-table thead th:nth-child(3) { width: 15%; }  /* 구매자명 */
+.buyerRequest-table thead th:nth-child(4) { width: 15%; }  /* 구매자 연락처 */
+.buyerRequest-table thead th:nth-child(5) { width: 12%; }  /* 요청가격 */
+.buyerRequest-table thead th:nth-child(6) { width: 15%; }  /* 요청일시 */
+.buyerRequest-table thead th:nth-child(7) { width: 11%; }  /* 상태 */
 
-.negotiation-table tbody td {
+.buyerRequest-table tbody td {
   padding: 12px;
   border-bottom: 1px solid #f1f1f1;
   vertical-align: middle;
@@ -491,17 +491,17 @@
 }
 
 /* 상품 정보 */
-.negotiation-product-info {
+.buyerRequest-product-info {
   text-align: left !important;
 }
 
-.negotiation-category {
+.buyerRequest-category {
   font-size: 12px;
   color: #999;
   line-height: 1.4;
 }
 
-.negotiation-name {
+.buyerRequest-name {
   font-size: 16px;
   font-weight: bold;
   color: #333;
@@ -509,7 +509,7 @@
 }
 
 /* 네고 상태 배지 */
-.negotiation-status {
+.buyerRequest-status {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 12px;
@@ -518,40 +518,40 @@
   text-align: center;
 }
 
-.negotiation-status.ongoing {
-  color: var(--negotiation-accent);
-  border: 1px solid var(--negotiation-accent);
+.buyerRequest-status.ongoing {
+  color: var(--buyerRequest-accent);
+  border: 1px solid var(--buyerRequest-accent);
 }
 
-.negotiation-status.upcoming {
+.buyerRequest-status.upcoming {
   color: #ff9800;
   border: 1px solid #ff9800;
 }
 
 /* ========== Footer & Pagination ========== */
-.negotiation-footer {
+.buyerRequest-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 12px;
 }
 
-.negotiation-count {
+.buyerRequest-count {
   color: #666;
   font-size: 14px;
   flex: 1;
 }
 
-.negotiation-footer-spacer {
+.buyerRequest-footer-spacer {
   flex: 1;
 }
 
-.negotiation-pagination {
+.buyerRequest-pagination {
   display: flex;
   gap: 6px;
 }
 
-.negotiation-page {
+.buyerRequest-page {
   padding: 6px 10px;
   border: 1px solid #ddd;
   background: #fff;
@@ -559,55 +559,55 @@
   cursor: pointer;
 }
 
-.negotiation-page.active {
-  background: var(--negotiation-accent);
+.buyerRequest-page.active {
+  background: var(--buyerRequest-accent);
   color: #fff;
-  border-color: var(--negotiation-accent);
+  border-color: var(--buyerRequest-accent);
 }
 
-.negotiation-page:disabled {
+.buyerRequest-page:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ========== Responsive Design ========== */
 @media (max-width: 1024px) {
-  .negotiation-date-range {
+  .buyerRequest-date-range {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
   
-  .negotiation-search {
+  .buyerRequest-search {
     margin-left: 0;
     flex-wrap: wrap;
   }
   
-  .negotiation-search-input {
+  .buyerRequest-search-input {
     max-width: 100%;
   }
 }
 
 @media (max-width: 768px) {
-  .negotiation-filter {
+  .buyerRequest-filter {
     padding: 14px 16px;
   }
   
-  .negotiation-date-range,
-  .negotiation-date-range-inner,
-  .negotiation-search {
+  .buyerRequest-date-range,
+  .buyerRequest-date-range-inner,
+  .buyerRequest-search {
     width: 100%;
   }
   
-  .negotiation-date-range input {
+  .buyerRequest-date-range input {
     flex: 1;
   }
   
-  .negotiation-search {
+  .buyerRequest-search {
     margin-top: 12px;
   }
   
-  .negotiation-search-btn {
+  .buyerRequest-search-btn {
     width: 100%;
     justify-content: flex-end;
     margin-top: 10px;
