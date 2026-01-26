@@ -159,7 +159,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
                             </div>
 
                             <div className="emp-reg-checkbox">
-                                {authMenus.map((menu) => (
+                                {authMenus.filter(menu => menu.displayName !== "직원 관리").map((menu) => (
                                     <label key={menu.code}>
                                         <input
                                             type="checkbox"

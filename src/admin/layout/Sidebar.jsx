@@ -225,7 +225,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
             )}
 
             {/* 시스템관리 */}
-            {hasPermission("ADMIN_SYSTEM") && (
+            {(hasPermission("ADMIN_SYSTEM") || hasPermission("ADMIN_CATEGORY")) && (
               <>
                 <div className="admin-sb-sidenav-menu-heading">시스템관리</div>
                 <a
@@ -247,15 +247,21 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                 </a>
                 <div className={`collapse ${isSystemOpen ? "show" : ""}`}>
                   <nav className="admin-sb-sidenav-menu-nested nav">
-                    <Link className="nav-link" to="/admin/accept" onClick={handleLinkClick}>
-                      가입관리
-                    </Link>
-                    <Link className="nav-link" to="/admin/categorymanage" onClick={handleLinkClick}>
-                      카테고리관리
-                    </Link>
-                    <Link className="nav-link" to="/admin/authmanage" onClick={handleLinkClick}>
-                      권한관리
-                    </Link>
+                    {hasPermission("ADMIN_SYSTEM") && (
+                      <>
+                        <Link className="nav-link" to="/admin/accept" onClick={handleLinkClick}>
+                          가입관리
+                        </Link>
+                        <Link className="nav-link" to="/admin/authmanage" onClick={handleLinkClick}>
+                          권한관리
+                        </Link>
+                      </>
+                    )}
+                    {hasPermission("ADMIN_CATEGORY") && (
+                      <Link className="nav-link" to="/admin/categorymanage" onClick={handleLinkClick}>
+                        카테고리관리
+                      </Link>
+                    )}
                   </nav>
                 </div>
               </>
