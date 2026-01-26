@@ -14,6 +14,13 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
 
   const handleStoreImageSelect = (file) => {
     if (file && file.type.startsWith('image/')) {
+      // 파일 크기 체크 (10MB = 10 * 1024 * 1024 bytes)
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setStoreImage(file);
@@ -30,6 +37,15 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
 
   const handleBusinessDocsSelect = (files) => {
     const newFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    
+    // 파일 크기 체크 (10MB 제한)
+    const maxSize = 10 * 1024 * 1024;
+    const oversizedFiles = newFiles.filter(file => file.size > maxSize);
+    if (oversizedFiles.length > 0) {
+      alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+      return;
+    }
+    
     const newPreviews = [];
     
     newFiles.forEach((file, index) => {

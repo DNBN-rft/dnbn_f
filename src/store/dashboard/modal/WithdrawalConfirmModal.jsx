@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./css/withdrawalconfirmmodal.css";
 import { apiDelete } from "../../../utils/apiClient";
 
-const WithdrawalConfirmModal = ({ onClose, storeIdx }) => {
+const WithdrawalConfirmModal = ({ onClose }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -12,7 +12,8 @@ const WithdrawalConfirmModal = ({ onClose, storeIdx }) => {
     setIsLoading(true);
 
     try {
-      const response = await apiDelete(`/store/withdrawal/${storeIdx}`);
+      const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
+      const response = await apiDelete(`/store/withdrawal/${storeCode}`);
 
       if (!response.ok) {
         alert("회원 탈퇴 처리 중 오류가 발생했습니다.");
