@@ -127,7 +127,7 @@ const SaleHistory = () => {
                                         <div className="sale-product-info-wrap">
                                             {sale.images?.files && sale.images.files.length > 0 ? (
                                                 <img
-                                                    src={`http://localhost:8080${sale.images.files[0].fileUrl}`}
+                                                    src={sale.images.files[0].fileUrl}
                                                     alt="상품 이미지"
                                                     className="sale-product-img"
                                                 />

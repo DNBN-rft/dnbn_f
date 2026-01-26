@@ -55,10 +55,10 @@ const AdminReviewDetail = ({ reviewIdx, onClose, onUpdate }) => {
       <div className="adminreviewdetail-img">
         {reviewData.img?.files && reviewData.img.files.length > 0 ? (
           <img 
-            src={`http://localhost:8080${reviewData.img.files[0].fileUrl}`}
+            src={reviewData.img.files[0].fileUrl}
             alt="리뷰 이미지"
             style={{ width: '100%', height: '100%', objectFit: 'contain', cursor: 'pointer' }}
-            onClick={() => setSelectedImage(`http://localhost:8080${reviewData.img.files[0].fileUrl}`)}
+            onClick={() => setSelectedImage(reviewData.img.files[0].fileUrl)}
           />
         ) : (
           <div>이미지 없음</div>

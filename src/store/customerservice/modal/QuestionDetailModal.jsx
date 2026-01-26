@@ -62,10 +62,10 @@ const QuestionDetailModal = ({ onClose, id }) => {
                             {question.imgs.files.map((file, index) => (
                                 <img
                                     key={index}
-                                    src={`http://localhost:8080${file.fileUrl}`}
+                                    src={file.fileUrl}
                                     alt={`문의 이미지 ${index + 1}`}
                                     className="question-detail-image"
-                                    onClick={() => setSelectedImage(`http://localhost:8080${file.fileUrl}`)}
+                                    onClick={() => setSelectedImage(file.fileUrl)}
                                 />
                             ))}
                         </div>
