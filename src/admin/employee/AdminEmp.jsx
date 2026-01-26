@@ -230,7 +230,6 @@ const AdminEmp = () => {
   };
 
 
-
   return (
     <div className="adminemp-container">
       <div className="adminemp-wrap">
