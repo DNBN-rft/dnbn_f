@@ -13,7 +13,6 @@ const Review = () => {
   const [searchField, setSearchField] = useState("판매번호");
   const [searchText, setSearchText] = useState("");
   const [isReviewAnswerModalOpen, setIsReviewAnswerModalOpen] = useState(false);
-  const [selectedReview, setSelectedReview] = useState(null);
   const [reviewData, setReviewData] = useState([]);
   const [selectedReviewIdx, setSelectedReviewIdx] = useState(null);
   const [isReviewReportModalOpen, setIsReviewReportModalOpen] = useState(false);
