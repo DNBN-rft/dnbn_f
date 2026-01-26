@@ -1,11 +1,38 @@
-import { apiPut } from "../../../utils/apiClient";
+import { apiPut, apiGet } from "../../../utils/apiClient";
 import "./css/reviewanswer.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const ReviewAnswer = ({ onClose, review, refreshData }) => {
-    const [answerContent, setAnswerContent] = useState(review.reviewAnswerContent || "");
-    const hasAnswer = review.reviewAnswered && review.reviewAnswerContent;
-    const [isEditMode, setIsEditMode] = useState(!hasAnswer);
+const ReviewAnswer = ({ onClose, reviewIdx, refreshData }) => {
+    const [review, setReview] = useState(null);
+    const [answerContent, setAnswerContent] = useState("");
+    const [isEditMode, setIsEditMode] = useState(true);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchReviewDetail = async () => {
+            try {
+                const response = await apiGet(`/store/review/${reviewIdx}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setReview(data);
+                    setAnswerContent(data.reviewAnswerContent || "");
+                    const hasAnswer = data.reviewAnswered && data.reviewAnswerContent;
+                    setIsEditMode(!hasAnswer);
+                } else {
+                    throw new Error("리뷰 상세 정보를 불러오는데 실패했습니다.");
+                }
+            } catch (error) {
+                alert("리뷰 상세 정보를 불러오는데 실패했습니다.");
+                onClose();
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchReviewDetail();
+    }, [reviewIdx, onClose]);
+
+    const hasAnswer = review && review.reviewAnswered && review.reviewAnswerContent;
 
     const handleEditClick = (e) => {
         e.preventDefault();
@@ -41,54 +68,56 @@ const ReviewAnswer = ({ onClose, review, refreshData }) => {
         <div className="review-answer-backdrop" onClick={onClose}>
             <div className="review-answer-wrap" onClick={(e) => e.stopPropagation()}>
                 <div className="review-answer-header">
-                    {hasAnswer ? "리뷰 답변 상세" : "리뷰 답변 등록"}
+                    {loading ? "로딩 중..." : hasAnswer ? "리뷰 답변 상세" : "리뷰 답변 등록"}
                 </div>
 
-                <div className="review-answer-contents">
-                    <div className="review-detail-info">
-                        <div className="review-detail-title">상품명: {review.productNm}</div>
-                        <div className="review-detail-regNm">작성자: {review.regNm}</div>
-                    </div>
-                    <div className="review-detail-content">{review.content}</div>
-
-                    <form className="review-answer-form" onSubmit={handleSubmit}>
-                        {hasAnswer && !isEditMode ? (
-                            <div className="review-detail-content">{review.reviewAnswerContent}</div>
-                        ) : (
-                            <input
-                                type="text"
-                                value={answerContent}
-                                onChange={(e) => setAnswerContent(e.target.value)}
-                                required
-                                placeholder="리뷰 답변 내용을 입력해주세요."
-                            />
-                        )}
-                        <div className="review-answer-footer">
-                            {hasAnswer && !isEditMode ? (
-                                !review.isMod && (
-                                    <button 
-                                        type="button" 
-                                        className="review-answer-submit-button"
-                                        onClick={handleEditClick}
-                                    >
-                                        수정
-                                    </button>
-                                )
-                            ) : (
-                                <button type="submit" className="review-answer-submit-button">
-                                    {hasAnswer ? "수정완료" : "등록"}
-                                </button>
-                            )}
-                            <button
-                                type="button"
-                                className="review-answer-cancel-button"
-                                onClick={onClose}
-                            >
-                                취소
-                            </button>
+                {!loading && review && (
+                    <div className="review-answer-contents">
+                        <div className="review-detail-info">
+                            <div className="review-detail-title">상품명: {review.productNm}</div>
+                            <div className="review-detail-regNm">작성자: {review.regNm}</div>
                         </div>
-                    </form>
-                </div>
+                        <div className="review-detail-content">{review.content}</div>
+
+                        <form className="review-answer-form" onSubmit={handleSubmit}>
+                            {hasAnswer && !isEditMode ? (
+                                <div className="review-detail-content">{review.reviewAnswerContent}</div>
+                            ) : (
+                                <input
+                                    type="text"
+                                    value={answerContent}
+                                    onChange={(e) => setAnswerContent(e.target.value)}
+                                    required
+                                    placeholder="리뷰 답변 내용을 입력해주세요."
+                                />
+                            )}
+                            <div className="review-answer-footer">
+                                {hasAnswer && !isEditMode ? (
+                                    !review.isMod && (
+                                        <button 
+                                            type="button" 
+                                            className="review-answer-submit-button"
+                                            onClick={handleEditClick}
+                                        >
+                                            수정
+                                        </button>
+                                    )
+                                ) : (
+                                    <button type="submit" className="review-answer-submit-button">
+                                        {hasAnswer ? "수정완료" : "등록"}
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    className="review-answer-cancel-button"
+                                    onClick={onClose}
+                                >
+                                    취소
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                )}
             </div>
         </div>
     );

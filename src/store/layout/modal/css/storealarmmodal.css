@@ -121,6 +121,7 @@
     font-size: 14px;
     line-height: 1.5;
     font-weight: 400;
+    white-space: pre-line;
 }
 
 /* 빈 알람 메시지 */
