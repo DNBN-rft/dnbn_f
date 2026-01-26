@@ -53,6 +53,15 @@ const ProductAdd = ({ onClose }) => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+    
+    // 파일 크기 체크 (10MB 제한)
+    const maxSize = 10 * 1024 * 1024;
+    const oversizedFiles = files.filter(file => file.size > maxSize);
+    if (oversizedFiles.length > 0) {
+      alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       productImgs: files

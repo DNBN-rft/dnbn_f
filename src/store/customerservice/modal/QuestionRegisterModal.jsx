@@ -49,6 +49,14 @@ const QuestionRegisterModal = ({ onClose, onSuccess }) => {
     const addFiles = (files) => {
         const imageFiles = files.filter(file => file.type.startsWith('image/'));
         
+        // 파일 크기 체크 (10MB 제한)
+        const maxSize = 10 * 1024 * 1024;
+        const oversizedFiles = imageFiles.filter(file => file.size > maxSize);
+        if (oversizedFiles.length > 0) {
+            alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+            return;
+        }
+        
         imageFiles.forEach(file => {
             const reader = new FileReader();
             reader.onloadend = () => {
