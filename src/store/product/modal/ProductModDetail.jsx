@@ -102,7 +102,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
           return {
             type: 'existing',
             data: img,
-            preview: `http://localhost:8080${img.fileUrl}`,
+            preview: img.fileUrl,
             name: fileName
           };
         });

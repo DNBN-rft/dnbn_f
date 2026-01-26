@@ -162,7 +162,7 @@ const CategoryModal = ({ mode, category, onSave, onClose, loading = false }) => 
                             {mode === "edit" && formData.existingImage && !formData.categoryImgPreview && (
                                 <div className="categorymodal-existing-image-wrap">
                                     <p className="categorymodal-image-label-text">기존 이미지:</p>
-                                    <img src={`http://localhost:8080${formData.existingImage}`} alt="현재 이미지" className="categorymodal-existing-image" style={{ width: '100%', maxHeight: '300px', objectFit: 'cover' }} />
+                                    <img src={formData.existingImage} alt="현재 이미지" className="categorymodal-existing-image" style={{ width: '100%', maxHeight: '300px', objectFit: 'cover' }} />
                                     <button 
                                         type="button"
                                         className="categorymodal-image-replace-btn"

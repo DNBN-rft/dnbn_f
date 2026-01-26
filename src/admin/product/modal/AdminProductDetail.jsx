@@ -115,7 +115,7 @@ const AdminProductDetail = ({ productCode, onClose, onUpdate }) => {
       <div className="adminproductdetail-img">
         {productData.imgs?.files && productData.imgs.files.length > 0 ? (
           <img
-            src={`http://localhost:8080${productData.imgs.files[0].fileUrl}`}
+            src={productData.imgs.files[0].fileUrl}
             alt={productData.productNm}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
