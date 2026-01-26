@@ -101,7 +101,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
       if (product.productState === "판매 중") stateEnum = "ON_SALE";
       else if (product.productState === "판매 종료") stateEnum = "ENDED";
       else if (product.productState === "대기") stateEnum = "PENDING";
-      else if (product.productState === "판매 제재") stateEnum = "REJECTED";
+      else if (product.productState === "판매 제재") stateEnum = "PRODUCT_RESTRICT";
 
       setFormData({
         productNm: product.productNm || "",

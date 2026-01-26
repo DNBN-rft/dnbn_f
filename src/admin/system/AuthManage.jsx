@@ -46,11 +46,12 @@ const AuthManage = () => {
                     }));
                     setAuthList(formattedAuthList);
 
-                    // allMenus 구축 (모든 권한의 메뉴를 모음)
+                    // allMenus 구축 (모든 권한의 메뉴를 모음) - ADMIN_CATEGORY 제외
                     const menusMap = new Map();
                     data.forEach(auth => {
                         auth.menuAuth.forEach(menu => {
-                            if (!menusMap.has(menu.code)) {
+                            // ADMIN_CATEGORY 필터링
+                            if (menu.code !== "ADMIN_CATEGORY" && !menusMap.has(menu.code)) {
                                 menusMap.set(menu.code, {
                                     id: menu.code,
                                     name: menu.displayName
@@ -60,12 +61,14 @@ const AuthManage = () => {
                     });
                     setAllMenus(Array.from(menusMap.values()));
 
-                    // originalAuthMenus 초기화
+                    // originalAuthMenus 초기화 - ADMIN_CATEGORY 제외
                     const originalMenus = {};
                     const authMenusInit = {};
                     formattedAuthList.forEach(auth => {
-                        originalMenus[auth.id] = auth.menus;
-                        authMenusInit[auth.id] = auth.menus;
+                        // ADMIN_CATEGORY 필터링
+                        const filteredMenus = auth.menus.filter(menu => menu !== "ADMIN_CATEGORY");
+                        originalMenus[auth.id] = filteredMenus;
+                        authMenusInit[auth.id] = filteredMenus;
                     });
                     setOriginalAuthMenus(originalMenus);
                     setAuthMenus(authMenusInit);
