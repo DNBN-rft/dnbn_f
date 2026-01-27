@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const EmployeeModModal = ({ onClose, member, refreshData }) => {
   const storeCode = JSON.parse(localStorage.getItem("user")).storeCode;
-  
+
   const [authMenus, setAuthMenus] = useState([]);
   const [selectedAuthCodes, setSelectedAuthCodes] = useState([]);
 
@@ -204,7 +204,7 @@ const EmployeeModModal = ({ onClose, member, refreshData }) => {
               </div>
 
               <div className="emp-reg-checkbox">
-                {authMenus.map((menu) => (
+                {authMenus.filter(menu => menu.displayName !== "직원 관리").map((menu) => (
                   <label key={menu.code}>
                     <input
                       type="checkbox"

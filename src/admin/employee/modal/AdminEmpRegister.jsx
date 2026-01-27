@@ -327,8 +327,10 @@ const AdminEmpRegister = ({ onClose, onSuccess }) => {
                       try {
                         const menuAuth = authList.find(auth => auth.authIdx === parseInt(formData.authIdx))?.menuAuth;
                         const menuArray = Array.isArray(menuAuth) ? menuAuth : [];
-                        return menuArray.length > 0 ? (
-                          menuArray.map((menu, index) => (
+                        // ADMIN_CATEGORY 필터링
+                        const filteredMenus = menuArray.filter(menu => menu.code !== "ADMIN_CATEGORY" && menu !== "ADMIN_CATEGORY");
+                        return filteredMenus.length > 0 ? (
+                          filteredMenus.map((menu, index) => (
                             <span key={index} className="adminempregister-menu-tag">
                               {menu.displayName}
                             </span>
