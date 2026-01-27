@@ -98,7 +98,6 @@ const QuestionRegisterModal = ({ onClose, onSuccess }) => {
             
             const response = await apiPostFormData(`/store/question`, formDataToSend);
             if (response.ok) {
-                alert("문의가 등록되었습니다.");
                 onSuccess();
             } else {
                 const errorText = await response.text();

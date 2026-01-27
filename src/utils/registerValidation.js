@@ -26,6 +26,42 @@ export const restrictPhone = (value) => {
   return value.replace(/[^0-9]/g, '').slice(0, 11);
 };
 
+/**
+ * 전화번호 포맷팅 함수 (자동 하이픈 추가)
+ * @param {string} phone - 숫자만 포함된 전화번호
+ * @returns {string} - 포맷팅된 전화번호
+ */
+export const formatPhone = (phone) => {
+  if (!phone) return '';
+  
+  const digitsOnly = phone.replace(/\D/g, '');
+  let formatted = '';
+  
+  if (digitsOnly.length <= 2) {
+    formatted = digitsOnly;
+  } else if (digitsOnly.startsWith('02')) {
+    // 02로 시작: 2-3-4 형식 (02-123-4567)
+    if (digitsOnly.length <= 5) {
+      formatted = `${digitsOnly.slice(0, 2)}-${digitsOnly.slice(2)}`;
+    } else {
+      formatted = `${digitsOnly.slice(0, 2)}-${digitsOnly.slice(2, 5)}-${digitsOnly.slice(5, 10)}`;
+    }
+  } else {
+    // 그 외 (010, 031, 070 등): 3-3-4 또는 3-4-4 형식
+    if (digitsOnly.length <= 3) {
+      formatted = digitsOnly;
+    } else if (digitsOnly.length <= 6) {
+      formatted = `${digitsOnly.slice(0, 3)}-${digitsOnly.slice(3)}`;
+    } else if (digitsOnly.length <= 10) {
+      formatted = `${digitsOnly.slice(0, 3)}-${digitsOnly.slice(3, 6)}-${digitsOnly.slice(6)}`;
+    } else {
+      formatted = `${digitsOnly.slice(0, 3)}-${digitsOnly.slice(3, 7)}-${digitsOnly.slice(7)}`;
+    }
+  }
+  
+  return formatted;
+};
+
 export const restrictAccountNumber = (value) => {
   return value.replace(/[^0-9]/g, '').slice(0, 15);
 };
@@ -155,7 +191,7 @@ export const validateBizInfo = (formData, bizNoDuplicate = null) => {
     return { isValid: false, message: "대표 전화번호를 입력해주세요." };
   }
 
-  if (!phoneRegex.test(formData.ownerTelNo)) {
+  if (!phoneRegex.test(formData.ownerTelNo.replace(/-/g, ''))) {
     return { isValid: false, message: "대표 전화번호는 숫자만 입력해주세요." };
   }
 
@@ -188,7 +224,7 @@ export const validateStoreInfo = (formData) => {
     return { isValid: false, message: "가게 전화번호를 입력해주세요." };
   }
 
-  if (!phoneRegex.test(formData.storeTelNo)) {
+  if (!phoneRegex.test(formData.storeTelNo.replace(/-/g, ''))) {
     return { isValid: false, message: "가게 전화번호는 숫자만 입력해주시기 바랍니다." };
   }
 
@@ -250,7 +286,7 @@ export const validateFileInfo = (formData, storeImage, businessDocs) => {
     return { isValid: false, message: "대표 전화번호를 입력해주세요." };
   }
 
-  if (!phoneRegex.test(formData.ownerTelNo)) {
+  if (!phoneRegex.test(formData.ownerTelNo.replace(/-/g, ''))) {
     return { isValid: false, message: "대표 전화번호는 숫자만 입력해주세요." };
   }
 
@@ -279,7 +315,7 @@ export const validateFileInfo = (formData, storeImage, businessDocs) => {
     return { isValid: false, message: "가게 전화번호를 입력해주세요." };
   }
 
-  if (!phoneRegex.test(formData.storeTelNo)) {
+  if (!phoneRegex.test(formData.storeTelNo.replace(/-/g, ''))) {
     return { isValid: false, message: "가게 전화번호는 숫자만 입력해주시기 바랍니다." };
   }
 

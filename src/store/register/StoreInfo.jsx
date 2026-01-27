@@ -4,7 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import { 
   validateStoreInfo,
   restrictBusinessName,
-  restrictPhone
+  restrictPhone,
+  formatPhone
 } from "../../utils/registerValidation";
 import DaumPostcode from "react-daum-postcode";
 
@@ -67,13 +68,13 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
   }, [formData.storeOpenTime, timeOptions]);
 
   const handleInputChange = (field, value) => {
-    // 필드별 입력 제한 적용
     let restrictedValue = value;
     
     if (field === 'storeNm') {
       restrictedValue = restrictBusinessName(value);
     } else if (field === 'storeTelNo') {
       restrictedValue = restrictPhone(value);
+      restrictedValue = formatPhone(restrictedValue);
     }
     
     setFormData({
@@ -93,7 +94,6 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
     };
     setOpenDays(newOpenDays);
     
-    // formData에 저장할 OpenDay 객체 배열
     const storeOpenDate = Object.keys(newOpenDays)
       .filter(key => newOpenDays[key])
       .map(day => ({ dayNm: day }));
@@ -105,7 +105,6 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
   };
 
   const handleNext = () => {
-    // 가맹점 정보 검증
     const validation = validateStoreInfo(formData);
     if (!validation.isValid) {
       alert(validation.message);
@@ -115,7 +114,6 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
     next();
   };
 
-  // 주소 검색 완료 핸들러
   const handleComplete = (data) => {
     let fullAddress = data.address;
     let extraAddress = '';
@@ -314,7 +312,6 @@ const StoreInfo = ({ formData, setFormData, next, prev }) => {
         <StepButton next={handleNext} prev={prev}/>
       </div>
 
-      {/* 주소 검색 모달 */}
       {searchOpen && (
         <div className="storeinfo-modal-overlay" onClick={() => setSearchOpen(false)}>
           <div className="storeinfo-modal-content" onClick={(e) => e.stopPropagation()}>

@@ -8,7 +8,8 @@ import {
   restrictPhone,
   restrictBusinessType,
   restrictBusinessName,
-  restrictAccountNumber
+  restrictAccountNumber,
+  formatPhone
 } from "../../utils/registerValidation";
 import { apiGet, apiPost } from "../../utils/apiClient";
 
@@ -49,6 +50,7 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
       restrictedValue = restrictName(value);
     } else if (field === 'ownerTelNo') {
       restrictedValue = restrictPhone(value);
+      restrictedValue = formatPhone(restrictedValue);
     } else if (field === 'bizType') {
       restrictedValue = restrictBusinessType(value);
     } else if (field === 'bizNm') {
@@ -62,7 +64,6 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
       [field]: restrictedValue,
     });
 
-    // 사업자번호 입력 시 중복 확인 초기화
     if (field === "bizNo") {
       setBizNoDuplicate(null);
       setBizNoCheckMessage("");
@@ -97,20 +98,18 @@ const BizInfo = ({ formData, setFormData, next, prev }) => {
   };
 
   const handleNext = async () => {
-    // 사업자 정보 검증 (util 함수 사용)
     const validation = validateBizInfo(formData, bizNoDuplicate);
     if (!validation.isValid) {
       alert(validation.message);
       return;
     }
 
-    // 사업자 등록번호 검증 API 호출
     try {
       const validationRequest = {
         businesses: [
           {
             b_no: formData.bizNo,
-            start_dt: formData.bizRegDate.replace(/-/g, ""), // YYYYMMDD 형식으로 변환
+            start_dt: formData.bizRegDate.replace(/-/g, ""),
             p_nm: formData.ownerNm,
           },
         ],
