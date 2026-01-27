@@ -23,7 +23,6 @@ const TopNav = () => {
   return (
     <nav className="sb-topnav navbar navbar-expand navbar-dark topnav-custom">
       <div className="ms-auto"></div>
-      {/* Navbar*/}
       <ul className="navbar-nav ms-md-0 me-3 me-lg-4">
         <li className="nav-item topnav-alarm-item">
           <button 

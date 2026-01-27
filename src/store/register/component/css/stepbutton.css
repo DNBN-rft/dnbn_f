@@ -23,3 +23,39 @@
   color: white;
   border-color: rgb(239, 120, 16);
 }
+
+.step-prev-btn.disabled,
+.step-next-btn.disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.step-prev-btn.disabled:hover,
+.step-next-btn.disabled:hover {
+  background-color: #f0f0f0;
+  color: #999;
+  border-color: #ddd;
+}
+
+.button-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid rgb(239, 120, 16);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
