@@ -161,7 +161,7 @@ const Sidebar = () => {
                         매출목록
                       </Link>
                     )}
-                    {hasPermission("STORE_ORDER") && (
+                    {hasPermission("STORE_ORDER_STAT") && (
                       <Link className="nav-link" to="/store/orderstatic">
                         매출통계
                       </Link>

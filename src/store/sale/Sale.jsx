@@ -2,12 +2,20 @@ import { useState, useEffect } from "react";
 import "./css/sale.css";
 import { apiGet, apiDelete } from "../../utils/apiClient";
 import { formatDateTime } from "../../utils/commonService";
+import NegotiationFilter from "../order/components/NegotiationFilter";
 
 const Sale = () => {
     const [sales, setSales] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState("");
-    const [statusFilter, setStatusFilter] = useState("");
+    const [searchText, setSearchText] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [statusFilter, setStatusFilter] = useState("ALL");
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(100000);
+    const [sliderMax, setSliderMax] = useState(100000);
+    const [priceRange, setPriceRange] = useState("100000");
+    const [isManualInput, setIsManualInput] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const pageSize = 10;
@@ -36,6 +44,67 @@ const Sale = () => {
         }
     };
 
+    const searchSales = async (page = 0) => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams();
+            if (searchText) params.append("productNm", searchText);
+            if (startDate) params.append("startDateTime", startDate + "T00:00:00");
+            if (endDate) params.append("endDateTime", endDate + "T23:59:59");
+            if (statusFilter && statusFilter !== "ALL") {
+                const statusMap = {
+                    "UPCOMING": "할인 전",
+                    "ONGOING": "할인 중",
+                    "COMPLETED": "할인 완료",
+                    "CANCELED": "할인 취소"
+                };
+                params.append("saleStatus", statusMap[statusFilter]);
+            }
+            if (minPrice || maxPrice) {
+                params.append("minPriceRange", minPrice);
+                params.append("maxPriceRange", maxPrice);
+            }
+            params.append("page", page);
+            params.append("size", pageSize);
+
+            console.log("검색 파라미터:", params.toString());
+
+            const response = await apiGet(`/store/sale/search?${params.toString()}`);
+            if (response.ok) {
+                const data = await response.json();
+                setSales(data.content || []);
+                setCurrentPage(data.number || 0);
+                setTotalPages(data.totalPages || 0);
+            } else {
+                setSales([]);
+            }
+        } catch (err) {
+            console.error("할인 검색 실패:", err);
+            setSales([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleReset = () => {
+        setSearchText("");
+        setStartDate("");
+        setEndDate("");
+        setStatusFilter("ALL");
+        setMinPrice(0);
+        setMaxPrice(100000);
+        setSliderMax(100000);
+        setPriceRange("100000");
+        setIsManualInput(false);
+        setCurrentPage(0);
+        loadSales(0);
+    };
+
+    const handleSearch = () => {
+        setCurrentPage(0);
+        searchSales(0);
+    };
+
     const handleCancelSale = async (saleIdx) => {
         if (!window.confirm("할인을 취소하시겠습니까?")) {
             return;
@@ -56,12 +125,7 @@ const Sale = () => {
         }
     };
 
-    const filteredSales = (Array.isArray(sales) ? sales : []).filter(sale => {
-        const matchKeyword = searchKeyword === "" || 
-            sale.productNm?.toLowerCase().includes(searchKeyword.toLowerCase());
-        const matchStatus = statusFilter === "" || sale.saleStatus === statusFilter;
-        return matchKeyword && matchStatus;
-    });
+    const filteredSales = (Array.isArray(sales) ? sales : []);
 
     return (
         <div className="sale-wrap">
@@ -71,50 +135,29 @@ const Sale = () => {
             </div>
 
             <div className="sale-contents">
-                {/* 대시보드 */}
-                <div className="sale-dashboard">
-                    <div className="sale-sent">
-                        <div className="sale-sent-box"></div>
-                        <div className="sale-sent-contents">
-                            <div className="sale-sent-title">할인 대기 중</div>
-                            <div className="sale-sent-number">
-                                {(Array.isArray(sales) ? sales : []).filter(s => s.saleStatus === "할인 전").length}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="sale-left">
-                        <div className="sale-left-box"></div>
-                        <div className="sale-left-contents">
-                            <div className="sale-left-title">진행 중</div>
-                            <div className="sale-left-number">
-                                {(Array.isArray(sales) ? sales : []).filter(s => s.saleStatus === "할인 중").length}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="sale-search">
-                    <select 
-                        className="sale-search-select"
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                    >
-                        <option value="">전체 상태</option>
-                        <option value="할인 중">할인 중</option>
-                        <option value="할인 전">할인 전</option>
-                        <option value="할인 완료">할인 완료</option>
-                        <option value="할인 취소">할인 취소</option>
-                    </select>
-                    <input
-                        type="text"
-                        className="sale-search-input"
-                        placeholder="상품명을 입력하세요."
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                    />
-                    <button className="sale-search-btn" onClick={() => loadSales(0)}>새로고침</button>
-                </div>
+                {/* 필터 */}
+                <NegotiationFilter
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
+                    minPrice={minPrice}
+                    setMinPrice={setMinPrice}
+                    maxPrice={maxPrice}
+                    setMaxPrice={setMaxPrice}
+                    sliderMax={sliderMax}
+                    setSliderMax={setSliderMax}
+                    priceRange={priceRange}
+                    setPriceRange={setPriceRange}
+                    isManualInput={isManualInput}
+                    setIsManualInput={setIsManualInput}
+                    handleSearch={handleSearch}
+                    handleReset={handleReset}
+                />
 
                 <table className="sale-table">
                     <thead>

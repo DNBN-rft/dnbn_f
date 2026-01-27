@@ -22,7 +22,6 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("상품 상세 조회 응답:", data);
         setProduct(data);
       } else {
         setError("상품 정보를 불러오는데 실패했습니다.");
@@ -62,7 +61,6 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
         alert(errorData.message || "상품 삭제에 실패했습니다.");
       }
     } catch (err) {
-      console.error("삭제 실패:", err);
       alert("상품 삭제 중 오류가 발생했습니다.");
     }
   };
@@ -149,7 +147,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
                   상품타입
                 </div>
                 <div className="productdetail-middle-content-info-detail">
-                  {product.isStock ? "서비스" : "일반"}
+                  {product.isStock ? "일반" : "서비스"}
                 </div>
               </div>
             </div>

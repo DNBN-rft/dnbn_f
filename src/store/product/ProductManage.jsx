@@ -41,12 +41,14 @@ const ProductManage = () => {
     try {
       const response = await apiGet(`/store/product?page=${page}&size=${pageSize}`);
       const data = await response.json();
-      
+
       if (response.ok) {
         setCurrentPage(data.number);
         setTotalPages(data.totalPages);
         setTotalElements(data.totalElements);
         setProducts(data.content);
+        console.log(data);
+
       } else {
         setError("상품 조회에 실패했습니다.");
       }
@@ -72,7 +74,7 @@ const ProductManage = () => {
 
       const response = await apiGet(`/store/product/search?${params.toString()}`);
       const data = await response.json();
-      
+
       if (response.ok) {
         if (data.content) {
           setCurrentPage(data.number);
@@ -100,7 +102,7 @@ const ProductManage = () => {
     if (location.state?.openModal && location.state?.productCode) {
       setSelectedProduct(location.state.productCode);
       setIsDetailModalOpen(true);
-      
+
       // state 초기화 (뒤로가기 시 모달이 다시 열리는 것 방지)
       window.history.replaceState({}, document.title);
     }
@@ -147,7 +149,7 @@ const ProductManage = () => {
     if (e.target.checked) {
       const newMap = new Map();
       products.forEach(p => {
-        newMap.set(p.productCode, { productCode: p.productCode, isSale: p.isSale });
+        newMap.set(p.productCode, { productCode: p.productCode, isSale: p.isSale, isNego: p.isNego });
       });
       setSelectedCheckboxes(newMap);
     } else {
@@ -155,12 +157,12 @@ const ProductManage = () => {
     }
   };
 
-  const handleCheckboxChange = (productCode, isSale) => {
+  const handleCheckboxChange = (productCode, isSale, isNego) => {
     const newMap = new Map(selectedCheckboxes);
     if (newMap.has(productCode)) {
       newMap.delete(productCode);
     } else {
-      newMap.set(productCode, { productCode, isSale });
+      newMap.set(productCode, { productCode, isSale, isNego });
     }
     setSelectedCheckboxes(newMap);
   };
@@ -171,10 +173,17 @@ const ProductManage = () => {
       return;
     }
 
-    // 할인상품이 포함되어 있는지 체크
+    // 할인 또는 네고가 진행중인 상품이 포함되어 있는지 체크
     const hasDiscountedProduct = Array.from(selectedCheckboxes.values()).some(item => item.isSale === true);
+    const hasNegoProduct = Array.from(selectedCheckboxes.values()).some(item => item.isNego === true);
+    
     if (hasDiscountedProduct) {
       alert("할인이 진행중인 상품이 있습니다.");
+      return;
+    }
+
+    if (hasNegoProduct) {
+      alert("네고가 진행중인 상품이 있습니다.");
       return;
     }
 
@@ -192,7 +201,13 @@ const ProductManage = () => {
         setSelectedCheckboxes(new Map());
         loadProducts();
       } else {
-        alert("상품 삭제에 실패했습니다.");
+        const errorData = await response.json();
+        // 백엔드에서 PRODUCT_CANNOT_DELETE 에러 처리
+        if (errorData.message && (errorData.message.includes("할인") || errorData.message.includes("네고"))) {
+          alert(errorData.message);
+        } else {
+          alert("상품 삭제에 실패했습니다.");
+        }
       }
     } catch (err) {
       console.error("삭제 실패:", err);
@@ -212,21 +227,21 @@ const ProductManage = () => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      
+
       const today = new Date();
-      const dateString = today.getFullYear() + 
-                        String(today.getMonth() + 1).padStart(2, '0') + 
-                        String(today.getDate()).padStart(2, '0');
-      
+      const dateString = today.getFullYear() +
+        String(today.getMonth() + 1).padStart(2, '0') +
+        String(today.getDate()).padStart(2, '0');
+
       a.download = `상품목록_${dateString}.xlsx`;
       document.body.appendChild(a);
       a.click();
-      
+
       setTimeout(() => {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       }, 100);
-      
+
     } catch (error) {
       console.error("엑셀 다운로드 실패:", error);
       alert("엑셀 다운로드 중 오류가 발생했습니다.");
@@ -270,7 +285,6 @@ const ProductManage = () => {
               onChange={(e) => setSearchField(e.target.value)}
             >
               <option value="productNm">상품명</option>
-              <option value="regNm">등록자</option>
             </select>
             <input
               type="text"
@@ -304,29 +318,29 @@ const ProductManage = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px'}}>로딩 중...</td></tr>
+              <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>로딩 중...</td></tr>
             ) : error ? (
-              <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px', color: 'red'}}>{error}</td></tr>
+              <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px', color: 'red' }}>{error}</td></tr>
             ) : products.length === 0 ? (
-              <tr><td colSpan="8" style={{textAlign: 'center', padding: '20px'}}>상품이 없습니다.</td></tr>
+              <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>상품이 없습니다.</td></tr>
             ) : (
               products.map((p) => (
                 <tr key={p.productCode} onClick={() => handleProductClick(p)} style={{ cursor: 'pointer' }}>
                   <td onClick={(e) => e.stopPropagation()} style={{ cursor: 'default' }}>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={selectedCheckboxes.has(p.productCode)}
-                      onChange={() => handleCheckboxChange(p.productCode, p.isSale)}
+                      onChange={() => handleCheckboxChange(p.productCode, p.isSale, p.isNego)}
                     />
                   </td>
                   <td className="product-product-info">
                     <div className="product-thumb">
                       {p.images?.files && p.images.files.length > 0 ? (
-                        <img 
-                          src={p.images.files[0].fileUrl} 
+                        <img
+                          src={p.images.files[0].fileUrl}
                           alt={p.productNm}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />  
+                        />
                       ) : null}
                     </div>
                     <div>
@@ -373,8 +387,8 @@ const ProductManage = () => {
             전체 {totalElements}개 상품
           </div>
           <div className="product-pagination">
-            <button 
-              className="product-page" 
+            <button
+              className="product-page"
               onClick={() => {
                 if (currentPage > 0) {
                   const newPage = currentPage - 1;
@@ -398,7 +412,7 @@ const ProductManage = () => {
                 {index + 1}
               </button>
             ))}
-            <button 
+            <button
               className="product-page"
               onClick={() => {
                 if (currentPage < totalPages - 1) {

@@ -23,7 +23,7 @@ const OrderInfo = ({ onClose, orderCode }) => {
 
       try {
         setLoading(true);
-        const response = await apiGet(`/store/order/statistics/detail/${orderCode}`);
+        const response = await apiGet(`/store/order/detail/${orderCode}`);
         const data = await response.json();
         
         if (response.ok) {

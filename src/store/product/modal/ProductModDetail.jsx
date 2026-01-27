@@ -163,11 +163,24 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    const { name, value } = e.target;
+    const newValue = name === "isStock" 
+      ? value === "true" 
+      : (name === "isAdult" ? value === "true" : value);
+    
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: newValue
+      };
+      
+      // isStock이 false(서비스)로 변경되면 재고를 0으로 설정
+      if (name === "isStock" && newValue === false) {
+        updated.productAmount = 0;
+      }
+      
+      return updated;
+    });
   };
 
 
@@ -411,6 +424,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.productAmount}
                 onChange={handleChange}
                 className="productmod-input"
+                disabled={!formData.isStock}
               />
             </div>
 
@@ -470,8 +484,8 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 onChange={handleChange}
                 className="productmod-select"
               >
-                <option value={true}>서비스</option>
-                <option value={false}>일반</option>
+                <option value={true}>일반</option>
+                <option value={false}>서비스</option>
               </select>
             </div>
           </div>
