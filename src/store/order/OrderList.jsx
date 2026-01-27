@@ -36,7 +36,7 @@ const OrderList = () => {
       let userData = localStorage.getItem("user");
       const storeCode = JSON.parse(userData).storeCode;
      
-      const response = await apiGet(`/store/order/statistics/list/${storeCode}?page=${page}&size=${pageSize}`);
+        const response = await apiGet(`/store/order/list/${storeCode}?page=${page}&size=${pageSize}`);
       const data = await response.json();
       
       if (response.ok) {

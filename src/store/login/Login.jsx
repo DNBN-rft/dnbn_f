@@ -9,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCapsLockOn, setIsCapsLockOn] = useState(false);
   const navigate = useNavigate();
   const { setAuthState } = useContext(AuthContext);
 
@@ -23,6 +24,11 @@ const Login = () => {
     if (errorMessage) {
       setErrorMessage("");
     }
+  };
+
+  const handleCapsLockCheck = (e) => {
+    const capsLockOn = e.getModifierState("CapsLock");
+    setIsCapsLockOn(capsLockOn);
   };
 
   const handleLogin = async (e) => {
@@ -100,9 +106,16 @@ const Login = () => {
                   placeholder="비밀번호"
                   value={password}
                   onChange={handleInputChange}
+                  onKeyDown={handleCapsLockCheck}
+                  onKeyUp={handleCapsLockCheck}
                   disabled={isLoading}
                 />
               </div>
+              {isCapsLockOn && (
+                <div style={{ color: "rgb(239, 120, 16)", marginBottom: "15px", fontSize: "13px", textAlign: "center" }}>
+                  <i className="ri-error-warning-line"></i> Caps Lock이 켜져있습니다.
+                </div>
+              )}
             </div>
             {errorMessage && (
               <div style={{ color: "#ff0000", marginBottom: "15px", fontSize: "14px", textAlign: "center" }}>

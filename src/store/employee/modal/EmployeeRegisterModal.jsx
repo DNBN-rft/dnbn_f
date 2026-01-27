@@ -6,6 +6,8 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
 
     const [authMenus, setAuthMenus] = useState([]);
     const [selectedAuthCodes, setSelectedAuthCodes] = useState([]);
+    const [idCheckStatus, setIdCheckStatus] = useState(null); // null, 'success', 'error'
+    const [idCheckMessage, setIdCheckMessage] = useState("");
 
     const [formData, setFormData] = useState({
         memberId: "",
@@ -13,6 +15,8 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
         memberNm: "",
         memberTelNo: "",
         memberEmail: "",
+        idCheckStatus: null,
+        checkedLoginId: ""
     });
 
     // 권한 목록 조회
@@ -34,6 +38,50 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        
+        // 아이디 변경 시 중복 체크 상태 초기화
+        if (name === "memberId") {
+            setIdCheckStatus(null);
+            setIdCheckMessage("");
+        }
+    };
+
+    const handleIdCheck = async () => {
+        if (!formData.memberId.trim()) {
+            setIdCheckMessage("아이디를 입력하세요.");
+            setIdCheckStatus("error");
+            return;
+        }
+
+        try {
+            const response = await apiGet(`/store/check-loginId/${formData.memberId}`);
+
+            if (response.ok) {
+                const data = await response.text();
+                if (data.includes("사용가능")) {
+                    setIdCheckMessage("사용 가능한 아이디입니다.");
+                    setIdCheckStatus("success");
+                    // formData에 저장하여 페이지 이동 후에도 유지
+                    setFormData({
+                        ...formData,
+                        idCheckStatus: "success",
+                        checkedLoginId: formData.memberId
+                    });
+                } else {
+                    setIdCheckMessage("이미 사용 중인 아이디입니다.");
+                    setIdCheckStatus("error");
+                    setFormData({
+                        ...formData,
+                        idCheckStatus: "error",
+                        checkedLoginId: ""
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("ID 중복 체크 실패:", error);
+            setIdCheckMessage("중복 체크 실패. 다시 시도해주세요.");
+            setIdCheckStatus("error");
+        }
     };
 
     const formatPhoneNumber = (value) => {
@@ -61,7 +109,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
     };
 
     const handleSelectAll = () => {
-        setSelectedAuthCodes(authMenus.map(menu => menu.code));
+        setSelectedAuthCodes(authMenus.filter(menu => menu.displayName !== "직원 관리").map(menu => menu.code));
     };
 
     const handleClearAll = () => {
@@ -80,15 +128,30 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
                         <div className="emp-reg-up">
                             <div className="emp-reg-left">
                                 <label htmlFor="emp-reg-id">직원 아이디</label>
-                                <input 
-                                    type="text" 
-                                    name="memberId"
-                                    value={formData.memberId}
-                                    onChange={handleChange}
-                                    className="emp-reg-id-input" 
-                                    required 
-                                    placeholder="직원 아이디를 입력하세요." 
-                                />
+                                <div className="emp-reg-id-wrapper">
+                                    <input 
+                                        type="text" 
+                                        name="memberId"
+                                        value={formData.memberId}
+                                        onChange={handleChange}
+                                        className="emp-reg-id-input" 
+                                        required 
+                                        placeholder="직원 아이디를 입력하세요." 
+                                    />
+                                    <button 
+                                        type="button"
+                                        className="emp-reg-check-btn"
+                                        onClick={handleIdCheck}
+                                    >
+                                        중복확인
+                                    </button>
+                                </div>
+                                {idCheckStatus === 'success' && (
+                                    <div className="emp-reg-check-message emp-reg-check-success">{idCheckMessage}</div>
+                                )}
+                                {idCheckStatus === 'error' && (
+                                    <div className="emp-reg-check-message emp-reg-check-error">{idCheckMessage}</div>
+                                )}
                                 <label htmlFor="emp-reg-pwd">비밀번호</label>
                                 <input 
                                     type="password" 
@@ -165,6 +228,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
                                             type="checkbox"
                                             checked={selectedAuthCodes.includes(menu.code)}
                                             onChange={() => handleCheckboxChange(menu.code)}
+                                            style={{ marginRight: "6px" }}
                                         />
                                         {menu.displayName}
                                     </label>

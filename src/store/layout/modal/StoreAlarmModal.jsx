@@ -14,28 +14,17 @@ const StoreAlarmModal = ({ onClose }) => {
     JSON.parse(localStorage.getItem("user")).memberId
   );
 
-  const tabs = ["전체", "상품", "네고", "리뷰", "신고", "문의", "상품 제제"];
+  const tabs = ["전체", "상품", "네고", "리뷰", "고객센터", "기타"];
+  
   const getCategoryFromAlarmType = (alarmType) => {
     if (!alarmType) return "알수없음";
-    switch (alarmType) {
-      case "ORDER":
-        return "상품";
-      case "NEGO":
-        return "네고";
-      case "REVIEW":
-        return "리뷰";
-      case "REPORT":
-      case "REPORT_PRODUCT":
-      case "REPORT_REVIEW":
-      case "REPORT_STORE":
-        return "신고";
-      case "QUESTION":
-        return "문의";
-      case "PRODUCT_RESTRICT":
-        return "상품 제제";
-      default:
-        return "알수없음";
-    }
+    
+    // 백엔드에서 이미 한글로 오는 경우
+    if (alarmType === "주문" || alarmType === "할인" || alarmType === "네고")  return "상품";
+    if (alarmType === "네고 요청") return "네고";
+    if (alarmType === "리뷰") return "리뷰";
+    if (alarmType === "상품신고" || alarmType === "리뷰신고" || alarmType === "가맹신고" || alarmType === "문의") return "고객센터";
+    if (alarmType === "상품 제재" || alarmType === "리뷰 숨김") return "기타";
   };
 
   const transformedAlarms = alarmData.map((alarm, index) => ({
