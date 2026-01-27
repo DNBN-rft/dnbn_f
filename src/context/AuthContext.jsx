@@ -86,31 +86,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Access Token 갱신
-  // Refresh Token은 DB에서 자동으로 처리됨
-  const refreshAccessToken = useCallback(async () => {
-    try {
-      const endpoint = isAdminAuthenticated ? "/admin/refresh" : "/store/refresh";
-      const response = await apiPost(endpoint);
-
-      if (response.ok) {
-        return true;
-      } else {
-        if (isAdminAuthenticated) {
-          setIsAdminAuthenticated(false);
-          setAdmin(null);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-        return false;
-      }
-    } catch (error) {
-      console.error("토큰 갱신 실패:", error);
-      return false;
-    }
-  }, [isAdminAuthenticated]);
-
   // 로그인 성공 시 인증 상태 직접 설정
   const setAuthState = useCallback((userData) => {
     setIsAuthenticated(true);
@@ -133,7 +108,6 @@ export const AuthProvider = ({ children }) => {
     isLoading,
     logout,
     adminLogout,
-    refreshAccessToken,
     checkAuthStatus,
     setAuthState,
     setAdminAuthState,
