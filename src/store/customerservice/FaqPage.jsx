@@ -18,7 +18,7 @@ const FaqPage = () => {
   const loadFaqs = async () => {
 
     try {
-      const response = await apiGet("/faq/store");
+      const response = await apiGet("/store/faq");
       if (!response.ok) {
         throw new Error("FAQ 목록을 불러오는데 실패했습니다.");
       }
