@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(async () => {
     try {
       // 백엔드: DB의 Refresh Token 삭제
-      await apiPost("/auth/logout");
+      await apiPost("/store/logout");
     } catch (error) {
       console.error("로그아웃 요청 중 오류:", error);
     } finally {
@@ -77,32 +77,13 @@ export const AuthProvider = ({ children }) => {
   const adminLogout = useCallback(async () => {
     try {
       // 백엔드: DB의 Refresh Token 삭제
-      await apiPost("/auth/logout");
+      await apiPost("/admin/logout");
     } catch (error) {
       console.error("로그아웃 요청 중 오류:", error);
     } finally {
       setIsAdminAuthenticated(false);
       setAdmin(null);
       clearAdminFromStorage(); // localStorage 정리
-    }
-  }, []);
-
-  // Access Token 갱신
-  // Refresh Token은 DB에서 자동으로 처리됨
-  const refreshAccessToken = useCallback(async () => {
-    try {
-      const response = await apiPost("/auth/refresh");
-
-      if (response.ok) {
-        return true;
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-        return false;
-      }
-    } catch (error) {
-      console.error("토큰 갱신 실패:", error);
-      return false;
     }
   }, []);
 
@@ -128,7 +109,6 @@ export const AuthProvider = ({ children }) => {
     isLoading,
     logout,
     adminLogout,
-    refreshAccessToken,
     checkAuthStatus,
     setAuthState,
     setAdminAuthState,
