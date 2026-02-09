@@ -5,7 +5,7 @@ import { markAlarmAsRead } from "../../../utils/alarmService";
 import "./css/storealarmmodal.css";
 import { formatDateTime } from "../../../utils/commonService";
 
-const StoreAlarmModal = ({ onClose }) => {
+const StoreAlarmModal = ({ onClose, buttonRef }) => {
   const [activeTab, setActiveTab] = useState("전체");
   const panelRef = useRef(null);
   const navigate = useNavigate();
@@ -158,6 +158,10 @@ const StoreAlarmModal = ({ onClose }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (panelRef.current && !panelRef.current.contains(event.target)) {
+        // 알람 버튼 클릭은 제외 (버튼 자체의 onClick이 토글을 처리)
+        if (buttonRef?.current && buttonRef.current.contains(event.target)) {
+          return;
+        }
         onClose();
       }
     };
@@ -166,7 +170,7 @@ const StoreAlarmModal = ({ onClose }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, buttonRef]);
 
   return (
     <div className="storealarmmodal-panel" ref={panelRef}>
