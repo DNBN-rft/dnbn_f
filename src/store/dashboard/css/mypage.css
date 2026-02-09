@@ -120,51 +120,104 @@ display: flex;
     width: 100%;
     padding-top: 40px;
     display: flex;
-    justify-content: space-around;
+    gap: 20px;
+    justify-content: space-between;
 }
 
 .mypage-middle-content-left, .mypage-middle-content-right {
- border-radius: 10px;
- box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
- width: 45%;
- height: 600px;
- padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 48%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .mypage-middle-content-title {
     font-size: 16px;
     text-align: center;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 1;
 }
 
 .mypage-middle-content-info {
-    margin-bottom: 10px;
-    width: 50%;
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 .mypage-middle-content-subtitle {
     font-size: 12px;
     font-weight: bold;
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 5px;
 }
 
 .mypage-middle-content-subcontent {
     font-size: 14px;
-    font-weight: bold;
-    color: rgba(0, 0, 0, 0.6);
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+    word-break: break-word;
+    line-height: 1;
 }
 
 .mypage-middle-content-owner-wrap {
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.mypage-middle-content-owner-wrap .mypage-middle-content-info {
+    width: calc(50% - 7.5px);
+}
+
+.mypage-middle-store-info-wrap {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.mypage-middle-store-info-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mypage-middle-store-info-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 220px;
+    height: 220px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+}
+
+.mypage-middle-store-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.mypage-middle-store-no-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 14px;
 }
 
 .mypage-middle-content-align {
-    height: 50%;
+    width: 100%;
 }
 
 /*멤버쉽 정보 구역*/
@@ -177,21 +230,17 @@ display: flex;
 }
 
 .mypage-middle-content-align-m {
- border-radius: 10px;
- box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
- width: 100%;
- height: 200px;
- min-height: 150px;
- padding: 20px;
- }
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    padding: 20px;
+}
 
 .mypage-middle-content-align-m2 {
- border-radius: 10px;
- box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
- width: 100%;
- min-height: 300px;
- height: 50%;
- padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    padding: 20px;
 }
 
 .mypage-middle-content-up-align {
@@ -205,39 +254,44 @@ display: flex;
     font-size: 16px;
     text-align: center;
     font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 1;
 }
 
 /*플랜 결제 히스토리*/
 .mypage-credit-history {
-  width: 100%;
-  min-height: 300px;
-  margin: auto;
-  padding: 20px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .mypage-credit-table {
-  border-collapse: collapse;
-  border-radius: 10px;
-  width: 100%;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 .mypage-credit-table th,
 .mypage-credit-table td {
-  padding: 10px 20px;
-  text-align: center;
+    padding: 12px 15px;
+    text-align: center;
+    word-break: break-word;
 }
 
 .mypage-credit-table th {
-  background-color: #eee;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 15px;
+    background-color: #f0f0f0;
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .mypage-credit-table td {
-  font-size: 15px;
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mypage-credit-table tbody tr:hover {
+    background-color: #fafafa;
 }

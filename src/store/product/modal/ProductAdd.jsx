@@ -91,6 +91,11 @@ const ProductAdd = ({ onClose }) => {
       return;
     }
 
+    if (!formData.productImgs || formData.productImgs.length === 0) {
+      alert("상품 이미지를 등록해주세요.");
+      return;
+    }
+
     setLoading(true);
 
     try {

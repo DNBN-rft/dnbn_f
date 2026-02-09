@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/mypageedit.css";
 import PasswordChangeModal from "./modal/PasswordChangeModal";
-import { apiGet, apiPut } from "../../utils/apiClient";
+import { apiGet, apiPutFormData } from "../../utils/apiClient";
 
 const MyPageEdit = () => {
   const navigate = useNavigate();
@@ -23,6 +23,10 @@ const MyPageEdit = () => {
     storeOpenTime: "",
     storeCloseTime: "",
   });
+
+  const [mainImgFile, setMainImgFile] = useState(null);
+  const [mainImgPreview, setMainImgPreview] = useState(null);
+  const [mainImgDeleted, setMainImgDeleted] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,6 +57,7 @@ const MyPageEdit = () => {
           storeOpenTime: data.storeOpenTime || "",
           storeCloseTime: data.storeCloseTime || "",
         });
+        setMainImgPreview(data.mainImg.fileUrl || null);
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
@@ -109,6 +114,36 @@ const MyPageEdit = () => {
     });
   };
 
+  const handleMainImageSelect = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMainImgFile(file);
+        setMainImgPreview(reader.result);
+        setMainImgDeleted(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleMainImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleMainImageSelect(e.target.files[0]);
+    }
+  };
+
+  const handleMainImageDelete = () => {
+    setMainImgFile(null);
+    setMainImgPreview(null);
+    setMainImgDeleted(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -116,7 +151,36 @@ const MyPageEdit = () => {
       let userInfo = localStorage.getItem("user");
       const storeCode = JSON.parse(userInfo).storeCode;
       
-      const response = await apiPut(`/store/info-modify/${storeCode}`, formData);
+      // 한글 요일을 OpenDay enum 상수명으로 변환
+      const dayMap = {
+        '월': 'MON',
+        '화': 'TUE',
+        '수': 'WED',
+        '목': 'THU',
+        '금': 'FRI',
+        '토': 'SAT',
+        '일': 'SUN'
+      };
+      
+      const submitData = new FormData();
+      submitData.append("storeNm", formData.storeNm);
+      submitData.append("storeTelNo", formData.storeTelNo);
+      submitData.append("storeAddr", formData.storeAddr);
+      submitData.append("storeAddrDetail", formData.storeAddrDetail);
+      submitData.append("bankIdx", formData.bankIdx);
+      submitData.append("storeAccNo", formData.storeAccNo);
+      submitData.append("ownerNm", formData.ownerNm);
+      submitData.append("storeOpenTime", formData.storeOpenTime);
+      submitData.append("storeCloseTime", formData.storeCloseTime);
+      formData.storeOpenDate.forEach((day) => {
+        submitData.append("storeOpenDate", dayMap[day]);
+      });
+      
+      if (mainImgFile) {
+        submitData.append("mainImg", mainImgFile);
+      }
+      
+      const response = await apiPutFormData(`/store/info-modify/${storeCode}`, submitData);
       
       if (!response.ok) {
         throw new Error('Failed to update store data');
@@ -198,6 +262,46 @@ const MyPageEdit = () => {
                     placeholder="상세주소를 입력하세요"
                   />
                 </div>
+              </div>
+
+              <div className="mypage-edit-box">
+                <div className="mypage-edit-box-title">대표 이미지</div>
+
+                <div className="mypage-edit-field">
+                  {mainImgPreview && !mainImgDeleted ? (
+                    <div className="mypage-edit-image-container">
+                      <img
+                        src={mainImgPreview}
+                        alt="대표 이미지"
+                        className="mypage-edit-store-image"
+                      />
+                      <button
+                        type="button"
+                        className="mypage-edit-image-delete-btn"
+                        onClick={handleMainImageDelete}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mypage-edit-no-image">이미지가 없습니다</div>
+                  )}
+                </div>
+
+                {(!mainImgPreview || mainImgDeleted) && (
+                  <div className="mypage-edit-field">
+                    <input
+                      type="file"
+                      id="mainImage"
+                      accept=".jpg,.jpeg,.png"
+                      className="mypage-edit-file-input-hidden"
+                      onChange={handleMainImageChange}
+                    />
+                    <label htmlFor="mainImage" className="mypage-edit-file-upload-label">
+                      이미지 업로드
+                    </label>
+                  </div>
+                )}
               </div>
 
               <div className="mypage-edit-box">
@@ -397,11 +501,7 @@ const MyPageEdit = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="mypage-edit-section-wrap">
-            <div className="mypage-edit-section-left">
               <div className="mypage-edit-box">
                 <div className="mypage-edit-box-title">로그인 정보 변경</div>
                 
@@ -425,8 +525,10 @@ const MyPageEdit = () => {
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="mypage-edit-section-right">
+          <div className="mypage-edit-section-wrap">
+            <div className="mypage-edit-section-right" style={{ marginLeft: "auto" }}>
               <div className="mypage-edit-button-group-inline">
                 <button type="submit" className="mypage-edit-submit-btn">
                   저장
