@@ -110,29 +110,45 @@ const MyPage = () => {
               <div className="mypage-middle-content-left">
                 <div className="mypage-middle-content-align">
                   <div className="mypage-middle-content-title">가맹점 정보</div>
+                  
+                  <div className="mypage-middle-store-info-wrap">
+                    <div className="mypage-middle-store-info-left">
+                      <div className="mypage-middle-content-info">
+                        <div className="mypage-middle-content-subtitle">가맹점명</div>
+                        <div className="mypage-middle-content-subcontent">
+                          {storeData.storeNm}
+                        </div>
+                      </div>
+                      <div className="mypage-middle-content-info">
+                        <div className="mypage-middle-content-subtitle">전화번호</div>
+                        <div className="mypage-middle-content-subcontent">
+                          {storeData.storeTelNo}
+                        </div>
+                      </div>
+                      <div className="mypage-middle-content-info">
+                        <div className="mypage-middle-content-subtitle">주소</div>
+                        <div className="mypage-middle-content-subcontent">
+                          {storeData.storeAddr} {storeData.storeAddrDetail}
+                        </div>
+                      </div>
+                      <div className="mypage-middle-content-info">
+                        <div className="mypage-middle-content-subtitle">누적 신고횟수</div>
+                        <div className="mypage-middle-content-subcontent">
+                          {storeData.storeReport}회
+                        </div>
+                      </div>
+                    </div>
 
-                  <div className="mypage-middle-content-info">
-                    <div className="mypage-middle-content-subtitle">가맹점명</div>
-                    <div className="mypage-middle-content-subcontent">
-                      {storeData.storeNm}
-                    </div>
-                  </div>
-                  <div className="mypage-middle-content-info">
-                    <div className="mypage-middle-content-subtitle">전화번호</div>
-                    <div className="mypage-middle-content-subcontent">
-                      {storeData.storeTelNo}
-                    </div>
-                  </div>
-                  <div className="mypage-middle-content-info">
-                    <div className="mypage-middle-content-subtitle">주소</div>
-                    <div className="mypage-middle-content-subcontent">
-                      {storeData.storeAddr} {storeData.storeAddrDetail}
-                    </div>
-                  </div>
-                  <div className="mypage-middle-content-info">
-                    <div className="mypage-middle-content-subtitle">누적 신고횟수</div>
-                    <div className="mypage-middle-content-subcontent">
-                      {storeData.storeReport}회
+                    <div className="mypage-middle-store-info-right">
+                      {storeData.mainImg && storeData.mainImg.fileUrl ? (
+                        <img 
+                          src={storeData.mainImg.fileUrl} 
+                          alt="대표 이미지"
+                          className="mypage-middle-store-image"
+                        />
+                      ) : (
+                        <div className="mypage-middle-store-no-image">이미지 없음</div>
+                      )}
                     </div>
                   </div>
                 </div>
