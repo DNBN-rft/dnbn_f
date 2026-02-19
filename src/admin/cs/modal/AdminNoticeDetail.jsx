@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getNoticeDetail, updateNotice } from "../../../utils/adminNoticeService";
+import { formatDateTime } from "../../../utils/commonService";
 import "./css/adminnoticedetail.css";
 
 const AdminNoticeDetail = ({ noticeIdx, onClose, onUpdate }) => {
@@ -19,10 +20,12 @@ const AdminNoticeDetail = ({ noticeIdx, onClose, onUpdate }) => {
       const result = await getNoticeDetail(noticeIdx);
       if (result.success) {
         setNotice(result.data);
+        console.log("공지사항 상세 정보:", result.data); // 상세 정보 로그
         setEditedNotice({
           title: result.data.title,
           content: result.data.content,
           isPinned: result.data.isPinned,
+          noticeType: result.data.noticeType,
         });
       } else {
         alert(result.error || "공지사항을 불러오는데 실패했습니다.");
@@ -58,6 +61,7 @@ const AdminNoticeDetail = ({ noticeIdx, onClose, onUpdate }) => {
         title: notice.title,
         content: notice.content,
         isPinned: notice.isPinned,
+        noticeType: notice.noticeType,
       });
     }
     setIsEditMode(false);
@@ -169,6 +173,28 @@ const AdminNoticeDetail = ({ noticeIdx, onClose, onUpdate }) => {
             )}
           </div>
 
+          {/* 공지 구분 */}
+          <div className="adminnoticedetail-row">
+            <label className="adminnoticedetail-label">공지 구분</label>
+            {isEditMode ? (
+              <select
+                className="adminnoticedetail-select"
+                value={editedNotice.noticeType || "공통"}
+                onChange={(e) =>
+                  setEditedNotice({ ...editedNotice, noticeType: e.target.value })
+                }
+              >
+                <option value="공통">공통</option>
+                <option value="사용자">사용자</option>
+                <option value="가맹점">가맹점</option>
+              </select>
+            ) : (
+              <div className="adminnoticedetail-value">
+                {notice.noticeType || "공통"}
+              </div>
+            )}
+          </div>
+
           {/* 내용 */}
           <div className="adminnoticedetail-row adminnoticedetail-row-full">
             <label className="adminnoticedetail-label">내용</label>
@@ -190,17 +216,17 @@ const AdminNoticeDetail = ({ noticeIdx, onClose, onUpdate }) => {
 
           {/* 작성자 & 작성일 */}
           <div className="adminnoticedetail-row">
-            <label className="adminnoticedetail-label">작성자/작성일</label>
+            <label className="adminnoticedetail-label">작성자/작성일시</label>
             <div className="adminnoticedetail-value">
-              {notice.writer} / {notice.createDate}
+              {notice.regNm} / {formatDateTime(notice.regDate)}
             </div>
           </div>
 
           {/* 수정자 & 수정일 */}
           <div className="adminnoticedetail-row">
-            <label className="adminnoticedetail-label">수정자/수정일</label>
+            <label className="adminnoticedetail-label">수정자/수정일시</label>
             <div className="adminnoticedetail-value">
-              {notice.editor || "-"} / {notice.editDate || "-"}
+              {notice.modNm || "-"} / {formatDateTime(notice.modDate)}
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import {
   deleteNotices,
   searchNotices,
 } from "../../utils/adminNoticeService";
+import { formatDateTime } from "../../utils/commonService";
 
 const AdminNotice = () => {
   const [selectedNotice, setSelectedNotice] = useState(null);
@@ -272,6 +273,7 @@ const AdminNotice = () => {
                 {showCheckbox && <th>선택</th>}
                 <th>No.</th>
                 <th>제목</th>
+                <th>공지 구분</th>
                 <th>작성자</th>
                 <th>작성일</th>
                 <th>수정자</th>
@@ -297,10 +299,11 @@ const AdminNotice = () => {
                     )}
                     <td>{currentPage * pageSize + index + 1}</td>
                     <td className="adminnotice-title">{notice.title}</td>
+                    <td>{notice.noticeType || "-"}</td>
                     <td>{notice.regNm}</td>
-                    <td>{notice.regDate}</td>
+                    <td>{formatDateTime(notice.regDate)}</td>
                     <td>{notice.modNm || "-"}</td>
-                    <td>{notice.modDate || "-"}</td>
+                    <td>{formatDateTime(notice.modDate)}</td>
                     <td>
                       {notice.isPinned ? (
                         <span className="adminnotice-status-pinned">고정</span>
@@ -324,7 +327,7 @@ const AdminNotice = () => {
               ) : (
                 <tr>
                   <td
-                    colSpan={showCheckbox ? "9" : "8"}
+                    colSpan={showCheckbox ? "10" : "9"}
                     style={{ textAlign: "center" }}
                   >
                     등록된 공지사항이 없습니다.
