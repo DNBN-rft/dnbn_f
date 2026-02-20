@@ -203,16 +203,13 @@
 .adminstoreinfo-table th:nth-child(8) { width: 80px; } /* 업태 */
 .adminstoreinfo-table th:nth-child(9) { width: 120px; } /* 승인일 */
 .adminstoreinfo-table th:nth-child(10) { width: 80px; } /* 승인 상태 */
-.adminstoreinfo-table th:nth-child(11) { width: 60px; } /* 관리 */
+.adminstoreinfo-table th:nth-child(11) { width: 100px; } /* 관리 */
 
 .adminstoreinfo-table td {
   padding: 14px 12px;
   text-align: center;
   font-size: 13px;
   color: #212529;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* 정렬 가능한 컬럼 */
@@ -254,6 +251,13 @@
   font-size: 14px;
   color: #495057;
   vertical-align: middle;
+}
+
+/* 관리 열(마지막 열) - 버튼이 있어서 줄바꿈 허용 */
+.adminstoreinfo-table td:last-child {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 /* Status */
