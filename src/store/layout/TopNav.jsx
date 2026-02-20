@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import StoreAlarmModal from './modal/StoreAlarmModal';
@@ -7,6 +7,7 @@ import './css/topnav.css';
 
 const TopNav = () => {
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
+  const alarmButtonRef = useRef(null);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -20,20 +21,25 @@ const TopNav = () => {
     }
   };
 
+  const handleModalState = () => {
+    setIsAlarmModalOpen(prevState => !prevState);
+  }
+
   return (
     <nav className="sb-topnav navbar navbar-expand navbar-dark topnav-custom">
       <div className="ms-auto"></div>
-      {/* Navbar*/}
       <ul className="navbar-nav ms-md-0 me-3 me-lg-4">
         <li className="nav-item topnav-alarm-item">
           <button 
+            ref={alarmButtonRef}
             className="nav-link topnav-alarm-btn" 
-            onClick={() => setIsAlarmModalOpen(!isAlarmModalOpen)}
+            onClick={() => 
+              handleModalState()}
           >
             <i className="fa-regular fa-alarm-clock fa-fw topnav-i"></i>
             {hasUnreadAlarms && <span className="topnav-alarm-badge"></span>}
           </button>
-          {isAlarmModalOpen && <StoreAlarmModal onClose={() => setIsAlarmModalOpen(false)} />}
+          {isAlarmModalOpen && <StoreAlarmModal onClose={handleModalState} buttonRef={alarmButtonRef} />}
         </li>
         <li className="nav-item dropdown">
           <a 

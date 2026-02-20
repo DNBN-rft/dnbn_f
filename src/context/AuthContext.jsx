@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
   // 앱 시작 시 토큰 유효성 확인 및 localStorage에서 사용자 정보 불러오기
   useEffect(() => {
     checkAuthStatus();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 인증 상태 확인
   const checkAuthStatus = useCallback(async () => {
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       
       if (storedUser) {
         setIsAuthenticated(true);
-        setUser(storedUser);
+        setUser(JSON.parse(storedUser));
       } else {
         setIsAuthenticated(false);
         setUser(null);
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
 
       if (storedAdmin) {
         setIsAdminAuthenticated(true);
-        setAdmin(storedAdmin);
+        setAdmin(JSON.parse(storedAdmin));
       } else {
         setIsAdminAuthenticated(false);
         setAdmin(null);

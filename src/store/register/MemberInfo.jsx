@@ -15,11 +15,10 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
   const [idCheckMessage, setIdCheckMessage] = useState("");
   const [idCheckStatus, setIdCheckStatus] = useState(null);
   const [passwordCheckMessage, setPasswordCheckMessage] = useState("");
-  const [passwordCheckStatus, setPasswordCheckStatus] = useState(null);
+  const [passwordConfirmMessage, setPasswordConfirmMessage] = useState("");
   const [isEmailDisabled, setIsEmailDisabled] = useState(false);
-  const [checkedLoginId, setCheckedLoginId] = useState(""); // 중복체크한 아이디 저장
+  const [checkedLoginId, setCheckedLoginId] = useState("");
 
-  // 컴포넌트 마운트 시 이전 중복체크 결과 복원
   useEffect(() => {
     if (formData.idCheckStatus && formData.checkedLoginId === formData.loginId) {
       setIdCheckStatus(formData.idCheckStatus);
@@ -31,7 +30,6 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // loginId 변경 시 중복체크 초기화
   useEffect(() => {
     if (checkedLoginId && formData.loginId !== checkedLoginId) {
       setIdCheckStatus(null);
@@ -46,7 +44,6 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
   }, [formData.loginId, checkedLoginId, setFormData]);
 
   const handleInputChange = (field, value) => {
-    // 필드별 입력 제한 적용
     let restrictedValue = value;
     
     if (field === 'loginId') {
@@ -60,16 +57,33 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
       [field]: restrictedValue
     });
 
-    // 비밀번호 입력 시 실시간 검증 (util 함수 사용)
     if (field === 'password') {
-      const { message, status } = getPasswordCheckMessage(restrictedValue);
-      setPasswordCheckMessage(message);
-      setPasswordCheckStatus(status);
+      const { status } = getPasswordCheckMessage(restrictedValue);
+      if (status === 'success') {
+        setPasswordCheckMessage("");
+      } else if (restrictedValue) {
+        setPasswordCheckMessage("양식이 올바르지 않습니다.");
+      } else {
+        setPasswordCheckMessage("");
+      }
+    }
+  };
+
+  const handlePasswordConfirmChange = (value) => {
+    setPasswordConfirm(value);
+    
+    if (value) {
+      if (formData.password === value) {
+        setPasswordConfirmMessage("");
+      } else {
+        setPasswordConfirmMessage("비밀번호가 일치하지 않습니다.");
+      }
+    } else {
+      setPasswordConfirmMessage("");
     }
   };
 
   const handleEmailChange = (type, value) => {
-    // 이메일 입력 제한 적용
     const restrictedValue = restrictEmail(value);
     
     if (type === 'id') {
@@ -105,7 +119,6 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
           setIdCheckMessage("사용 가능한 아이디입니다.");
           setIdCheckStatus("success");
           setCheckedLoginId(formData.loginId);
-          // formData에 저장하여 페이지 이동 후에도 유지
           setFormData({
             ...formData,
             idCheckStatus: "success",
@@ -168,7 +181,12 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
                     {idCheckMessage}
                   </div>
                 )}
-                <div className="memberinfo-middle-subtitle">비밀번호</div>
+                <div className="memberinfo-middle-subtitle">
+                  비밀번호
+                  <span style={{ fontSize: "11px", color: "#999", marginLeft: "8px" }}>
+                    영문 · 숫자 · 특수문자 포함 8~16자
+                  </span>
+                </div>
                 <div>
                   <input 
                     type="password" 
@@ -180,7 +198,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
                   />
                 </div>
                 {passwordCheckMessage && (
-                  <div style={{ color: passwordCheckStatus === "success" ? "green" : "red", fontSize: "12px", marginTop: "5px" }}>
+                  <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
                     {passwordCheckMessage}
                   </div>
                 )}
@@ -192,9 +210,14 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
                     className="memberinfo-middle-pw-input" 
                     placeholder="비밀번호 확인"
                     value={passwordConfirm}
-                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                    onChange={(e) => handlePasswordConfirmChange(e.target.value)}
                   />
                 </div>
+                {passwordConfirmMessage && (
+                  <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+                    {passwordConfirmMessage}
+                  </div>
+                )}
 
                 <div className="memberinfo-middle-subtitle">이메일</div>
                 <div className="memberinfo-middle-email-div">

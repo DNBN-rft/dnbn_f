@@ -6,6 +6,7 @@ const AdminNoticeAdd = ({ onClose, onAdd }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPinned, setIsPinned] = useState(false);
+  const [noticeType, setNoticeType] = useState("공통");
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -22,6 +23,7 @@ const AdminNoticeAdd = ({ onClose, onAdd }) => {
       title,
       content,
       isPinned,
+      noticeType,
     });
 
     if (result.success) {
@@ -53,6 +55,28 @@ const AdminNoticeAdd = ({ onClose, onAdd }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+            <label className="adminnoticeadd-checkbox-label">
+              <input
+                type="checkbox"
+                className="adminnoticeadd-checkbox"
+                checked={isPinned}
+                onChange={(e) => setIsPinned(e.target.checked)}
+              />
+              <span>고정</span>
+            </label>
+          </div>
+
+          <div className="adminnoticeadd-form-group">
+            <label className="adminnoticeadd-label">공지 구분</label>
+            <select
+              className="adminnoticeadd-select"
+              value={noticeType}
+              onChange={(e) => setNoticeType(e.target.value)}
+            >
+              <option value="공통">공통</option>
+              <option value="사용자">사용자</option>
+              <option value="가맹점">가맹점</option>
+            </select>
           </div>
 
           <div className="adminnoticeadd-form-group">
@@ -63,18 +87,6 @@ const AdminNoticeAdd = ({ onClose, onAdd }) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
-          </div>
-
-          <div className="adminnoticeadd-form-group">
-            <label className="adminnoticeadd-checkbox-label">
-              <input
-                type="checkbox"
-                className="adminnoticeadd-checkbox"
-                checked={isPinned}
-                onChange={(e) => setIsPinned(e.target.checked)}
-              />
-              <span>고정 공지</span>
-            </label>
           </div>
         </div>
 
