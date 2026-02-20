@@ -1,5 +1,5 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://dnbn.onrender.com/api';
-// const API_BASE_URL = "http://localhost:8080/api";
+//const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://dnbn.onrender.com/api';
+const API_BASE_URL = "http://localhost:8080/api";
 
 // 토큰 갱신 중인지 추적
 let isRefreshing = false;
@@ -81,7 +81,7 @@ const handle401Response = async (url, options) => {
   }
 };
 
-// Access Token 만료 전 자동 갱신 (10분마다 체크)
+// Access Token 만료 전 자동 갱신 (45초마다 체크)
 const startTokenRefresh = () => {
   if (refreshInterval) return;
   refreshInterval = setInterval(async () => {
@@ -101,7 +101,7 @@ const startTokenRefresh = () => {
     } catch (error) {
       console.error("주기적 토큰 갱신 중 오류:", error);
     }
-  }, 600000); // 10분마다 갱신 (access token 15분, refresh token 7일)
+  }, 45000); // 45초마다 갱신 (access token 1분, refresh token 5분)
 };
 
 // 토큰 갱신 중지
