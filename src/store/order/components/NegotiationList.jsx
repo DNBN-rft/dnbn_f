@@ -123,6 +123,13 @@ const NegotiationList = () => {
 
       if (response.ok) {
         alert("네고 취소에 성공했습니다.");
+        // 현재 페이지 유지하면서 새로고침 - 검색 조건이 있으면 검색, 없으면 일반 목록 로드
+        const hasSearchCondition = searchText || startDate || endDate || statusFilter !== "ALL" || minPrice > 0 || maxPrice < 100000;
+        if (hasSearchCondition) {
+          searchNegotiations(currentPage);
+        } else {
+          loadNegotiations(currentPage);
+        }
       } else {
         alert("네고 취소에 실패했습니다.");
       }
