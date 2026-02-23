@@ -101,7 +101,7 @@ const startTokenRefresh = () => {
     } catch (error) {
       console.error("주기적 토큰 갱신 중 오류:", error);
     }
-  }, 600000); // 10분마다 갱신 (access token 15분, refresh token 7일)};
+  }, 600000); // 10분마다 갱신 (access token 15분, refresh token 7일)
 };
 
 // 토큰 갱신 중지
