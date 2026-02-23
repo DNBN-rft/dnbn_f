@@ -81,7 +81,7 @@ const handle401Response = async (url, options) => {
   }
 };
 
-// Access Token 만료 전 자동 갱신 (45초마다 체크)
+// Access Token 만료 전 자동 갱신 (10분마다 체크)
 const startTokenRefresh = () => {
   if (refreshInterval) return;
   refreshInterval = setInterval(async () => {
@@ -101,7 +101,7 @@ const startTokenRefresh = () => {
     } catch (error) {
       console.error("주기적 토큰 갱신 중 오류:", error);
     }
-  }, 45000); // 45초마다 갱신 (access token 1분, refresh token 5분)
+  }, 600000); // 10분마다 갱신 (access token 1분, refresh token 5분)
 };
 
 // 토큰 갱신 중지
