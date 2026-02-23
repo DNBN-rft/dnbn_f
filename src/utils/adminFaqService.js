@@ -214,23 +214,11 @@ export const searchFaq = async (params, page = 0, size = 10) => {
     queryParams.append("size", size);
 
     const searchUrl = `/admin/faq/search?${queryParams.toString()}`;
-    console.log("📡 검색 요청 URL:", searchUrl);
-    console.log("📝 검색 파라미터:", {
-      startDate: params.startDate,
-      endDate: params.endDate,
-      faqType: params.faqType,
-      userType: params.userType,
-      searchType: params.searchType,
-      searchTerm: params.searchTerm,
-      page,
-      size,
-    });
 
     const response = await apiGet(searchUrl);
 
     if (response.ok) {
       const data = await response.json();
-      console.log("✅ 검색 결과:", data);
       return {
         success: true,
         data: data,
