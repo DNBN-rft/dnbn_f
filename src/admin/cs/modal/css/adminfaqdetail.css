@@ -1,0 +1,250 @@
+/* 모달 배경 */
+.adminfaqdetail-backdrop {
+  position: fixed;
+  top: 0;
+  left: 225px;
+  width: calc(100% - 225px);
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 컨테이너 */
+.adminfaqdetail-wrap {
+  width: 90%;
+  max-width: 700px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 모달 헤더 */
+.adminfaqdetail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 30px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.adminfaqdetail-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+.adminfaqdetail-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.adminfaqdetail-close-btn:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* 모달 컨텐츠 */
+.adminfaqdetail-content {
+  padding: 30px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.adminfaqdetail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.adminfaqdetail-row:last-child {
+  margin-bottom: 0;
+}
+
+.adminfaqdetail-content-row {
+  align-items: flex-start;
+}
+
+.adminfaqdetail-label {
+  min-width: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.adminfaqdetail-value {
+  flex: 1;
+  font-size: 14px;
+  color: #212529;
+  padding: 10px 14px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  line-height: 1.6;
+}
+
+.adminfaqdetail-content-value {
+  white-space: pre-wrap;
+  min-height: 200px;
+  padding-top: 10px;
+}
+
+/* Input & Textarea */
+.adminfaqdetail-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #212529;
+  transition: all 0.2s;
+}
+
+.adminfaqdetail-input:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.adminfaqdetail-textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 200px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #212529;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.6;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.adminfaqdetail-textarea:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+/* Select */
+.adminfaqdetail-select {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #212529;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.6;
+}
+
+.adminfaqdetail-select option {
+  padding: 8px 12px;
+  line-height: 1.6;
+}
+
+.adminfaqdetail-select:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.adminfaqdetail-select:hover {
+  border-color: #adb5bd;
+}
+
+/* 모달 푸터 */
+.adminfaqdetail-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 30px;
+  border-top: 1px solid #e9ecef;
+}
+
+.adminfaqdetail-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adminfaqdetail-btn-edit,
+.adminfaqdetail-btn-save {
+  background-color: #4285f4;
+  color: white;
+}
+
+.adminfaqdetail-btn-edit:hover,
+.adminfaqdetail-btn-save:hover {
+  background-color: #2563eb;
+}
+
+.adminfaqdetail-btn-close,
+.adminfaqdetail-btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.adminfaqdetail-btn-close:hover,
+.adminfaqdetail-btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .adminfaqdetail-wrap {
+    width: 95%;
+  }
+
+  .adminfaqdetail-header,
+  .adminfaqdetail-content,
+  .adminfaqdetail-footer {
+    padding: 20px;
+  }
+
+  .adminfaqdetail-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .adminfaqdetail-label {
+    min-width: auto;
+  }
+}
+
+/* Disabled 상태 */
+.adminfaqdetail-row.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.adminfaqdetail-value.disabled {
+  background-color: #ececec !important;
+}

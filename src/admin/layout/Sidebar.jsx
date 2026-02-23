@@ -37,9 +37,9 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
         id="sidenavAccordion"
       >
         <div className="admin-side-logo">
-        <a className="navbar-brand" href="/admin">
-          <img src="/images/logo_v2_white.png" alt="logo" className="admin-logo" />
-        </a>
+          <a className="navbar-brand" href="/admin">
+            <img src="/images/logo_v2_white.png" alt="logo" className="admin-logo" />
+          </a>
         </div>
         <div className="admin-sb-sidenav-menu">
           <div className="nav">
@@ -81,9 +81,8 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               <>
                 <div className="admin-sb-sidenav-menu-heading">상품</div>
                 <Link
-                  className={`nav-link ${
-                    location.pathname === "/admin/product" ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === "/admin/product" ? "active" : ""
+                    }`}
                   to="/admin/product"
                   onClick={handleLinkClick}
                 >
@@ -143,9 +142,8 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               <>
                 <div className="admin-sb-sidenav-menu-heading">직원</div>
                 <Link
-                  className={`nav-link ${
-                    location.pathname === "/admin/emp" ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === "/admin/emp" ? "active" : ""
+                    }`}
                   to="/admin/emp"
                   onClick={handleLinkClick}
                 >
@@ -195,8 +193,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               <>
                 <div className="admin-sb-sidenav-menu-heading">고객센터</div>
                 <a
-                  className={`nav-link ${
-                    isCustomerServiceOpen ? "active" : "collapsed"}`}
+                  className={`nav-link ${isCustomerServiceOpen ? "active" : "collapsed"}`}
                   href="#!"
                   onClick={(e) => {
                     e.preventDefault();
@@ -219,6 +216,9 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                     <Link className="nav-link" to="/admin/question" onClick={handleLinkClick}>
                       문의
                     </Link>
+                    <Link className="nav-link" to="/admin/faq" onClick={handleLinkClick}>
+                      FAQ
+                    </Link>
                   </nav>
                 </div>
               </>
@@ -229,8 +229,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               <>
                 <div className="admin-sb-sidenav-menu-heading">시스템관리</div>
                 <a
-                  className={`nav-link ${
-                    isSystemOpen ? "active" : "collapsed"}`}
+                  className={`nav-link ${isSystemOpen ? "active" : "collapsed"}`}
                   href="#!"
                   onClick={(e) => {
                     e.preventDefault();
@@ -272,9 +271,8 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               <>
                 <div className="admin-sb-sidenav-menu-heading">정산</div>
                 <Link
-                  className={`nav-link ${
-                    location.pathname === "/admin/payout" ? "active" : ""
-                  }`}
+                  className={`nav-link ${location.pathname === "/admin/payout" ? "active" : ""
+                    }`}
                   to="/admin/payout"
                   onClick={handleLinkClick}
                 >
