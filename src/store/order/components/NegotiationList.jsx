@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { apiGet, apiPost } from "../../../utils/apiClient";
+import { apiGet, apiPost, apiDelete } from "../../../utils/apiClient";
 import { formatDateTime } from "../../../utils/commonService";
 import NegotiationFilter from "./NegotiationFilter";
 
@@ -108,6 +108,36 @@ const NegotiationList = () => {
     setCurrentPage(0);
     searchNegotiations(0);
   };
+  
+  // 네고 취소 핸들러
+  const negoCancelHandler = (negoIdx) => {
+      const confirmed = window.confirm("정말 네고 등록 취소를 하시겠습니까?");
+      if (confirmed) {
+        handleCancelNego(negoIdx);
+      }
+  };
+  
+  const handleCancelNego = async (negoIdx) => {
+    try {
+      const response = await apiDelete(`/store/app/nego/cancel/${negoIdx}`);
+
+      if (response.ok) {
+        alert("네고 취소에 성공했습니다.");
+        // 현재 페이지 유지하면서 새로고침 - 검색 조건이 있으면 검색, 없으면 일반 목록 로드
+        const hasSearchCondition = searchText || startDate || endDate || statusFilter !== "ALL" || minPrice > 0 || maxPrice < 100000;
+        if (hasSearchCondition) {
+          searchNegotiations(currentPage);
+        } else {
+          loadNegotiations(currentPage);
+        }
+      } else {
+        alert("네고 취소에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("네고 취소 API 호출 에러:", error);
+      alert("네고 취소 중 오류가 발생했습니다.");
+    }
+  }
 
   return (
     <div>
@@ -184,7 +214,10 @@ const NegotiationList = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="negotiation-btn outline danger">취소</button>
+                    <button
+                      className="negotiation-btn outline danger"
+                      onClick={() => negoCancelHandler(nego.negoIdx)}
+                    >취소</button>
                   </td>
                 </tr>
               ))
