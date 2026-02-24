@@ -108,6 +108,34 @@ const BuyerRequestList = () => {
     searchRequests(0);
   };
 
+  const handleResponse = async (negoRequestIdx, isAccept) => {
+    const action = isAccept ? "승인" : "거절";
+    const confirmed = window.confirm(`정말 이 요청을 ${action}하시겠습니까?`);
+    
+    if (!confirmed) return;
+
+    try {
+      const response = await apiPost(`/store/nego-req/${negoRequestIdx}`, { isAccept });
+      
+      if (response.ok) {
+        alert(`요청이 ${action}되었습니다.`);
+        
+        // 목록 새로고침
+        const hasSearchCondition = searchText || startDate || endDate || statusFilter !== "ALL" || minPrice > 0 || maxPrice < 100000;
+        if (hasSearchCondition) {
+          searchRequests(currentPage);
+        } else {
+          loadRequests(currentPage);
+        }
+      } else {
+        alert(`요청 ${action}에 실패했습니다.`);
+      }
+    } catch (error) {
+      console.error(`요청 ${action} API 호출 에러:`, error);
+      alert(`요청 ${action} 중 오류가 발생했습니다.`);
+    }
+  };
+
   return (
     <div>
       <BuyerRequestFilter
@@ -171,8 +199,18 @@ const BuyerRequestList = () => {
                   <td>
                     {!request.requestStatus ? (
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                        <button className="buyerRequest-btn">승인</button>
-                        <button className="buyerRequest-btn outline danger">거절</button>
+                        <button 
+                          className="buyerRequest-btn"
+                          onClick={() => handleResponse(request.negoRequestIdx, true)}
+                        >
+                          승인
+                        </button>
+                        <button 
+                          className="buyerRequest-btn outline danger"
+                          onClick={() => handleResponse(request.negoRequestIdx, false)}
+                        >
+                          거절
+                        </button>
                       </div>
                     ) : (
                       <span>처리완료</span>
