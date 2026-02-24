@@ -44,6 +44,7 @@ import AdminPush from "./admin/alarm/AdminPush";
 import AdminNotice from "./admin/cs/AdminNotice";
 import AdminQuestion from "./admin/cs/AdminQuestion";
 import AdminReport from "./admin/cs/AdminReport";
+import AdminFaq from "./admin/cs/AdminFaq";
 import AdminAccept from "./admin/system/AdminAccept";
 import CategoryManage from "./admin/system/CategoryManage";
 import AuthManage from "./admin/system/AuthManage";
@@ -145,6 +146,7 @@ function App() {
             <Route path="/admin/notice" element={<AdminNotice />} />
             <Route path="/admin/question" element={<AdminQuestion />} />
             <Route path="/admin/report" element={<AdminReport />} />
+            <Route path="/admin/faq" element={<AdminFaq />} />
             <Route path="/admin/accept" element={<AdminAccept />} />
             <Route path="/admin/categorymanage" element={<CategoryManage />} />
             <Route path="/admin/authmanage" element={<AuthManage />} />
