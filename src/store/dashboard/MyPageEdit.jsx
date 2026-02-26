@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./css/mypageedit.css";
 import PasswordChangeModal from "./modal/PasswordChangeModal";
 import { apiGet, apiPutFormData } from "../../utils/apiClient";
+import { restrictAccountNumber } from "../../utils/registerValidation";
 
 const MyPageEdit = () => {
   const navigate = useNavigate();
@@ -98,6 +99,11 @@ const MyPageEdit = () => {
   const handlePhoneChange = (e) => {
     const formatted = formatPhoneNumber(e.target.value);
     setFormData((prev) => ({ ...prev, storeTelNo: formatted }));
+  };
+
+  const handleAccountChange = (e) => {
+    const restricted = restrictAccountNumber(e.target.value);
+    setFormData((prev) => ({ ...prev, storeAccNo: restricted }));
   };
 
   const handleBusinessDayChange = (day) => {
@@ -333,7 +339,7 @@ const MyPageEdit = () => {
                     type="text"
                     name="storeAccNo"
                     value={formData.storeAccNo}
-                    onChange={handleChange}
+                    onChange={handleAccountChange}
                     placeholder="계좌번호를 입력하세요"
                   />
                 </div>
