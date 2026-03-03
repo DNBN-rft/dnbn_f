@@ -156,7 +156,7 @@ const AdminReport = () => {
             className="adminreport-tab-btn"
             onClick={() => navigate("/admin/question")}
           >
-            고객문의
+            문의
           </button>
           <button className="adminreport-tab-btn adminreport-tab-active">
             신고
