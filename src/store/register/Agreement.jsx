@@ -1,7 +1,9 @@
 import "./css/agreement.css";
 import { validateAgreement } from "../../utils/registerValidation";
+import { useNavigate } from "react-router-dom";
 
 const Agreement = ({formData, setFormData, next}) => {
+  const navigate = useNavigate();
 
   const {agreement = {}} = formData;
   // 전체 약관 체크 여부 (marketing 포함)
@@ -81,7 +83,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 />
               </div>
               <div className="register-agreement">[필수]이용약관 동의</div>
-              <div className="register-checkinfo-arrow">
+              <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/terms')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -96,7 +98,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 />
               </div>
               <div className="register-agreement">[필수]개인정보 수집이용 동의</div>
-              <div className="register-checkinfo-arrow">
+              <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/privacy')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -111,7 +113,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 />    
               </div>
               <div className="register-agreement">[필수]판매회원 이용약관 동의</div>
-              <div className="register-checkinfo-arrow">
+              <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/seller')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -126,7 +128,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 />    
               </div>
               <div className="register-agreement">[선택]마케팅 정보 및 알림 수신 동의</div>
-              <div className="register-checkinfo-arrow">
+              <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/marketing')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>

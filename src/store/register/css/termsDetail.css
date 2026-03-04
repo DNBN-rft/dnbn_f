@@ -1,0 +1,165 @@
+.terms-detail-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.terms-detail-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  z-index: 100;
+}
+
+.terms-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-right: 16px;
+  transition: opacity 0.2s;
+}
+
+.terms-back-btn:hover {
+  opacity: 0.7;
+}
+
+.terms-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.terms-detail-content {
+  flex: 1;
+  padding: 40px 60px;
+  line-height: 1.8;
+  color: #333;
+  overflow-y: auto;
+}
+
+/* HTML 파일 내부 스타일 덮어쓰기 */
+.terms-detail-content html,
+.terms-detail-content body {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.terms-detail-content h1,
+.terms-detail-content h2,
+.terms-detail-content h3,
+.terms-detail-content h4 {
+  margin-top: 32px;
+  margin-bottom: 16px;
+  color: #222;
+  font-weight: 600;
+}
+
+.terms-detail-content h1 {
+  font-size: 28px;
+}
+
+.terms-detail-content h2 {
+  font-size: 24px;
+}
+
+.terms-detail-content h3 {
+  font-size: 20px;
+}
+
+.terms-detail-content h4 {
+  font-size: 18px;
+}
+
+.terms-detail-content p {
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.terms-detail-content ul,
+.terms-detail-content ol {
+  margin-left: 24px;
+  margin-bottom: 16px;
+}
+
+.terms-detail-content li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.terms-detail-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.terms-detail-content table th,
+.terms-detail-content table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.terms-detail-content table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .terms-detail-header {
+    padding: 20px 30px;
+  }
+  
+  .terms-detail-content {
+    padding: 30px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .terms-detail-header {
+    padding: 16px 20px;
+  }
+  
+  .terms-title {
+    font-size: 18px;
+  }
+  
+  .terms-detail-content {
+    padding: 24px 20px;
+  }
+  
+  .terms-detail-content h1 {
+    font-size: 22px;
+  }
+  
+  .terms-detail-content h2 {
+    font-size: 20px;
+  }
+  
+  .terms-detail-content h3 {
+    font-size: 18px;
+  }
+  
+  .terms-detail-content h4 {
+    font-size: 16px;
+  }
+  
+  .terms-detail-content p,
+  .terms-detail-content li {
+    font-size: 14px;
+  }
+}
