@@ -24,9 +24,9 @@ const AuthManage = () => {
     const DEFAULT_AUTH_IDS = [1, 2, 3];
 
     const authTypeLabels = {
-        "ADMIN": "관리자",
-        "STORE": "가맹점",
-        "CUST": "일반 사용자"
+        "관리자": "관리자",
+        "가맹점": "가맹점",
+        "사용자": "일반 사용자"
     };
 
     // 권한 목록 조회
