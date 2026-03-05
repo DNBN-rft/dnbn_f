@@ -1,13 +1,49 @@
 import { useState } from "react";
 import "./css/passwordchangemodal.css";
 import { apiPost, apiPut } from "../../../utils/apiClient";
+import { getPasswordCheckMessage, restrictPassword } from "../../../utils/registerValidation";
 
 const PasswordChangeModal = ({ onClose, storeIdx }) => {
   const [step, setStep] = useState(1); // 1: 현재 비밀번호 확인, 2: 새 비밀번호 입력
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordCheckMessage, setPasswordCheckMessage] = useState("");
+  const [passwordConfirmMessage, setPasswordConfirmMessage] = useState("");
   const [error, setError] = useState("");
+
+  const handleNewPasswordChange = (value) => {
+    const restrictedValue = restrictPassword(value);
+    setNewPassword(restrictedValue);
+
+    const { status } = getPasswordCheckMessage(restrictedValue);
+    if (status === "success") {
+      setPasswordCheckMessage("");
+    } else if (restrictedValue) {
+      setPasswordCheckMessage("양식이 올바르지 않습니다.");
+    } else {
+      setPasswordCheckMessage("");
+    }
+
+    if (confirmPassword) {
+      setPasswordConfirmMessage(
+        restrictedValue === confirmPassword ? "" : "비밀번호가 일치하지 않습니다."
+      );
+    }
+  };
+
+  const handleConfirmPasswordChange = (value) => {
+    const restrictedValue = restrictPassword(value);
+    setConfirmPassword(restrictedValue);
+
+    if (restrictedValue) {
+      setPasswordConfirmMessage(
+        newPassword === restrictedValue ? "" : "비밀번호가 일치하지 않습니다."
+      );
+    } else {
+      setPasswordConfirmMessage("");
+    }
+  };
 
   // 현재 비밀번호 확인
   const handleVerifyPassword = async (e) => {
@@ -37,9 +73,9 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
     e.preventDefault();
     setError("");
 
-    // 비밀번호 유효성 검사
-    if (newPassword.length < 8) {
-      setError("비밀번호는 최소 8자 이상이어야 합니다.");
+    const { status } = getPasswordCheckMessage(newPassword);
+    if (status !== "success") {
+      setError("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
       return;
     }
 
@@ -95,7 +131,9 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
                 />
               </div>
 
-              {error && <div className="pwd-change-error">{error}</div>}
+              <div className="pwd-change-error-slot">
+                {error && <div className="pwd-change-error">{error}</div>}
+              </div>
 
               <div className="pwd-change-buttons">
                 <button type="submit" className="pwd-change-submit-btn">
@@ -122,11 +160,15 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
                 <input
                   type="password"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="새 비밀번호를 입력하세요 (최소 8자)"
+                  onChange={(e) => handleNewPasswordChange(e.target.value)}
+                  placeholder="새 비밀번호를 입력하세요"
                   required
                   autoFocus
                 />
+              </div>
+
+              <div className="pwd-change-error-slot">
+                {passwordCheckMessage && <div className="pwd-change-error">{passwordCheckMessage}</div>}
               </div>
 
               <div className="pwd-change-field">
@@ -134,17 +176,23 @@ const PasswordChangeModal = ({ onClose, storeIdx }) => {
                 <input
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => handleConfirmPasswordChange(e.target.value)}
                   placeholder="새 비밀번호를 다시 입력하세요"
                   required
                 />
               </div>
 
-              <div className="pwd-change-info">
-                * 비밀번호는 최소 8자 이상이어야 합니다.
+              <div className="pwd-change-error-slot">
+                {passwordConfirmMessage && <div className="pwd-change-error">{passwordConfirmMessage}</div>}
               </div>
 
-              {error && <div className="pwd-change-error">{error}</div>}
+              <div className="pwd-change-info">
+                * 영문 · 숫자 · 특수문자 포함 8~16자
+              </div>
+
+              <div className="pwd-change-error-slot">
+                {error && <div className="pwd-change-error">{error}</div>}
+              </div>
 
               <div className="pwd-change-buttons">
                 <button type="submit" className="pwd-change-submit-btn">
