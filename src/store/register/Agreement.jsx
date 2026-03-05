@@ -82,7 +82,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 onChange={handleIndividualCheck('terms')}
                 />
               </div>
-              <div className="register-agreement">[필수]이용약관 동의</div>
+              <div className="register-agreement"><span className="register-agreement-essential">[필수]</span> 이용약관 동의</div>
               <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/terms')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -97,7 +97,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 onChange={handleIndividualCheck('privacy')}
                 />
               </div>
-              <div className="register-agreement">[필수]개인정보 수집이용 동의</div>
+              <div className="register-agreement"><span className="register-agreement-essential">[필수]</span> 개인정보 수집이용 동의</div>
               <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/privacy')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -112,7 +112,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 onChange={handleIndividualCheck('seller')}
                 />    
               </div>
-              <div className="register-agreement">[필수]판매회원 이용약관 동의</div>
+              <div className="register-agreement"><span className="register-agreement-essential">[필수]</span> 판매회원 이용약관 동의</div>
               <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/seller')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -127,7 +127,7 @@ const Agreement = ({formData, setFormData, next}) => {
                 onChange={handleIndividualCheck('marketing')}
                 />    
               </div>
-              <div className="register-agreement">[선택]마케팅 정보 및 알림 수신 동의</div>
+              <div className="register-agreement">[선택] 마케팅 정보 및 알림 수신 동의</div>
               <div className="register-checkinfo-arrow" onClick={() => navigate('/store/terms/marketing')} style={{cursor: 'pointer'}}>
                 <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
                   <path d="M1 1L7 7L1 13" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
