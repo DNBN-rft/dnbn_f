@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import QuestionRegisterModal from "./modal/QuestionRegisterModal";
 import QuestionDetailModal from "./modal/QuestionDetailModal";
 import { apiGet } from "../../utils/apiClient";
 import "./css/questions.css";
 import { formatDate } from "../../utils/commonService";
 
 const Questions = () => {
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -51,11 +49,6 @@ const Questions = () => {
   const handleRowClick = (id) => {
     setSelectedId(id);
     setIsDetailModalOpen(true);
-  };
-
-  const handleRegisterSuccess = () => {
-    loadQuestions();
-    setIsRegisterModalOpen(false);
   };
 
   const handleDetailClose = () => {
@@ -144,13 +137,6 @@ const Questions = () => {
           </div>
         )}
       </div>
-
-      {isRegisterModalOpen && (
-        <QuestionRegisterModal
-          onClose={() => setIsRegisterModalOpen(false)}
-          onSuccess={handleRegisterSuccess}
-        />
-      )}
 
       {isDetailModalOpen && (
         <QuestionDetailModal id={selectedId} onClose={handleDetailClose} />

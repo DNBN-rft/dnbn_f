@@ -101,7 +101,7 @@ const MyPageEdit = () => {
     setFormData((prev) => ({ ...prev, storeTelNo: formatted }));
   };
 
-  const handleAccountChange = (e) => {
+  const handleAccountNumberChange = (e) => {
     const restricted = restrictAccountNumber(e.target.value);
     setFormData((prev) => ({ ...prev, storeAccNo: restricted }));
   };
@@ -174,7 +174,7 @@ const MyPageEdit = () => {
       submitData.append("storeAddr", formData.storeAddr);
       submitData.append("storeAddrDetail", formData.storeAddrDetail);
       submitData.append("bankIdx", formData.bankIdx);
-      submitData.append("storeAccNo", formData.storeAccNo);
+      submitData.append("storeAccNo", restrictAccountNumber(formData.storeAccNo));
       submitData.append("ownerNm", formData.ownerNm);
       submitData.append("storeOpenTime", formData.storeOpenTime);
       submitData.append("storeCloseTime", formData.storeCloseTime);
@@ -339,7 +339,9 @@ const MyPageEdit = () => {
                     type="text"
                     name="storeAccNo"
                     value={formData.storeAccNo}
-                    onChange={handleAccountChange}
+                    onChange={handleAccountNumberChange}
+                    maxLength={15}
+                    inputMode="numeric"
                     placeholder="계좌번호를 입력하세요"
                   />
                 </div>

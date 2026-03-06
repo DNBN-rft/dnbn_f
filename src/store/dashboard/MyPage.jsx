@@ -56,7 +56,7 @@ const MyPage = () => {
           <div className="mypage-top-content-name-wrap">
             <div className="mypage-top-content-name-contain">
               <div className="mypage-top-content-name">{storeData.storeNm}</div>
-              <div className="mypage-top-content-confirmtag">{storeData.approvalStatus === 'APPROVED' ? "승인" : "미승인"}</div>
+              <div className="mypage-top-content-confirmtag">{storeData.approvalStatus}</div>
             </div>
             <div className="mypage-top-content-btn-group">
               <button 
