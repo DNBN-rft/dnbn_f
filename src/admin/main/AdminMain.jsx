@@ -112,7 +112,7 @@ const AdminMain = () => {
           </div>
         </div>
 
-        {/* 정산 정보 */}
+        {/* 정산 정보 
         <div className="adminmain-settlement-section">
           <div className="adminmain-section-card">
             <div className="adminmain-section-header">
@@ -165,6 +165,7 @@ const AdminMain = () => {
             </div>
           </div>
         </div>
+        */}
 
         {/* 가맹점 순위 & 이탈률 */}
         <div className="adminmain-two-column">
