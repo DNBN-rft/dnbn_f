@@ -52,13 +52,7 @@ const Sale = () => {
             if (startDate) params.append("startDateTime", startDate + "T00:00:00");
             if (endDate) params.append("endDateTime", endDate + "T23:59:59");
             if (statusFilter && statusFilter !== "ALL") {
-                const statusMap = {
-                    "UPCOMING": "할인 전",
-                    "ONGOING": "할인 중",
-                    "COMPLETED": "할인 완료",
-                    "CANCELED": "할인 취소"
-                };
-                params.append("saleStatus", statusMap[statusFilter]);
+                params.append("saleStatus", statusFilter);
             }
             if (minPrice || maxPrice) {
                 params.append("minPriceRange", minPrice);
@@ -66,8 +60,6 @@ const Sale = () => {
             }
             params.append("page", page);
             params.append("size", pageSize);
-
-            console.log("검색 파라미터:", params.toString());
 
             const response = await apiGet(`/store/sale/search?${params.toString()}`);
             if (response.ok) {

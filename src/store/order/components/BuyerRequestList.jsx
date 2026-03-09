@@ -193,7 +193,7 @@ const BuyerRequestList = () => {
                     </div>
                   </td>
                   <td>{request.custNm}</td>
-                  <td>{request.custPhone}</td>
+                  <td>{request.custTelNo}</td>
                   <td>{request.requestPrice?.toLocaleString()}원</td>
                   <td>{formatDateTime(request.requestDateTime)}</td>
                   <td>

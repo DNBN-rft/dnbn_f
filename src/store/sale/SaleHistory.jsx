@@ -48,15 +48,11 @@ const SaleHistory = () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            if (searchText) params.append("productNm", searchText);
-            if (startDate) params.append("startDateTime", startDate + "T00:00:00");
-            if (endDate) params.append("endDateTime", endDate + "T23:59:59");
+            if (searchText) params.append("searchTerm", searchText);
+            if (startDate) params.append("startDate", startDate);
+            if (endDate) params.append("endDate", endDate);
             if (statusFilter && statusFilter !== "ALL") {
-                const statusMap = {
-                    "COMPLETED": "할인 완료",
-                    "CANCELED": "할인 취소"
-                };
-                params.append("saleStatus", statusMap[statusFilter]);
+                params.append("saleLogStatus", statusFilter);
             }
             if (minPrice || maxPrice) {
                 params.append("minPriceRange", minPrice);

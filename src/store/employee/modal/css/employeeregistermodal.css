@@ -83,6 +83,23 @@
     outline: none;
 }
 
+/* 에러 메시지 슬롯 */
+.emp-reg-error-slot {
+    height: 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.emp-reg-error {
+    font-size: 12px;
+    color: #ff0000;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /*권한설정*/
 .emp-reg-auth-wrap {
     display: flex;

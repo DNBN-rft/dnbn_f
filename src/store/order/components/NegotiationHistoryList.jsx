@@ -158,9 +158,9 @@ const NegotiationHistoryList = () => {
                   <td>{index + 1}</td>
                   <td className="negotiationHistory-product-info">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      {nego.productImage ? (
+                      {nego.images?.files?.[0]?.fileUrl ? (
                         <img 
-                          src={nego.productImage} 
+                          src={nego.images.files[0].fileUrl} 
                           alt={nego.productNm}
                           style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
                         />

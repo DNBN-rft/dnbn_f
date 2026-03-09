@@ -1,6 +1,7 @@
 import { apiPost, apiGet } from "../../../utils/apiClient";
 import "./css/employeeregistermodal.css";
 import { useState, useEffect } from "react";
+import { restrictPassword, getPasswordCheckMessage } from "../../../utils/registerValidation";
 
 const EmployeeRegisterModal = ({ onClose, refreshData }) => {
 
@@ -8,6 +9,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
     const [selectedAuthCodes, setSelectedAuthCodes] = useState([]);
     const [idCheckStatus, setIdCheckStatus] = useState(null); // null, 'success', 'error'
     const [idCheckMessage, setIdCheckMessage] = useState("");
+    const [passwordCheckMessage, setPasswordCheckMessage] = useState("");
 
     const [formData, setFormData] = useState({
         memberId: "",
@@ -37,7 +39,21 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        let restrictedValue = value;
+        
+        if (name === "memberPw") {
+            restrictedValue = restrictPassword(value);
+            const { status } = getPasswordCheckMessage(restrictedValue);
+            if (status === "success") {
+                setPasswordCheckMessage("");
+            } else if (restrictedValue) {
+                setPasswordCheckMessage("양식이 올바르지 않습니다.");
+            } else {
+                setPasswordCheckMessage("");
+            }
+        }
+        
+        setFormData((prev) => ({ ...prev, [name]: restrictedValue }));
         
         // 아이디 변경 시 중복 체크 상태 초기화
         if (name === "memberId") {
@@ -162,6 +178,15 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
                                     required 
                                     placeholder="직원 비밀번호를 입력하세요." 
                                 />
+                                <div style={{ fontSize: "11px", color: "#999"}}>
+                                    영문 · 숫자 · 특수문자 포함 8~16자
+                                </div>
+                                <div className="emp-reg-error-slot">
+                                    {passwordCheckMessage && (
+                                        <div className="emp-reg-error">{passwordCheckMessage}</div>
+                                    )}
+                                </div>
+
                             </div>
 
                             <div className="emp-reg-right">
@@ -256,6 +281,18 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        
+        // 비밀번호 검증
+        if (!formData.memberPw || !formData.memberPw.trim()) {
+            alert("비밀번호를 입력해주세요.");
+            return;
+        }
+        
+        const { status } = getPasswordCheckMessage(formData.memberPw);
+        if (status !== "success") {
+            alert("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+            return;
+        }
 
         let userInfo = localStorage.getItem("user");
         const storeCode = JSON.parse(userInfo).storeCode;
