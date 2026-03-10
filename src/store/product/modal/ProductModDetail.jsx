@@ -9,7 +9,15 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
   });
 
   const removeImageFromList = (index) => {
-    setAllImages(prev => prev.filter((_, i) => i !== index));
+    setAllImages(prev => {
+      const newImages = prev.filter((_, i) => i !== index);
+      setSelectedImageIndex(cur => {
+        if (newImages.length === 0) return 0;
+        if (cur >= newImages.length) return newImages.length - 1;
+        return cur;
+      });
+      return newImages;
+    });
   };
 
   const [formData, setFormData] = useState({
