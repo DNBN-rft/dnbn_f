@@ -84,6 +84,29 @@ export const restrictBusinessType = (value) => {
 
 // 기존 검증 함수들
 
+export const getLoginIdCheckMessage = (loginId) => {
+  if (!loginId) {
+    return { message: "", status: null };
+  }
+
+  const hasMinLength = loginId.length >= 6;
+  const hasMaxLength = loginId.length <= 15;
+  const hasLetter = /[a-zA-Z]/.test(loginId);
+  const hasNumber = /[0-9]/.test(loginId);
+
+  if (!hasMinLength) {
+    return { message: "아이디는 최소 6자 이상이어야 합니다.", status: "error" };
+  }
+  if (!hasMaxLength) {
+    return { message: "아이디는 최대 15자까지 가능합니다.", status: "error" };
+  }
+  if (!hasLetter || !hasNumber) {
+    return { message: "아이디는 영문과 숫자를 모두 포함해야 합니다.", status: "error" };
+  }
+
+  return { message: "올바른 형식의 아이디입니다.", status: "success" };
+};
+
 export const getPasswordCheckMessage = (password) => {
   if (!password) {
     return { message: "", status: null };
