@@ -55,6 +55,7 @@ import apiClient from "./utils/apiClient";
 import AdminReportedReview from "./admin/review/AdminReportedReview";
 import AdminPayout from "./admin/payout/AdminPayout";
 import AdminPayoutCompleted from "./admin/payout/AdminPayoutCompleted";
+import CustWithdrawal from "./cust/CustWithdrawal";
 
 // React Query Client 생성
 const queryClient = new QueryClient({
@@ -92,6 +93,7 @@ function App() {
           <Route path="/store/login" element={<Login />} />
           <Route path="/store/register" element={<RegisterStep />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/cust/withdrawal" element={<CustWithdrawal />} />
           {/* 기본 경로 리다이렉트 */}
           <Route path="/" element={<Navigate to="/store/login" replace />} />
           {/* 스토어 관리자 - 보호된 경로 */}
