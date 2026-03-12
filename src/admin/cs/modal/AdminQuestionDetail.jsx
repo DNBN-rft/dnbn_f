@@ -153,6 +153,25 @@ const AdminQuestionDetail = ({ questionIdx, onClose }) => {
             <p>{questionDetail.questionContent}</p>
           </div>
         </div>
+        {/* 첨부 이미지 */}
+        {questionDetail.imgs?.files?.length > 0 && (
+          <div className="adminquestiondetail-section">
+            <div className="adminquestiondetail-section-title">첨부 이미지</div>
+            <div className="adminquestiondetail-images">
+              {questionDetail.imgs.files
+                .sort((a, b) => a.order - b.order)
+                .map((file, index) => (
+                  <a key={index} href={file.fileUrl} target="_blank" rel="noreferrer">
+                    <img
+                      src={file.fileUrl}
+                      alt={file.originalName}
+                      className="adminquestiondetail-image"
+                    />
+                  </a>
+                ))}
+            </div>
+          </div>
+        )}
         {/* 답변 섹션 */}
         <div className="adminquestiondetail-section">
           <div className="adminquestiondetail-section-title">답변 내용</div>

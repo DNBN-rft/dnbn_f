@@ -3,41 +3,6 @@ import "./css/custinfomodal.css";
 import { getAuthList } from "../../../utils/adminAuthService";
 import { formatDate } from "../../../utils/commonService";
 
-// 메뉴 매핑 (id: 영어, name: 한국어)
-const MENU_MAP = {
-  ADMIN_MAIN: "관리자 메인",
-  ADMIN_MANAGER: "관리자 관리",
-  ADMIN_CUST: "회원 관리",
-  ADMIN_STORE: "가게 정보",
-  ADMIN_PRODUCT: "상품 관리",
-  ADMIN_REVIEW: "리뷰 관리",
-  ADMIN_EMPLOYEE: "직원 관리",
-  ADMIN_NOTICE: "공지사항",
-  ADMIN_QUESTION: "문의 관리",
-  ADMIN_MEMBERSHIP: "멤버십 관리",
-  ADMIN_REPORT: "신고 관리",
-  ADMIN_ALARM: "알림 관리",
-  ADMIN_PUSH: "푸시 알림",
-  ADMIN_CATEGORY: "카테고리 관리",
-  ADMIN_REGION: "지역 관리",
-  ADMIN_PLAN: "요금제 관리",
-  ADMIN_ACCEPT: "가입 승인",
-  ADMIN_AUTH: "권한 관리",
-  ADMIN_CATEGORY_MANAGE: "카테고리 설정",
-  STORE_MEMBERSHIP: "멤버십 정보",
-  STORE_MYPAGE: "마이페이지",
-  STORE_ORDER: "주문 관리",
-  STORE_NEGOTIATION: "흥정 관리",
-  STORE_STATIC: "주문 통계",
-  STORE_PRODUCT: "상품 관리",
-  STORE_SALE: "판매 관리",
-  STORE_REVIEW: "리뷰 관리",
-  STORE_EMPLOYEE: "직원 관리",
-  STORE_NOTICE: "공지사항",
-  STORE_QUESTION: "문의하기",
-  STORE_SUBSCRIPTION: "구독 플랜",
-};
-
 const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,7 +16,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
   const [authList, setAuthList] = useState([]);
   const [selectedAuthIdx, setSelectedAuthIdx] = useState("");
   const [selectedMenuAuth, setSelectedMenuAuth] = useState([]);
-  const [authNmToDisplay, setAuthNmToDisplay] = useState("");
   const [availableMenus, setAvailableMenus] = useState([]);
 
   // customerData 변경 시 formData 업데이트
@@ -66,7 +30,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
       });
       const parsedMenus = parseMenuAuth(customerData?.menuAuth || "");
       setSelectedMenuAuth(parsedMenus);
-      setAuthNmToDisplay(customerData?.authNm || "");
     }
   }, [customerData]);
 
@@ -97,17 +60,16 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
       const parsedMenus = parseMenuAuth(selectedAuth.menuAuth || "");
       setAvailableMenus(parsedMenus);
       setSelectedMenuAuth(parsedMenus);
-      setAuthNmToDisplay(selectedAuth.authNm);
     }
   };
 
   // 메뉴 권한 체크박스 핸들러
-  const handleMenuAuthCheckbox = (menuId) => {
+  const handleMenuAuthCheckbox = (menu) => {
     setSelectedMenuAuth((prev) => {
-      if (prev.includes(menuId)) {
-        return prev.filter(id => id !== menuId);
+      if (prev.some(m => m.code === menu.code)) {
+        return prev.filter(m => m.code !== menu.code);
       } else {
-        return [...prev, menuId];
+        return [...prev, menu];
       }
     });
   };
@@ -122,15 +84,14 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
 
   const handleEdit = () => {
     // 기존 권한 정보 초기화
-    if (customerData?.authNm && authList.length > 0) {
-      // authNm으로 권한 찾기
-      const foundAuth = authList.find(auth => auth.authNm === customerData.authNm);
+    if (customerData?.custAuthNm && authList.length > 0) {
+      // custAuthNm으로 권한 찾기
+      const foundAuth = authList.find(auth => auth.authNm === customerData.custAuthNm);
       if (foundAuth) {
         setSelectedAuthIdx(foundAuth.authIdx.toString());
         const parsedMenus = parseMenuAuth(customerData?.menuAuth || "");
         setAvailableMenus(parsedMenus);
         setSelectedMenuAuth(parsedMenus);
-        setAuthNmToDisplay(foundAuth.authNm);
       }
     }
     setIsEditMode(true);
@@ -162,7 +123,7 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
         custBirthYear: formData.custBirthYear || "",
         custTelNo: formData.custTelNo || "",
         custState: formData.custState,
-        custMenuAuth: JSON.stringify(selectedMenuAuth),
+        custMenuAuth: selectedMenuAuth.map(m => typeof m === 'object' ? m.code : m),
       };
       onUpdate(updateData);
     }
@@ -179,19 +140,10 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
     });
     const parsedMenus = parseMenuAuth(customerData?.menuAuth || "");
     setSelectedMenuAuth(parsedMenus);
-    setAuthNmToDisplay(customerData?.authNm || "");
     setSelectedAuthIdx("");
     setAvailableMenus([]);
     setIsEditMode(false);
   };
-
-  const getStatusLabel = (status) => {
-    if (status === "ACTIVE") return "활성";
-    if (status === "SUSPENDED") return "정지";
-    if (status === "WITHDRAWAL") return "탈퇴";
-    return status;
-  };
-
 
   // 메뉴 권한 파싱 함수
   const parseMenuAuth = (menuAuthStr) => {
@@ -211,11 +163,6 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
       console.error("메뉴 권한 파싱 오류:", error);
       return [];
     }
-  };
-
-  // 메뉴 id를 한국어 이름으로 변환
-  const getMenuNameById = (menuId) => {
-    return MENU_MAP[menuId] || menuId;
   };
 
   return (
@@ -330,13 +277,13 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
                     onChange={handleInputChange}
                     className="custinfomodal-select"
                   >
-                    <option value="ACTIVE">활성</option>
-                    <option value="WITHDRAWAL">탈퇴</option>
-                    <option value="SUSPENDED">정지</option>
+                    <option value="활성">활성</option>
+                    <option value="탈퇴">탈퇴</option>
+                    <option value="제재">제재</option>
                   </select>
                 ) : (
                   <span className="custinfomodal-value">
-                    {getStatusLabel(formData.custState)}
+                    {formData.custState}
                   </span>
                 )}
               </div>
@@ -363,7 +310,7 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
                 </select>
               ) : (
                 <span className="custinfomodal-value">
-                  {authNmToDisplay || "권한이 설정되지 않았습니다"}
+                  {customerData?.custAuthNm}
                 </span>
               )}
 
@@ -373,14 +320,14 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
                   {isEditMode ? (
                     <div className="custinfomodal-menu-auth-checkboxes">
                       {availableMenus.length > 0 ? (
-                        availableMenus.map((menuId) => (
-                          <label key={menuId} className="custinfomodal-menu-checkbox">
+                        availableMenus.map((menu) => (
+                          <label key={menu.code} className="custinfomodal-menu-checkbox">
                             <input
                               type="checkbox"
-                              checked={selectedMenuAuth.includes(menuId)}
-                              onChange={() => handleMenuAuthCheckbox(menuId)}
+                              checked={selectedMenuAuth.some(m => m.code === menu.code)}
+                              onChange={() => handleMenuAuthCheckbox(menu)}
                             />
-                            <span className="custinfomodal-checkbox-label">{getMenuNameById(menuId)}</span>
+                            <span className="custinfomodal-checkbox-label">{menu.displayName}</span>
                           </label>
                         ))
                       ) : (
@@ -392,7 +339,7 @@ const CustInfoModal = ({ customerData, onClose, onUpdate }) => {
                       {selectedMenuAuth.length > 0 ? (
                         selectedMenuAuth.map((auth, index) => (
                           <span key={index} className="custinfomodal-auth-tag-clean">
-                            {getMenuNameById(auth)}
+                            {auth.displayName}
                           </span>
                         ))
                       ) : (

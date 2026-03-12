@@ -287,8 +287,8 @@ const AdminReport = () => {
                     <td className="adminreport-table-title-cell">{getReportReasonText(report.reportReason)}</td>
                     <td>{report.reportRegDate}</td>
                     <td>
-                      <span className={`adminreport-status ${report.reportStatus === 'COMPLETED' ? 'adminreport-status-complete' : 'adminreport-status-pending'}`}>
-                        {report.reportStatus === 'COMPLETED' ? '처리완료' : report.reportStatus === 'REJECTED' ? '반려' : '처리대기'}
+                      <span className={`adminreport-status ${report.reportStatus === '처리완료' ? 'adminreport-status-complete' : 'adminreport-status-pending'}`}>
+                        {report.reportStatus}
                       </span>
                     </td>
                     <td>{report.answerDate || '-'}</td>

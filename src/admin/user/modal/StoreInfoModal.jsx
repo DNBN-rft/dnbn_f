@@ -626,10 +626,10 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
               <div className="storeinfomodal-field">
                 <label className="storeinfomodal-label">승인 상태</label>
                 <div className="storeinfomodal-approval-container">
-                  <span className={`storeinfomodal-approval-status ${storeData?.approvalStatus === 'APPROVED' ? 'storeinfomodal-approval-approved' : 'storeinfomodal-approval-pending'}`}>
-                    {storeData?.approvalStatus === 'APPROVED' ? "승인" : storeData?.approvalStatus === 'PENDING' ? "대기 중" : "거절"}
+                  <span className={`storeinfomodal-approval-status ${storeData?.approvalStatus === '승인' ? 'storeinfomodal-approval-approved' : storeData?.approvalStatus === '거절' ? 'storeinfomodal-approval-rejected' : 'storeinfomodal-approval-pending'}`}>
+                    {storeData?.approvalStatus}
                   </span>
-                  {storeData?.approvalStatus !== 'APPROVED' && (
+                  {storeData?.approvalStatus !== '승인' && (
                     <button
                       className="storeinfomodal-approval-btn storeinfomodal-approve-btn"
                       onClick={handleApprove}

@@ -119,6 +119,10 @@
   background-color: #D1FAE5;
   color: #065F46;
 }
+.adminreportdetail-status-rejected {
+  background-color: #FEE2E2;
+  color: #7F1D1D;
+}
 /* 컨텐츠 */
 .adminreportdetail-content {
   padding: 20px;

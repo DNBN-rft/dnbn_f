@@ -137,24 +137,6 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
               </>
             )}
 
-            {/* 직원관리 */}
-            {hasPermission("ADMIN_EMPLOYEE") && (
-              <>
-                <div className="admin-sb-sidenav-menu-heading">직원</div>
-                <Link
-                  className={`nav-link ${location.pathname === "/admin/emp" ? "active" : ""
-                    }`}
-                  to="/admin/emp"
-                  onClick={handleLinkClick}
-                >
-                  <div className="admin-sb-nav-link-icon">
-                    <i className="fas fa-users"></i>
-                  </div>
-                  직원관리
-                </Link>
-              </>
-            )}
-
             {/* 알림/푸시정보 */}
             {hasPermission("ADMIN_NOTIFICATION") && (
               <>
@@ -225,7 +207,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
             )}
 
             {/* 시스템관리 */}
-            {(hasPermission("ADMIN_SYSTEM") || hasPermission("ADMIN_CATEGORY")) && (
+            {(hasPermission("ADMIN_SYSTEM") || hasPermission("ADMIN_CATEGORY") || hasPermission("ADMIN_EMPLOYEE")) && (
               <>
                 <div className="admin-sb-sidenav-menu-heading">시스템관리</div>
                 <a
@@ -259,6 +241,11 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                     {hasPermission("ADMIN_CATEGORY") && (
                       <Link className="nav-link" to="/admin/categorymanage" onClick={handleLinkClick}>
                         카테고리관리
+                      </Link>
+                    )}
+                    {hasPermission("ADMIN_EMPLOYEE") && (
+                      <Link className="nav-link" to="/admin/emp" onClick={handleLinkClick}>
+                        사용자관리
                       </Link>
                     )}
                   </nav>

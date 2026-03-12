@@ -114,7 +114,7 @@ export const getPasswordCheckMessage = (password) => {
  */
 export const validateAgreement = (agreement = {}) => {
   // 필수 약관 체크 (marketing은 선택사항)
-  if (!agreement.terms || !agreement.privacy || !agreement.seller) {
+  if (!agreement.terms || !agreement.privacy) {
     return { isValid: false, message: "필수 약관에 모두 동의해주세요." };
   }
 

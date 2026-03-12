@@ -369,18 +369,9 @@ const AdminStoreInfo = () => {
                     <td>{store.bizType}</td>
                     <td>{store.approvedDateTime ? new Date(store.approvedDateTime).toLocaleDateString() : "-"}</td>
                     <td
-                      className={`storeinfo-status-${store.approvalStatus === "APPROVED"
-                          ? "approved"
-                          : store.approvalStatus === "REJECTED"
-                            ? "rejected"
-                            : "pending"
-                        }`}
+                      className={`storeinfo-status-${store.approvalStatus}`}
                     >
-                      {store.approvalStatus === "APPROVED"
-                        ? "승인"
-                        : store.approvalStatus === "REJECTED"
-                          ? "거절"
-                          : "대기 중"}
+                      {store.approvalStatus}
                     </td>
                     <td>
                       <button

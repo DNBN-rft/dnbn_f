@@ -145,6 +145,46 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
                   {storeDetail.ownerTelNo || "-"}
                 </div>
               </div>
+
+              {/* 사업자 이미지 */}
+              {storeDetail.bzImgs?.files?.length > 0 && (
+                <div className="adminstoredetail-row adminstoredetail-row-full">
+                  <label className="adminstoredetail-label">사업자 이미지</label>
+                  <div className="adminstoredetail-images">
+                    {storeDetail.bzImgs.files
+                      .sort((a, b) => a.order - b.order)
+                      .map((file, index) => (
+                        <a key={index} href={file.fileUrl} target="_blank" rel="noreferrer">
+                          <img
+                            src={file.fileUrl}
+                            alt={file.originalName}
+                            className="adminstoredetail-image"
+                          />
+                        </a>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 가맹점 대표 이미지 */}
+              {storeDetail.storeImg?.files?.length > 0 && (
+                <div className="adminstoredetail-row adminstoredetail-row-full">
+                  <label className="adminstoredetail-label">가맹점 대표 이미지</label>
+                  <div className="adminstoredetail-images">
+                    {storeDetail.storeImg.files
+                      .sort((a, b) => a.order - b.order)
+                      .map((file, index) => (
+                        <a key={index} href={file.fileUrl} target="_blank" rel="noreferrer">
+                          <img
+                            src={file.fileUrl}
+                            alt={file.originalName}
+                            className="adminstoredetail-image"
+                          />
+                        </a>
+                      ))}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <div className="adminstoredetail-error">상세 정보를 불러올 수 없습니다.</div>
