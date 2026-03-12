@@ -57,6 +57,7 @@ import AdminPayout from "./admin/payout/AdminPayout";
 import AdminPayoutCompleted from "./admin/payout/AdminPayoutCompleted";
 import TermsDetail from "./store/register/TermsDetail";
 import CustWithdrawal from "./cust/CustWithdrawal";
+import PersonalInformation from "./components/PersonalInformation";
 
 // React Query Client 생성
 const queryClient = new QueryClient({
@@ -97,6 +98,7 @@ function App() {
           {/* 약관 페이지 (로그인 필요 없음) */}
           <Route path="/store/terms/:type" element={<TermsDetail />} />
           <Route path="/cust/withdrawal" element={<CustWithdrawal />} />
+          <Route path="/personal-information" element={<PersonalInformation />} />
           {/* 기본 경로 리다이렉트 */}
           <Route path="/" element={<Navigate to="/store/login" replace />} />
           {/* 스토어 관리자 - 보호된 경로 */}
