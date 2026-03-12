@@ -359,6 +359,35 @@ export const modMemberPassword = async (storeCode, data) => {
 };
 
 /**
+ * 매니저(직원) 비밀번호 변경
+ */
+export const modManagerPassword = async (memberId, data) => {
+  try {
+    const response = await apiPut(`/admin/store/${memberId}/modPw`, data);
+
+    if (response.ok) {
+      return {
+        success: true,
+        data: await response.text(),
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "매니저 비밀번호 변경에 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
+};
+
+/**
  * 가맹점 상세 조회
  */
 export const getStoreDetail = async (storeCode) => {

@@ -22,17 +22,7 @@ const reportReasonMap = {
 const getReportReasonText = (reason) => {
   return reportReasonMap[reason] || reason;
 };
-// ReportAnswerTitle 한국어 매핑
-const reportAnswerTitleMap = {
-  REPORT_REJECTED: "신고 반려",
-  WARNING_ISSUED: "경고 조치",
-  PRODUCT_REMOVED: "상품 삭제 조치",
-  STORE_SUSPENDED: "가맹점 이용 정지 조치",
-  ETC: "기타",
-};
-const getReportAnswerTitleText = (title) => {
-  return reportAnswerTitleMap[title] || title;
-};
+
 const AdminReportDetail = ({ report, onClose }) => {
   const [reportData, setReportData] = useState(null);
   const [hasAnswer, setHasAnswer] = useState(false);
@@ -146,13 +136,13 @@ const AdminReportDetail = ({ report, onClose }) => {
                 <div className="adminreportdetail-info-item">
                   <span className="adminreportdetail-info-label">신고 대상:</span>
                   <span className="adminreportdetail-info-value">
-                    {reportData.reportType === 'PRODUCT' ? '상품' : '가맹점'}
+                    {reportData.reportType}
                   </span>
                 </div>
                 <div className="adminreportdetail-info-item">
                   <span className="adminreportdetail-info-label">상태:</span>
-                  <span className={`adminreportdetail-status ${reportData.reportStatus === 'COMPLETED' ? 'adminreportdetail-status-complete' : 'adminreportdetail-status-pending'}`}>
-                    {reportData.reportStatus === 'COMPLETED' ? '처리완료' : reportData.reportStatus === 'REJECTED' ? '반려' : '처리대기'}
+                  <span className={`adminreportdetail-status ${reportData.reportStatus === '처리완료' ? 'adminreportdetail-status-complete' : reportData.reportStatus === '반려' ? 'adminreportdetail-status-rejected' : 'adminreportdetail-status-pending'}`}>
+                    {reportData.reportStatus}
                   </span>
                 </div>
                 {reportData.reportAnswerDate && (
@@ -184,11 +174,11 @@ const AdminReportDetail = ({ report, onClose }) => {
                       onChange={(e) => setAnswerTitle(e.target.value)}
                     >
                       <option value="">선택하세요</option>
-                      <option value="REPORT_REJECTED">신고 반려</option>
-                      <option value="WARNING_ISSUED">경고 조치</option>
-                      <option value="PRODUCT_REMOVED">상품 삭제 조치</option>
-                      <option value="STORE_SUSPENDED">가맹점 이용 정지 조치</option>
-                      <option value="ETC">기타</option>
+                      <option value="신고 반려">신고 반려</option>
+                      <option value="경고 조치">경고 조치</option>
+                      <option value="상품 삭제 조치">상품 삭제 조치</option>
+                      <option value="가맹점 이용 정지 조치">가맹점 이용 정지 조치</option>
+                      <option value="기타">기타</option>
                     </select>
                   </div>
                   <textarea
@@ -202,7 +192,7 @@ const AdminReportDetail = ({ report, onClose }) => {
                 <div className={`adminreportdetail-content ${hasAnswer ? 'adminreportdetail-answer' : 'adminreportdetail-no-answer'}`}>
                   {hasAnswer && reportData?.answerTitle && (
                     <div className="adminreportdetail-answer-title-display">
-                      처리 제목: {getReportAnswerTitleText(reportData.answerTitle)}
+                      처리 제목: {reportData.answerTitle}
                     </div>
                   )}
                   <p>{hasAnswer ? reportData.answerContent : "처리 내용이 아직 등록되지 않았습니다."}</p>
@@ -231,7 +221,7 @@ const AdminReportDetail = ({ report, onClose }) => {
               ) : (
                 <>
                   {hasAnswer ? (
-                    reportData.reportStatus === 'REJECTED' ? (
+                    reportData.reportStatus === '반려' ? (
                       <button className="adminreportdetail-reject-cancel-btn" onClick={handleRejectCancelClick}>
                         반려 취소
                       </button>

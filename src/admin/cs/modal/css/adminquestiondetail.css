@@ -281,4 +281,42 @@
   .adminquestiondetail-close-btn {
     width: 100%;
   }
+
+  .adminquestiondetail-images {
+    gap: 6px;
+  }
+
+  .adminquestiondetail-image {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* 첨부 이미지 */
+.adminquestiondetail-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.adminquestiondetail-images a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.adminquestiondetail-images a:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.adminquestiondetail-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  display: block;
 }

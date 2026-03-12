@@ -189,6 +189,42 @@
   border-color: #adb5bd;
 }
 
+/* 이미지 섹션 */
+.adminstoredetail-row-full {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.adminstoredetail-images {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.adminstoredetail-images a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.adminstoredetail-images a:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.adminstoredetail-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .adminstoredetail-wrap {
@@ -222,5 +258,14 @@
 
   .adminstoredetail-btn {
     width: 100%;
+  }
+
+  .adminstoredetail-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .adminstoredetail-images {
+    gap: 8px;
   }
 }
