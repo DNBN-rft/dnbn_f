@@ -83,7 +83,8 @@ const AdminAddPush = ({ isOpen, onClose, onSuccess }) => {
               onChange={(e) => setReceiverType(e.target.value)}
             >
               <option value="">선택하세요</option>
-=              <option value="가맹점">가맹점</option>
+              <option value="전체">전체</option>
+              <option value="가맹점">가맹점</option>
               <option value="사용자">사용자</option>
             </select>
           </div>

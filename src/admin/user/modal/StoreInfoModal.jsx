@@ -7,10 +7,12 @@ import {
   modBizInfo,
   modAuthInfo,
   modMemberPassword,
+  modManagerPassword,
   approveStore,
   getStoreDetail
 } from "../../../utils/adminStoreService";
 import { getBankList, getMembershipList, getAuthList } from "../../../utils/commonService";
+import { getPasswordCheckMessage } from "../../../utils/registerValidation";
 
 const StoreInfoModal = ({ storeCode, onClose }) => {
   // 가맹점 상세 데이터
@@ -52,6 +54,15 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     member: false,
     business: false,
     auth: false,
+  });
+
+  // 매니저 비밀번호 변경 상태
+  const [managerPasswordModal, setManagerPasswordModal] = useState({
+    isOpen: false,
+    memberId: null,
+    memberNm: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   // 은행 및 멤버십 목록 조회 및 가맹점 상세 정보 조회
@@ -426,6 +437,70 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     } else {
       alert(result.error);
     }
+  };
+
+  // 매니저 비밀번호 변경 모달 열기
+  const handleManagerPasswordChange = (memberId, memberNm) => {
+    setManagerPasswordModal({
+      isOpen: true,
+      memberId,
+      memberNm,
+      newPassword: "",
+      confirmPassword: "",
+    });
+  };
+
+  // 매니저 비밀번호 변경 저장
+  const handleManagerPasswordSave = async () => {
+    if (!managerPasswordModal.newPassword.trim()) {
+      alert("새 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    if (managerPasswordModal.newPassword !== managerPasswordModal.confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    // 비밀번호 검증 (registerValidation 사용)
+    const validation = getPasswordCheckMessage(managerPasswordModal.newPassword);
+    if (validation.status !== "success") {
+      alert(validation.message);
+      return;
+    }
+
+    try {
+      const result = await modManagerPassword(managerPasswordModal.memberId, {
+        newPassword: managerPasswordModal.newPassword
+      });
+
+      if (result.success) {
+        alert(`${managerPasswordModal.memberNm} 매니저의 비밀번호가 변경되었습니다.`);
+        setManagerPasswordModal({
+          isOpen: false,
+          memberId: null,
+          memberNm: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } else {
+        alert(result.error || "비밀번호 변경에 실패했습니다.");
+      }
+    } catch (error) {
+      alert("네트워크 오류가 발생했습니다.");
+      console.error("비밀번호 변경 오류:", error);
+    }
+  };
+
+  // 매니저 비밀번호 변경 모달 닫기
+  const handleManagerPasswordCancel = () => {
+    setManagerPasswordModal({
+      isOpen: false,
+      memberId: null,
+      memberNm: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   return (
@@ -1043,6 +1118,65 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
               )}
             </div>
           </section>
+
+          {/* 6. 매니저 정보 섹션 */}
+          <section className="storeinfomodal-section">
+            <div className="storeinfomodal-section-header">
+              <h3 className="storeinfomodal-section-title">매니저 정보</h3>
+            </div>
+
+            <div className="storeinfomodal-manager-list">
+              {Array.isArray(storeData?.members) && storeData.members.length > 0 ? (
+                storeData.members.map((member, index) => (
+                  <div key={member.memberIdx} className="storeinfomodal-manager-card">
+                    <div className="storeinfomodal-manager-header">
+                      <div className="storeinfomodal-manager-info">
+                        <span className="storeinfomodal-manager-name">{member.memberNm}</span>
+                        <span className="storeinfomodal-manager-type">{member.memberType}</span>
+                      </div>
+                      <button 
+                        className="storeinfomodal-manager-password-btn"
+                        onClick={() => handleManagerPasswordChange(member.memberId, member.memberNm)}
+                      >
+                        비밀번호 변경
+                      </button>
+                    </div>
+                    
+                    <div className="storeinfomodal-manager-details">
+                      <div className="storeinfomodal-manager-row">
+                        <label>아이디:</label>
+                        <span>{member.memberId}</span>
+                      </div>
+                      <div className="storeinfomodal-manager-row">
+                        <label>이메일:</label>
+                        <span>{member.memberEmail || "-"}</span>
+                      </div>
+                      <div className="storeinfomodal-manager-row">
+                        <label>연락처:</label>
+                        <span>{member.memberTelNo || "-"}</span>
+                      </div>
+                      <div className="storeinfomodal-manager-row">
+                        <label>권한:</label>
+                        <div className="storeinfomodal-manager-menus">
+                          {Array.isArray(member.menuAuth) && member.menuAuth.length > 0 ? (
+                            member.menuAuth.map((menu, idx) => (
+                              <span key={idx} className="storeinfomodal-manager-menu-tag">
+                                {menu.displayName}
+                              </span>
+                            ))
+                          ) : (
+                            <span>권한 없음</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="storeinfomodal-no-manager">등록된 매니저가 없습니다.</div>
+              )}
+            </div>
+          </section>
         </div>
 
         {/* 푸터 */}
@@ -1055,6 +1189,84 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
           </button>
         </div>
       </div>
+
+      {/* 매니저 비밀번호 변경 모달 */}
+      {managerPasswordModal.isOpen && (
+        <div className="storeinfomodal-password-modal-backdrop" onClick={handleManagerPasswordCancel}>
+          <div className="storeinfomodal-password-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="storeinfomodal-password-modal-header">
+              <h3 className="storeinfomodal-password-modal-title">
+                {managerPasswordModal.memberNm} 매니저 비밀번호 변경
+              </h3>
+              <button 
+                className="storeinfomodal-password-modal-close"
+                onClick={handleManagerPasswordCancel}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="storeinfomodal-password-modal-content">
+              <div className="storeinfomodal-password-field">
+                <label className="storeinfomodal-password-label">새 비밀번호</label>
+                <input
+                  type="password"
+                  className="storeinfomodal-password-input"
+                  placeholder="새 비밀번호를 입력하세요"
+                  value={managerPasswordModal.newPassword}
+                  onChange={(e) =>
+                    setManagerPasswordModal({
+                      ...managerPasswordModal,
+                      newPassword: e.target.value,
+                    })
+                  }
+                />
+                <div className={`storeinfomodal-password-helper ${
+                  managerPasswordModal.newPassword.length >= 8 && 
+                  managerPasswordModal.newPassword.length <= 16 &&
+                  /[0-9]/.test(managerPasswordModal.newPassword) &&
+                  /[a-zA-Z]/.test(managerPasswordModal.newPassword) &&
+                  /\W/.test(managerPasswordModal.newPassword)
+                    ? 'valid' : ''
+                }`}>
+                  8~16자, 숫자, 영문, 특수문자를 포함해야 합니다.
+                </div>
+              </div>
+
+              <div className="storeinfomodal-password-field">
+                <label className="storeinfomodal-password-label">비밀번호 확인</label>
+                <input
+                  type="password"
+                  className="storeinfomodal-password-input"
+                  placeholder="비밀번호를 재입력하세요"
+                  value={managerPasswordModal.confirmPassword}
+                  onChange={(e) =>
+                    setManagerPasswordModal({
+                      ...managerPasswordModal,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="storeinfomodal-password-modal-footer">
+              <button
+                className="storeinfomodal-password-modal-btn storeinfomodal-password-modal-save"
+                onClick={handleManagerPasswordSave}
+              >
+                변경
+              </button>
+              <button
+                className="storeinfomodal-password-modal-btn storeinfomodal-password-modal-cancel"
+                onClick={handleManagerPasswordCancel}
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
