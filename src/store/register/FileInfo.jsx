@@ -35,27 +35,40 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
   };
 
   const handleBusinessDocsSelect = (files) => {
-    const newFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    const newFiles = Array.from(files).filter(file =>
+      file.type.startsWith('image/') || file.type === 'application/pdf'
+    );
     
     const maxSize = 10 * 1024 * 1024;
     const oversizedFiles = newFiles.filter(file => file.size > maxSize);
     if (oversizedFiles.length > 0) {
-      alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
+      alert('파일 크기는 10MB를 초과할 수 없습니다.');
       return;
     }
     
-    const newPreviews = [];
+    const previews = new Array(newFiles.length).fill(null);
+    let completedCount = 0;
+
+    const checkComplete = () => {
+      completedCount++;
+      if (completedCount === newFiles.length) {
+        setBusinessDocs(prev => [...prev, ...newFiles]);
+        setBusinessDocPreviews(prev => [...prev, ...previews]);
+      }
+    };
     
     newFiles.forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        newPreviews.push({ file, preview: reader.result });
-        if (newPreviews.length === newFiles.length) {
-          setBusinessDocs(prev => [...prev, ...newFiles]);
-          setBusinessDocPreviews(prev => [...prev, ...newPreviews.map(item => item.preview)]);
-        }
-      };
-      reader.readAsDataURL(file);
+      if (file.type === 'application/pdf') {
+        previews[index] = 'pdf';
+        checkComplete();
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          previews[index] = reader.result;
+          checkComplete();
+        };
+        reader.readAsDataURL(file);
+      }
     });
   };
 
@@ -240,7 +253,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
               <input 
                 type="file" 
                 id="businessDoc"
-                accept=".jpg,.jpeg,.png"
+                accept=".jpg,.jpeg,.png,.pdf"
                 multiple
                 className="fileinfo-middle-file-input-hidden"
                 onChange={handleBusinessDocChange}
@@ -268,7 +281,13 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
                           >
                             ×
                           </button>
-                          <img src={businessDocPreviews[index]} alt="미리보기" className="file-preview-image" />
+                          {businessDocPreviews[index] === 'pdf' ? (
+                            <div className="file-preview-pdf">
+                              <span className="pdf-icon">📄</span>
+                            </div>
+                          ) : (
+                            <img src={businessDocPreviews[index]} alt="미리보기" className="file-preview-image" />
+                          )}
                           <span className="file-name-small">{file.name}</span>
                         </div>
                       ))}
@@ -278,7 +297,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
                       <span className="file-input-text">
                         사업자 증명, 영업신고증, 통장사본을 올려주세요.
                         <br/>
-                        (jpg, png / 파일당 10MB 이하)</span>
+                        (jpg, png, pdf / 파일당 10MB 이하)</span>
                       <span className="file-input-link">파일찾기</span>
                     </>
                   )}

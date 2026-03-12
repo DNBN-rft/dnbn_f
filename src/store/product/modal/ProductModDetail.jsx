@@ -478,7 +478,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 className="productmod-select"
               >
                 <option value={false}>일반</option>
-                <option value={true}>성인</option>
+                {/* <option value={true}>성인</option> */}
               </select>
             </div>
           </div>
