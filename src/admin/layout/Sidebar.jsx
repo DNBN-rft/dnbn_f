@@ -214,7 +214,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
                       공지사항
                     </Link>
                     <Link className="nav-link" to="/admin/question" onClick={handleLinkClick}>
-                      문의
+                      문의/신고
                     </Link>
                     <Link className="nav-link" to="/admin/faq" onClick={handleLinkClick}>
                       FAQ

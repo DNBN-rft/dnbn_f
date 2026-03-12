@@ -55,6 +55,7 @@ import apiClient from "./utils/apiClient";
 import AdminReportedReview from "./admin/review/AdminReportedReview";
 import AdminPayout from "./admin/payout/AdminPayout";
 import AdminPayoutCompleted from "./admin/payout/AdminPayoutCompleted";
+import TermsDetail from "./store/register/TermsDetail";
 import CustWithdrawal from "./cust/CustWithdrawal";
 
 // React Query Client 생성
@@ -93,6 +94,8 @@ function App() {
           <Route path="/store/login" element={<Login />} />
           <Route path="/store/register" element={<RegisterStep />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          {/* 약관 페이지 (로그인 필요 없음) */}
+          <Route path="/store/terms/:type" element={<TermsDetail />} />
           <Route path="/cust/withdrawal" element={<CustWithdrawal />} />
           {/* 기본 경로 리다이렉트 */}
           <Route path="/" element={<Navigate to="/store/login" replace />} />

@@ -51,20 +51,19 @@ const BuyerRequestList = () => {
     setLoading(true);
     setError(null);
     try {
-      const negoReqStatus = statusFilter === "ALL" ? null : statusFilter;
+      const params = new URLSearchParams();
+      if (searchText) params.append("productNm", searchText);
+      if (startDate) params.append("startDateTime", startDate + "T00:00:00");
+      if (endDate) params.append("endDateTime", endDate + "T23:59:59");
+      if (minPrice || maxPrice) {
+        params.append("minPriceRange", minPrice);
+        params.append("maxPriceRange", maxPrice);
+      }
+      params.append("page", page);
+      params.append("size", pageSize);
 
-      const searchRequest = {
-        minPriceRange: minPrice,
-        maxPriceRange: maxPrice,
-        startDateTime: startDate ? `${startDate}T00:00:00` : null,
-        endDateTime: endDate ? `${endDate}T23:59:59` : null,
-        negoReqStatus: negoReqStatus,
-        productNm: searchText || null
-      };
-
-      const response = await apiPost(
-        `/store/nego-req/search?page=${page}&size=${pageSize}`,
-        searchRequest
+      const response = await apiGet(
+        `/store/nego-req/search?${params.toString()}`
       );
       const data = await response.json();
       
@@ -188,12 +187,11 @@ const BuyerRequestList = () => {
                   <td>{index + 1}</td>
                   <td>
                     <div>
-                        <span>{request.categoryNm}</span>
                         <span>{request.productNm}</span>
                     </div>
                   </td>
                   <td>{request.custNm}</td>
-                  <td>{request.custPhone}</td>
+                  <td>{request.custTelNo}</td>
                   <td>{request.requestPrice?.toLocaleString()}원</td>
                   <td>{formatDateTime(request.requestDateTime)}</td>
                   <td>

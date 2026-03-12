@@ -10,8 +10,11 @@ const Review = () => {
   const location = useLocation();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [searchField, setSearchField] = useState("판매번호");
+  const [searchField, setSearchField] = useState("productnm");
   const [searchText, setSearchText] = useState("");
+  const [minRating, setMinRating] = useState(1);
+  const [maxRating, setMaxRating] = useState(5);
+  const [isSearchMode, setIsSearchMode] = useState(false);
   const [isReviewAnswerModalOpen, setIsReviewAnswerModalOpen] = useState(false);
   const [reviewData, setReviewData] = useState([]);
   const [selectedReviewIdx, setSelectedReviewIdx] = useState(null);
@@ -25,9 +28,44 @@ const Review = () => {
   const handleReset = () => {
     setStartDate("");
     setEndDate("");
-    setSearchField("판매번호");
+    setSearchField("productnm");
     setSearchText("");
-  }
+    setMinRating(1);
+    setMaxRating(5);
+    setIsSearchMode(false);
+    fetchReviews(0);
+  };
+
+  const handleSearch = async (page = 0) => {
+    try {
+      const ratings = [];
+      for (let i = minRating; i <= maxRating; i++) ratings.push(i);
+
+      const params = new URLSearchParams();
+      if (startDate) params.append("startDate", startDate);
+      if (endDate) params.append("endDate", endDate);
+      ratings.forEach((r) => params.append("ratings", r));
+      if (searchField) params.append("searchType", searchField);
+      if (searchText) params.append("searchTerm", searchText);
+      params.append("page", page);
+      params.append("size", pageSize);
+
+      const response = await apiGet(`/store/review/search?${params.toString()}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setReviewData(data.content || []);
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
+        setIsSearchMode(true);
+      } else {
+        setReviewData([]);
+      }
+    } catch (error) {
+      setReviewData([]);
+    }
+  };
 
   const fetchReviews = async (page = 0) => {
     try {
@@ -36,7 +74,7 @@ const Review = () => {
 
       const response = await apiGet(`/store/review/view/${storeCode}?page=${page}&size=${pageSize}`);
       const data = await response.json();
-      
+
       if (response.ok) {
         setReviewData(data.content || []);
         setCurrentPage(data.number);
@@ -59,7 +97,7 @@ const Review = () => {
     if (location.state?.openModal && location.state?.reviewIdx) {
       setSelectedReviewIdx(location.state.reviewIdx);
       setIsReviewAnswerModalOpen(true);
-      
+
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -98,44 +136,108 @@ const Review = () => {
       </div>
 
       <div className="review-filter">
-        <div className="review-date-range">
-          <div className="review-date-range-inner">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="review-date-input"
-            />
-            <span className="review-date-sep">~</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="review-date-input"
-            />
+        <div className="review-filter-grid">
+          {/* 왼쪽 컬럼: 기간, 검색 */}
+          <div className="review-filter-column">
+            <div className="review-filter-item">
+              <label className="review-filter-label">기간</label>
+              <div className="review-date-range-inner">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="review-date-input"
+                />
+                <span className="review-date-sep">~</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="review-date-input"
+                />
+              </div>
+            </div>
+            <div className="review-filter-item">
+              <label className="review-filter-label">검색</label>
+              <div className="review-search">
+                <select
+                  value={searchField}
+                  onChange={(e) => setSearchField(e.target.value)}
+                  className="review-search-select"
+                >
+                  <option value="productnm">상품명</option>
+                  <option value="regnm">작성자</option>
+                  <option value="content">내용</option>
+                  <option value="all">전체</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="검색어를 입력해주세요."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="review-search-input"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="review-search">
-          <select
-            value={searchField}
-            onChange={(e) => setSearchField(e.target.value)}
-            className="review-search-select"
-          >
-            <option>상품명</option>
-            <option>작성자</option>
-          </select>
-          <input
-            type="text"
-            placeholder="검색어를 입력해주세요."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="review-search-input"
-          />
-          <div className="review-search-btn">
-            <button className="review-btn">검색</button>
-            <button className="review-btn" onClick={handleReset}>
-              초기화
-            </button>
+
+          {/* 오른쪽 컬럼: 별점 */}
+          <div className="review-filter-column">
+            <div className="review-filter-item">
+              <label className="review-filter-label">별점</label>
+              <div className="review-rating-range">
+                <div className="review-rating-slider-wrapper">
+                  <div className="review-rating-slider-container">
+                    <div
+                      className="review-rating-slider-track-active"
+                      style={{
+                        left: `${((minRating - 1) / 4) * 100}%`,
+                        width: `${((maxRating - minRating) / 4) * 100}%`
+                      }}
+                    />
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      step="1"
+                      value={minRating}
+                      onChange={(e) => {
+                        const value = Math.min(Number(e.target.value), maxRating);
+                        setMinRating(value);
+                      }}
+                      className="review-rating-slider review-rating-slider-min"
+                    />
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      step="1"
+                      value={maxRating}
+                      onChange={(e) => {
+                        const value = Math.max(Number(e.target.value), minRating);
+                        setMaxRating(value);
+                      }}
+                      className="review-rating-slider review-rating-slider-max"
+                    />
+                  </div>
+                  <div className="review-rating-ticks">
+                    <span className="review-rating-tick">1</span>
+                    <span className="review-rating-tick">2</span>
+                    <span className="review-rating-tick">3</span>
+                    <span className="review-rating-tick">4</span>
+                    <span className="review-rating-tick">5</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="review-filter-item">
+              <label className="review-filter-label"></label>
+              <div className="review-search-btn">
+                <button className="review-btn review-btn-primary" onClick={() => handleSearch(0)}>검색</button>
+                <button className="review-btn" onClick={handleReset}>초기화</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -151,7 +253,7 @@ const Review = () => {
         <div className="review-info2">
           <div className="review-info-title">평균 평점</div>
           <div className="review-info-value">
-            {reviewData.length > 0 
+            {reviewData.length > 0
               ? (reviewData.reduce((sum, r) => sum + r.reviewRate, 0) / reviewData.length).toFixed(1)
               : "리뷰 없음"
             }
@@ -186,7 +288,7 @@ const Review = () => {
           <tbody>
             {reviewData.length === 0 ? (
               <tr>
-                <td colSpan="7" style={{textAlign: 'center', padding: '40px 0'}}>
+                <td colSpan="7" style={{ textAlign: 'center', padding: '40px 0' }}>
                   등록된 리뷰가 없습니다
                 </td>
               </tr>
@@ -194,60 +296,60 @@ const Review = () => {
               reviewData.map((p, idx) => {
                 return (
                   <tr key={p.reviewIdx}>
-                  <td>{currentPage * pageSize + idx + 1}</td>
-                  <td className="review-review-info">
-                    {p.reviewImg && <div className="review-thumb" style={{backgroundImage: `url(${p.reviewImg})`}} />}
-                    <div className="review-name">{p.productNm || "-"}</div>
-                  </td>
-                  <td>{p.content}</td>
-                  <td>{p.reviewRate}</td>
-                  <td>{p.regNm || "회원"}</td>
-                  <td>{p.regDate ? formatDate(p.regDate) : "-"}</td>
-                  <td>
-                    <button 
-                      className="review-btn"
-                      onClick={() => {
-                        setSelectedReviewIdx(p.reviewIdx);
-                        setIsReviewAnswerModalOpen(true);
-                      }}
-                    >
-                      {p.reviewAnswered ? "상세" : "답글"}
-                    </button>
-                    {p.hidden ? (
-                      <button className="review-btn" disabled>숨김처리 중</button>
-                    ) : p.hiddenExpireDate ? (
-                      <button className="review-btn" disabled>숨김</button>
-                    ) : (
-                      <button 
-                        className="review-btn"
-                        onClick={() => handleHideReview(p.reviewIdx)}
-                      >
-                        숨김
-                      </button>
-                    )}
-                    {p.reported ? (
-                      <button className="review-btn" disabled>신고처리 중</button>
-                    ) : p.reportExpireDate ? (
-                      <button className="review-btn" disabled>신고됨</button>
-                    ) :  (
+                    <td>{currentPage * pageSize + idx + 1}</td>
+                    <td className="review-review-info">
+                      {p.reviewImg && <div className="review-thumb" style={{ backgroundImage: `url(${p.reviewImg})` }} />}
+                      <div className="review-name">{p.productNm || "-"}</div>
+                    </td>
+                    <td>{p.content}</td>
+                    <td>{p.reviewRate}</td>
+                    <td>{p.regNm || "회원"}</td>
+                    <td>{p.regDate ? formatDate(p.regDate) : "-"}</td>
+                    <td>
                       <button
-                      className="review-btn"
-                      onClick={() => handleReportReview(p.reviewIdx)}
-                      >신고</button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })
+                        className="review-btn"
+                        onClick={() => {
+                          setSelectedReviewIdx(p.reviewIdx);
+                          setIsReviewAnswerModalOpen(true);
+                        }}
+                      >
+                        {p.reviewAnswered ? "상세" : "답글"}
+                      </button>
+                      {p.hidden ? (
+                        <button className="review-btn" disabled>숨김처리 중</button>
+                      ) : p.hiddenExpireDate ? (
+                        <button className="review-btn" disabled>숨김</button>
+                      ) : (
+                        <button
+                          className="review-btn"
+                          onClick={() => handleHideReview(p.reviewIdx)}
+                        >
+                          숨김
+                        </button>
+                      )}
+                      {p.reported ? (
+                        <button className="review-btn" disabled>신고처리 중</button>
+                      ) : p.reportExpireDate ? (
+                        <button className="review-btn" disabled>신고됨</button>
+                      ) : (
+                        <button
+                          className="review-btn"
+                          onClick={() => handleReportReview(p.reviewIdx)}
+                        >신고</button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
 
         <div className="review-footer">
           <div className="review-pagination">
-            <button 
+            <button
               className="review-page"
-              onClick={() => fetchReviews(currentPage - 1)}
+              onClick={() => isSearchMode ? handleSearch(currentPage - 1) : fetchReviews(currentPage - 1)}
               disabled={currentPage === 0}
             >
               이전
@@ -256,14 +358,14 @@ const Review = () => {
               <button
                 key={index}
                 className={`review-page ${currentPage === index ? 'active' : ''}`}
-                onClick={() => fetchReviews(index)}
+                onClick={() => isSearchMode ? handleSearch(index) : fetchReviews(index)}
               >
                 {index + 1}
               </button>
             ))}
-            <button 
+            <button
               className="review-page"
-              onClick={() => fetchReviews(currentPage + 1)}
+              onClick={() => isSearchMode ? handleSearch(currentPage + 1) : fetchReviews(currentPage + 1)}
               disabled={currentPage === totalPages - 1 || totalPages === 0}
             >
               다음

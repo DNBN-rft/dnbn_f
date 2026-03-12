@@ -161,7 +161,7 @@ const AdminQuestion = () => {
       <div className="adminquestion-wrap">
         <div className="adminquestion-tab-navigation">
           <button className="adminquestion-tab-btn adminquestion-tab-active">
-            고객문의
+            문의
           </button>
           <button
             className="adminquestion-tab-btn"
