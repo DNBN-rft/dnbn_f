@@ -190,7 +190,7 @@ const ProductAdd = ({ onClose }) => {
               <div className="productadd-expose-content-body">
                 <div className="productadd-content-title">상품분류</div>
                 <div className="productadd-content-body">
-                  성인
+                  {/* 성인
                   <input
                     type="radio"
                     name="isAdult"
@@ -198,7 +198,7 @@ const ProductAdd = ({ onClose }) => {
                     checked={formData.isAdult === true}
                     onChange={(e) => setFormData(prev => ({ ...prev, isAdult: true }))}
                     className="productadd-radio"
-                  />{" "}
+                  />{" "} */}
                   일반
                   <input
                     type="radio"
