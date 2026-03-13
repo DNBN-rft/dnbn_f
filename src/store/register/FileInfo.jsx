@@ -103,7 +103,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(prev => ({ ...prev, [type]: false }));
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       if (type === 'store') {
         handleStoreImageSelect(e.dataTransfer.files[0]);
@@ -116,7 +116,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
   const handleSubmit = async () => {
     // 전체 검증 수행
     const validation = validateFileInfo(formData, storeImage, businessDocs);
-    
+
     if (!validation.isValid) {
       alert(validation.message);
       return;
@@ -126,7 +126,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
 
     try {
       const formDataToSend = new FormData();
-      
+
       // 기본 정보들 추가
       formDataToSend.append("loginId", formData.loginId);
       formDataToSend.append("password", formData.password);
@@ -148,7 +148,8 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
       formDataToSend.append("storeCloseTime", formData.storeCloseTime);
       formDataToSend.append("storeType", formData.storeType);
       formDataToSend.append("agreed", formData.agreed);
-
+      formDataToSend.append("marketingAgreed", formData.marketingAgreed || false);
+      
       // 영업일 정보 추가
       if (formData.storeOpenDate && formData.storeOpenDate.length > 0) {
         formData.storeOpenDate.forEach((day) => {
@@ -192,54 +193,54 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
         </div>
 
         <div className="fileinfo-middle-content">
-            <div className="fileinfo-middle-title">첨부파일</div>
-            
-            <div className="fileinfo-middle-subtitle">가맹 대표 이미지</div>
-            <div className="file-input-wrapper">
-              <input 
-                type="file" 
-                id="storeImage"
-                accept=".jpg,.jpeg,.png"
-                className="fileinfo-middle-file-input-hidden"
-                onChange={handleStoreImageChange}
-              />
-              <label 
-                htmlFor="storeImage" 
-                className={`file-input-label ${dragActive.store ? 'drag-active' : ''}`}
-                onDragEnter={(e) => handleDrag(e, 'store')}
-                onDragLeave={(e) => handleDrag(e, 'store')}
-                onDragOver={(e) => handleDrag(e, 'store')}
-                onDrop={(e) => handleDrop(e, 'store')}
-              >
-                <div className="file-input-content">
-                  {storeImagePreview ? (
-                    <div className="file-preview-container">
-                      <button 
-                        type="button"
-                        className="file-remove-btn"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeStoreImage();
-                        }}
-                      >
-                        ×
-                      </button>
-                      <img src={storeImagePreview} alt="미리보기" className="file-preview-image" />
-                      <span className="file-name-small">{storeImage.name}</span>
-                    </div>
-                  ) : (
-                    <>
-                      <span className="file-input-text">
-                        가게 대표 이미지를 올려주세요.
-                        <br/>
-                        (jpg, png / 파일당 10MB 이하)
-                        </span>
-                      <span className="file-input-link">파일찾기</span>
-                    </>
-                  )}
-                </div>
-              </label>
-            </div>
+          <div className="fileinfo-middle-title">첨부파일</div>
+
+          <div className="fileinfo-middle-subtitle">가맹 대표 이미지</div>
+          <div className="file-input-wrapper">
+            <input
+              type="file"
+              id="storeImage"
+              accept=".jpg,.jpeg,.png"
+              className="fileinfo-middle-file-input-hidden"
+              onChange={handleStoreImageChange}
+            />
+            <label
+              htmlFor="storeImage"
+              className={`file-input-label ${dragActive.store ? 'drag-active' : ''}`}
+              onDragEnter={(e) => handleDrag(e, 'store')}
+              onDragLeave={(e) => handleDrag(e, 'store')}
+              onDragOver={(e) => handleDrag(e, 'store')}
+              onDrop={(e) => handleDrop(e, 'store')}
+            >
+              <div className="file-input-content">
+                {storeImagePreview ? (
+                  <div className="file-preview-container">
+                    <button
+                      type="button"
+                      className="file-remove-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        removeStoreImage();
+                      }}
+                    >
+                      ×
+                    </button>
+                    <img src={storeImagePreview} alt="미리보기" className="file-preview-image" />
+                    <span className="file-name-small">{storeImage.name}</span>
+                  </div>
+                ) : (
+                  <>
+                    <span className="file-input-text">
+                      가게 대표 이미지를 올려주세요.
+                      <br />
+                      (jpg, png / 파일당 10MB 이하)
+                    </span>
+                    <span className="file-input-link">파일찾기</span>
+                  </>
+                )}
+              </div>
+            </label>
+          </div>
 
             <div className="fileinfo-middle-subtitle">사업자등록증, 영업신고증, 통장사본</div>
             <div className="file-input-wrapper">
@@ -299,7 +300,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
             </div>
         </div>
 
-        <StepButton step={5} prev={prev} onSubmit={handleSubmit} isLoading={isLoading}/>
+        <StepButton step={5} prev={prev} onSubmit={handleSubmit} isLoading={isLoading} />
       </div>
     </div>
   );
