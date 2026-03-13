@@ -38,14 +38,14 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
     const newFiles = Array.from(files).filter(file =>
       file.type.startsWith('image/') || file.type === 'application/pdf'
     );
-
+    
     const maxSize = 10 * 1024 * 1024;
     const oversizedFiles = newFiles.filter(file => file.size > maxSize);
     if (oversizedFiles.length > 0) {
       alert('파일 크기는 10MB를 초과할 수 없습니다.');
       return;
     }
-
+    
     const previews = new Array(newFiles.length).fill(null);
     let completedCount = 0;
 
@@ -56,7 +56,7 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
         setBusinessDocPreviews(prev => [...prev, ...previews]);
       }
     };
-
+    
     newFiles.forEach((file, index) => {
       if (file.type === 'application/pdf') {
         previews[index] = 'pdf';
@@ -242,62 +242,62 @@ const FileInfo = ({ formData, setFormData, onSubmit, prev }) => {
             </label>
           </div>
 
-          <div className="fileinfo-middle-subtitle">사업자등록증, 영업신고증, 통장사본</div>
-          <div className="file-input-wrapper">
-            <input
-              type="file"
-              id="businessDoc"
-              accept=".jpg,.jpeg,.png,.pdf"
-              multiple
-              className="fileinfo-middle-file-input-hidden"
-              onChange={handleBusinessDocChange}
-            />
-            <label
-              htmlFor="businessDoc"
-              className={`file-input-label ${dragActive.business ? 'drag-active' : ''} ${businessDocs.length > 0 ? 'has-files' : ''}`}
-              onDragEnter={(e) => handleDrag(e, 'business')}
-              onDragLeave={(e) => handleDrag(e, 'business')}
-              onDragOver={(e) => handleDrag(e, 'business')}
-              onDrop={(e) => handleDrop(e, 'business')}
-            >
-              <div className="file-input-content">
-                {businessDocs.length > 0 ? (
-                  <div className="file-preview-grid">
-                    {businessDocs.map((file, index) => (
-                      <div key={index} className="file-preview-item">
-                        <button
-                          type="button"
-                          className="file-remove-btn"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            removeBusinessDoc(index);
-                          }}
-                        >
-                          ×
-                        </button>
-                        {businessDocPreviews[index] === 'pdf' ? (
-                          <div className="file-preview-pdf">
-                            <span className="pdf-icon">📄</span>
-                          </div>
-                        ) : (
-                          <img src={businessDocPreviews[index]} alt="미리보기" className="file-preview-image" />
-                        )}
-                        <span className="file-name-small">{file.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <>
-                    <span className="file-input-text">
-                      사업자 증명, 영업신고증, 통장사본을 올려주세요.
-                      <br />
-                      (jpg, png, pdf / 파일당 10MB 이하)</span>
-                    <span className="file-input-link">파일찾기</span>
-                  </>
-                )}
-              </div>
-            </label>
-          </div>
+            <div className="fileinfo-middle-subtitle">사업자등록증, 영업신고증, 통장사본</div>
+            <div className="file-input-wrapper">
+              <input 
+                type="file" 
+                id="businessDoc"
+                accept=".jpg,.jpeg,.png,.pdf"
+                multiple
+                className="fileinfo-middle-file-input-hidden"
+                onChange={handleBusinessDocChange}
+              />
+              <label 
+                htmlFor="businessDoc" 
+                className={`file-input-label ${dragActive.business ? 'drag-active' : ''} ${businessDocs.length > 0 ? 'has-files' : ''}`}
+                onDragEnter={(e) => handleDrag(e, 'business')}
+                onDragLeave={(e) => handleDrag(e, 'business')}
+                onDragOver={(e) => handleDrag(e, 'business')}
+                onDrop={(e) => handleDrop(e, 'business')}
+              >
+                <div className="file-input-content">
+                  {businessDocs.length > 0 ? (
+                    <div className="file-preview-grid">
+                      {businessDocs.map((file, index) => (
+                        <div key={index} className="file-preview-item">
+                          <button 
+                            type="button"
+                            className="file-remove-btn"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removeBusinessDoc(index);
+                            }}
+                          >
+                            ×
+                          </button>
+                          {businessDocPreviews[index] === 'pdf' ? (
+                            <div className="file-preview-pdf">
+                              <span className="pdf-icon">📄</span>
+                            </div>
+                          ) : (
+                            <img src={businessDocPreviews[index]} alt="미리보기" className="file-preview-image" />
+                          )}
+                          <span className="file-name-small">{file.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <span className="file-input-text">
+                        사업자 증명, 영업신고증, 통장사본을 올려주세요.
+                        <br/>
+                        (jpg, png, pdf / 파일당 10MB 이하)</span>
+                      <span className="file-input-link">파일찾기</span>
+                    </>
+                  )}
+                </div>
+              </label>
+            </div>
         </div>
 
         <StepButton step={5} prev={prev} onSubmit={handleSubmit} isLoading={isLoading} />

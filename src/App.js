@@ -99,7 +99,6 @@ function App() {
           <Route path="/store/terms/:type" element={<TermsDetail />} />
           <Route path="/cust/withdrawal" element={<CustWithdrawal />} />
           <Route path="/personal-information" element={<PersonalInformation />} />
-          <Route path="/cust/withdrawal" element={<CustWithdrawal />} />
           {/* 기본 경로 리다이렉트 */}
           <Route path="/" element={<Navigate to="/store/login" replace />} />
           {/* 스토어 관리자 - 보호된 경로 */}
