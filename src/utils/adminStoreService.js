@@ -2,7 +2,7 @@
  * 관리자 가맹점 관리 API 서비스
  */
 
-import { apiGet, apiPut, apiPutFormData } from "./apiClient";
+import { apiGet, apiPut, apiPutFormData, apiDelete } from "./apiClient";
 
 /**
  * 승인 대기 가맹점 목록 조회 (페이지네이션)
@@ -501,3 +501,32 @@ export const searchAccept = async (searchParams, page = 0, size = 10) => {
     };
   } 
 }
+
+/**
+ * 매니저(직원) 삭제
+ */
+export const deleteManager = async (memberId) => {
+  try {
+    const response = await apiDelete(`/admin/store/${memberId}`);
+
+    if (response.ok) {
+      return {
+        success: true,
+        data: await response.text(),
+        error: null,
+      };
+    } else {
+      return {
+        success: false,
+        data: null,
+        error: "매니저 삭제에 실패했습니다.",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: "네트워크 오류가 발생했습니다.",
+    };
+  }
+};
