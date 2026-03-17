@@ -582,7 +582,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
         <div className="productdetail-btn-area">
           {!isEditable && (
             <div className="productdetail-restricted-message">
-              판매 제재 상태는 수정할 수 없습니다.
+              제재 상품입니다. 고객센터에 문의하세요.
             </div>
           )}
           <button
