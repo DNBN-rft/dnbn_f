@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import QuestionDetailModal from "./modal/QuestionDetailModal";
 import { apiGet } from "../../utils/apiClient";
 import "./css/questions.css";
@@ -7,6 +8,7 @@ import { formatDate } from "../../utils/commonService";
 const Questions = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const location = useLocation();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +47,15 @@ const Questions = () => {
       loadQuestions(0);
     }
   }, [storeCode, loadQuestions]);
+
+  // 알람에서 전달받은 state 처리
+  useEffect(() => {
+    if (location.state?.openModal && location.state?.questionIdx) {
+      setSelectedId(location.state.questionIdx);
+      setIsDetailModalOpen(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleRowClick = (id) => {
     setSelectedId(id);

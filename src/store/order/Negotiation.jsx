@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./css/negotiation.css";
 import NegotiationList from "./components/NegotiationList";
 import BuyerRequestList from "./components/BuyerRequestList";
 
 const Negotiation = () => {
   const [activeTab, setActiveTab] = useState("negotiation");
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   return (
     <div className="negotiation-container">
