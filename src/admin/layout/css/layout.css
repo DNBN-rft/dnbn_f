@@ -74,6 +74,127 @@ i {
     flex-shrink: 0;
 }
 
+/* ========================
+   사이트 푸터
+======================== */
+.admin-site-footer {
+    background-color: #111111;
+    color: #cccccc;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.admin-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 200px;
+    padding: 36px 48px;
+}
+
+/* 로고 영역 */
+.admin-footer-logo-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 140px;
+}
+
+.admin-footer-logos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.admin-footer-logo-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-footer-logo-neoclue-text {
+    height: 30px;
+    object-fit: contain;
+}
+
+.admin-footer-logo-neoclue {
+    height: 40px;
+    object-fit: contain;
+}
+
+.admin-footer-logo-dnbn {
+    height: 50px;
+    object-fit: contain;
+}
+
+/* 회사 정보 영역 */
+.admin-footer-info {
+    color: #aaaaaa;
+}
+
+.admin-footer-company-name {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.admin-footer-info p {
+    margin: 0 0 2px 0;
+}
+
+/* 우측 영역 */
+.admin-footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 160px;
+}
+
+/* 고객지원센터 영역 */
+.admin-footer-support {
+    margin-bottom: 16px;
+}
+
+.admin-footer-support-label {
+    color: #888888;
+    font-size: 12px;
+    margin: 0 0 4px 0;
+}
+
+.admin-footer-support-number {
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+/* 링크 */
+.admin-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-footer-links a {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s;
+}
+
+.admin-footer-links a:hover {
+    color: #ffffff;
+}
+
+.admin-footer-divider {
+    color: #444444;
+    font-size: 12px;
+}
+
 .admin-sb-sidenav {
     display: flex;
     flex-direction: column;
