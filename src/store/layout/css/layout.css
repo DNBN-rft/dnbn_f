@@ -47,6 +47,127 @@ i {
     flex-shrink: 0;
 }
 
+/* ========================
+   사이트 푸터
+======================== */
+.site-footer {
+    background-color: #111111;
+    color: #cccccc;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 200px;
+    padding: 36px 48px;
+}
+
+/* 로고 영역 */
+.footer-logo-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 140px;
+}
+
+.footer-logos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.footer-logo-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-logo-neoclue-text {
+    height: 30px;
+    object-fit: contain;
+}
+
+.footer-logo-neoclue {
+    height: 40px;
+    object-fit: contain;
+}
+
+.footer-logo-dnbn {
+    height: 50px;
+    object-fit: contain;
+}
+
+/* 회사 정보 영역 */
+.footer-info {
+    color: #aaaaaa;
+}
+
+.footer-company-name {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.footer-info p {
+    margin: 0 0 2px 0;
+}
+
+/* 우측 영역 */
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 160px;
+}
+
+/* 고객지원센터 영역 */
+.footer-support {
+    margin-bottom: 16px;
+}
+
+.footer-support-label {
+    color: #888888;
+    font-size: 12px;
+    margin: 0 0 4px 0;
+}
+
+.footer-support-number {
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+/* 링크 */
+.footer-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-links a {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-divider {
+    color: #444444;
+    font-size: 12px;
+}
+
 .sb-sidenav {
     display: flex;
     flex-direction: column;
