@@ -66,7 +66,7 @@ const StoreAlarmModal = ({ onClose, buttonRef }) => {
 
     // 알람 타입에 따라 페이지 이동 및 상태 전달
     switch (alarm.alarmType) {
-      case "ORDER":
+      case "주문":
         // 주문 목록 페이지로 이동하고 orderCode 전달
         navigate("/store/orderlist", {
           state: {
@@ -76,7 +76,7 @@ const StoreAlarmModal = ({ onClose, buttonRef }) => {
         });
         break;
 
-      case "REVIEW":
+      case "리뷰":
         // 리뷰 페이지로 이동하고 reviewIdx 전달
         navigate("/store/review", {
           state: {
@@ -86,55 +86,76 @@ const StoreAlarmModal = ({ onClose, buttonRef }) => {
         });
         break;
 
-      case "REPORT_PRODUCT":
-        // 상품관리 페이지로 이동하고 productCode 전달
-        navigate("/store/productmanage", {
-          state: {
-            openModal: true,
-            productCode: alarm.alarmLink,
-            reportType: "PRODUCT",
-          },
-        });
-        break;
-
-      case "REPORT_REVIEW":
-        // 리뷰 페이지로 이동하고 reviewIdx 전달 (신고된 리뷰)
-        navigate("/store/review", {
-          state: {
-            openModal: true,
-            reviewIdx: alarm.alarmLink,
-            reportType: "REVIEW",
-          },
-        });
-        break;
-
-      case "REPORT_STORE":
-        // 스토어 신고는 마이페이지나 대시보드로 이동 (필요에 따라 수정)
-        navigate("/store/mypage", {
-          state: {
-            storeCode: alarm.alarmLink,
-            reportType: "STORE",
-          },
-        });
-        break;
-
-      case "NEGO":
-        // 네고 페이지로 이동
-        navigate("/store/negotiation", {
-          state: {
-            openModal: true,
-            negoId: alarm.alarmLink,
-          },
-        });
-        break;
-
-      case "PRODUCT_RESTRICT":
+      case "상품신고":
         // 상품관리 페이지로 이동하고 productCode 전달
         navigate("/store/product", {
           state: {
             openModal: true,
             productCode: alarm.alarmLink,
-            reportType: "PRODUCT_RESTRICT",
+          },
+        });
+        break;
+
+      case "리뷰신고":
+        // 리뷰 페이지로 이동하고 reviewIdx 전달 (신고된 리뷰)
+        navigate("/store/review", {
+          state: {
+            openModal: true,
+            reviewIdx: alarm.alarmLink,
+          },
+        });
+        break;
+
+      case "가맹신고":
+        // 스토어 신고는 마이페이지나 대시보드로 이동 (필요에 따라 수정)
+        navigate("/store/mypage")
+        break;
+
+      case "네고":
+        // 네고 페이지로 이동
+        navigate("/store/negotiation", {
+          state: {
+            activeTab: "negotiation",
+          }
+        });
+        break;
+
+      case "네고 요청":
+        // 네고 요청 페이지로 이동
+        navigate("/store/negotiation", {
+          state: {
+            openModal: true,
+            activeTab: "buyer-request",
+          },
+        });
+        break;
+
+      case "상품 제재":
+        // 상품관리 페이지로 이동하고 productCode 전달
+        navigate("/store/product", {
+          state: {
+            openModal: true,
+            productCode: alarm.alarmLink,
+          },
+        });
+        break;
+
+      case "리뷰 숨김":
+        // 리뷰 페이지로 이동
+        navigate("/store/review");
+        break;
+
+      case "할인":
+        // 할인 관리 페이지로 이동
+        navigate("/store/sale")
+        break;
+
+      case "문의":
+        // 문의 페이지로 이동
+        navigate("/store/questions", {
+          state: {
+            openModal: true,
+            questionIdx: alarm.alarmLink,
           },
         });
         break;
