@@ -6,6 +6,10 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
   const [loading, setLoading] = useState(false);
   const [storeDetail, setStoreDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState({
+    url: "",
+    name: "",
+  });
 
   // 상세 정보 조회
   useEffect(() => {
@@ -31,6 +35,19 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
       fetchStoreDetail();
     }
   }, [store.storeCode, onClose]);
+
+  // 파일 타입 확인 함수
+  const getFileType = (fileName) => {
+    const extension = fileName.toLowerCase().split('.').pop();
+    if (['pdf'].includes(extension)) return 'pdf';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return 'image';
+    return 'other';
+  };
+
+  // 파일 클릭 핸들러
+  const handleFileClick = (file) => {
+    setSelectedImage({ url: file.fileUrl, name: file.originalName });
+  };
 
   // 승인 처리
   const handleApprove = async () => {
@@ -79,9 +96,9 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
   };
 
   return (
-    <div className="adminstoredetail-backdrop">
+    <div className={`adminstoredetail-backdrop ${selectedImage.url ? 'adminstoredetail-backdrop-image-view' : ''} ${selectedImage.name?.toLowerCase().endsWith('.pdf') ? 'adminstoredetail-backdrop-pdf' : ''}`}>
       <div
-        className="adminstoredetail-wrap"
+        className={`adminstoredetail-wrap ${selectedImage.name?.toLowerCase().endsWith('.pdf') ? 'adminstoredetail-wrap-pdf' : ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="adminstoredetail-header">
@@ -153,15 +170,29 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
                   <div className="adminstoredetail-images">
                     {storeDetail.bzImgs.files
                       .sort((a, b) => a.order - b.order)
-                      .map((file, index) => (
-                        <a key={index} href={file.fileUrl} target="_blank" rel="noreferrer">
-                          <img
-                            src={file.fileUrl}
-                            alt={file.originalName}
-                            className="adminstoredetail-image"
-                          />
-                        </a>
-                      ))}
+                      .map((file, index) => {
+                        const fileType = getFileType(file.originalName);
+                        return (
+                          <div
+                            key={index}
+                            className="adminstoredetail-image-item"
+                            onClick={() => handleFileClick(file)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            {fileType === 'pdf' ? (
+                              <div className="adminstoredetail-file-pdf-icon">
+                                <span className="adminstoredetail-file-pdf-text">PDF</span>
+                              </div>
+                            ) : (
+                              <img
+                                src={file.fileUrl}
+                                alt={file.originalName}
+                                className="adminstoredetail-image"
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               )}
@@ -173,15 +204,29 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
                   <div className="adminstoredetail-images">
                     {storeDetail.storeImg.files
                       .sort((a, b) => a.order - b.order)
-                      .map((file, index) => (
-                        <a key={index} href={file.fileUrl} target="_blank" rel="noreferrer">
-                          <img
-                            src={file.fileUrl}
-                            alt={file.originalName}
-                            className="adminstoredetail-image"
-                          />
-                        </a>
-                      ))}
+                      .map((file, index) => {
+                        const fileType = getFileType(file.originalName);
+                        return (
+                          <div
+                            key={index}
+                            className="adminstoredetail-image-item"
+                            onClick={() => handleFileClick(file)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            {fileType === 'pdf' ? (
+                              <div className="adminstoredetail-file-pdf-icon">
+                                <span className="adminstoredetail-file-pdf-text">PDF</span>
+                              </div>
+                            ) : (
+                              <img
+                                src={file.fileUrl}
+                                alt={file.originalName}
+                                className="adminstoredetail-image"
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               )}
@@ -214,6 +259,30 @@ const AdminStoreDetail = ({ store, onClose, onRefresh }) => {
             닫기
           </button>
         </div>
+      </div>
+
+      {/* 이미지/PDF 패널 */}
+      <div className={`adminstoredetail-img ${selectedImage.name?.toLowerCase().endsWith('.pdf') ? 'adminstoredetail-img-pdf' : ''}`}>
+        {selectedImage.url ? (
+          <>
+            {selectedImage.name?.toLowerCase().endsWith('.pdf') ? (
+              <iframe 
+                src={selectedImage.url}
+                className="adminstoredetail-img-pdf-viewer"
+                title={selectedImage.name}
+              />
+            ) : (
+              <img 
+                src={selectedImage.url} 
+                alt={selectedImage.name}
+                className="adminstoredetail-img-content"
+              />
+            )}
+            <p className="adminstoredetail-img-name">{selectedImage.name}</p>
+          </>
+        ) : (
+          <span className="adminstoredetail-img-placeholder">이미지를 선택하세요</span>
+        )}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {
   modAuthInfo,
   modMemberPassword,
   modManagerPassword,
+  deleteManager,
   approveStore,
   getStoreDetail
 } from "../../../utils/adminStoreService";
@@ -64,6 +65,32 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     newPassword: "",
     confirmPassword: "",
   });
+
+  // 이미지 뷰어 상태
+  const [imageViewer, setImageViewer] = useState({
+    isOpen: false,
+    imageUrl: "",
+    imageName: "",
+  });
+
+  // 선택된 이미지/파일 상태
+  const [selectedImage, setSelectedImage] = useState({
+    url: "",
+    name: "",
+  });
+
+  // 파일 타입 확인 함수
+  const getFileType = (fileName) => {
+    const extension = fileName.toLowerCase().split('.').pop();
+    if (['pdf'].includes(extension)) return 'pdf';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return 'image';
+    return 'other';
+  };
+
+  // 파일 클릭 핸들러
+  const handleFileClick = (file) => {
+    setSelectedImage({ url: file.fileUrl, name: file.originalName });
+  };
 
   // 은행 및 멤버십 목록 조회 및 가맹점 상세 정보 조회
   useEffect(() => {
@@ -492,6 +519,31 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
     }
   };
 
+  // 매니저 삭제
+  const handleManagerDelete = async (memberId, memberNm) => {
+    if (!window.confirm(`${memberNm} 매니저를 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      const result = await deleteManager(memberId);
+
+      if (result.success) {
+        alert(`${memberNm} 매니저가 삭제되었습니다.`);
+        // 가맹점 상세 정보 다시 조회하여 매니저 목록 갱신
+        const storeResult = await getStoreDetail(storeCode);
+        if (storeResult.success) {
+          setStoreData(storeResult.data);
+        }
+      } else {
+        alert(result.error || "매니저 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      alert("네트워크 오류가 발생했습니다.");
+      console.error("매니저 삭제 오류:", error);
+    }
+  };
+
   // 매니저 비밀번호 변경 모달 닫기
   const handleManagerPasswordCancel = () => {
     setManagerPasswordModal({
@@ -504,8 +556,8 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
   };
 
   return (
-    <div className="storeinfomodal-backdrop" onClick={onClose}>
-      <div className="storeinfomodal-wrap" onClick={(e) => e.stopPropagation()}>
+    <div className={`storeinfomodal-backdrop ${selectedImage.name?.toLowerCase().endsWith('.pdf') ? 'storeinfomodal-backdrop-pdf' : ''}`} onClick={onClose}>
+      <div className={`storeinfomodal-wrap ${selectedImage.name?.toLowerCase().endsWith('.pdf') ? 'storeinfomodal-wrap-pdf' : ''}`} onClick={(e) => e.stopPropagation()}>
         {/* 헤더 */}
         <div className="storeinfomodal-header">
           <h2 className="storeinfomodal-title">가맹점 상세 정보</h2>
@@ -1024,6 +1076,79 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
             </div>
           </section>
 
+          {/* 4-1. 파일 정보 섹션 */}
+          <section className="storeinfomodal-section">
+            <div className="storeinfomodal-section-header">
+              <h3 className="storeinfomodal-section-title">파일 정보</h3>
+            </div>
+
+            {/* 사업자 등록증 */}
+            {storeData?.bzFileMaster?.files && storeData.bzFileMaster.files.length > 0 && (
+              <div className="storeinfomodal-files-group">
+                <h4 className="storeinfomodal-files-title">사업자 등록증</h4>
+                <div className="storeinfomodal-files-gallery">
+                  {storeData.bzFileMaster.files.map((file, index) => {
+                    const fileType = getFileType(file.originalName);
+                    return (
+                      <div 
+                        key={index} 
+                        className="storeinfomodal-file-item"
+                        onClick={() => handleFileClick(file)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {fileType === 'pdf' ? (
+                          <div className="storeinfomodal-file-pdf-icon">
+                            <span className="storeinfomodal-file-pdf-text">PDF</span>
+                          </div>
+                        ) : (
+                          <img 
+                            src={file.fileUrl} 
+                            alt={`사업자 등록증 ${index + 1}`}
+                            className="storeinfomodal-file-image"
+                          />
+                        )}
+                        <p className="storeinfomodal-file-name">{file.originalName}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 가게 이미지 */}
+            {storeData?.storeImgFileMaster?.files && storeData.storeImgFileMaster.files.length > 0 && (
+              <div className="storeinfomodal-files-group">
+                <h4 className="storeinfomodal-files-title">가게 이미지</h4>
+                <div className="storeinfomodal-files-gallery">
+                  {storeData.storeImgFileMaster.files.map((file, index) => {
+                    const fileType = getFileType(file.originalName);
+                    return (
+                      <div 
+                        key={index} 
+                        className="storeinfomodal-file-item"
+                        onClick={() => handleFileClick(file)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {fileType === 'pdf' ? (
+                          <div className="storeinfomodal-file-pdf-icon">
+                            <span className="storeinfomodal-file-pdf-text">PDF</span>
+                          </div>
+                        ) : (
+                          <img 
+                            src={file.fileUrl} 
+                            alt={`가게 이미지 ${index + 1}`}
+                            className="storeinfomodal-file-image"
+                          />
+                        )}
+                        <p className="storeinfomodal-file-name">{file.originalName}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </section>
+
           {/* 5. 권한 정보 섹션 */}
           <section className="storeinfomodal-section">
             <div className="storeinfomodal-section-header">
@@ -1134,12 +1259,20 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
                         <span className="storeinfomodal-manager-name">{member.memberNm}</span>
                         <span className="storeinfomodal-manager-type">{member.memberType}</span>
                       </div>
-                      <button 
-                        className="storeinfomodal-manager-password-btn"
-                        onClick={() => handleManagerPasswordChange(member.memberId, member.memberNm)}
-                      >
-                        비밀번호 변경
-                      </button>
+                      <div className="storeinfomodal-manager-actions">
+                        <button 
+                          className="storeinfomodal-manager-password-btn"
+                          onClick={() => handleManagerPasswordChange(member.memberId, member.memberNm)}
+                        >
+                          비밀번호 변경
+                        </button>
+                        <button 
+                          className="storeinfomodal-manager-delete-btn"
+                          onClick={() => handleManagerDelete(member.memberId, member.memberNm)}
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
                     
                     <div className="storeinfomodal-manager-details">
@@ -1267,6 +1400,30 @@ const StoreInfoModal = ({ storeCode, onClose }) => {
           </div>
         </div>
       )}
+
+      {/* 이미지/PDF 패널 */}
+      <div className={`storeinfomodal-img ${selectedImage.name?.toLowerCase().endsWith('.pdf') ? 'storeinfomodal-img-pdf' : ''}`}>
+        {selectedImage.url ? (
+          <>
+            {selectedImage.name?.toLowerCase().endsWith('.pdf') ? (
+              <iframe 
+                src={selectedImage.url}
+                className="storeinfomodal-img-pdf-viewer"
+                title={selectedImage.name}
+              />
+            ) : (
+              <img 
+                src={selectedImage.url} 
+                alt={selectedImage.name}
+                className="storeinfomodal-img-content"
+              />
+            )}
+            <p className="storeinfomodal-img-name">{selectedImage.name}</p>
+          </>
+        ) : (
+          <span className="storeinfomodal-img-placeholder">이미지를 선택하세요</span>
+        )}
+      </div>
     </div>
   );
 };
