@@ -8,7 +8,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 20px;
+  padding: 20px;
+  flex-direction: row-reverse;
   z-index: 1050;
+}
+
+.storeinfomodal-backdrop-pdf {
+  justify-content: space-between;
+  gap: 0;
 }
 
 @media (min-width: 992px) {
@@ -18,16 +26,85 @@
   }
 }
 
-.storeinfomodal-wrap {
+.storeinfomodal-img {
   background-color: #fff;
   border-radius: 12px;
-  width: 85%;
-  max-width: 1200px;
+  width: 350px;
+  height: 500px;
   max-height: 90vh;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #9ca3af;
+  font-size: 16px;
+  font-weight: 600;
+  flex-shrink: 0;
+  padding: 20px;
+  gap: 12px;
   overflow: hidden;
+}
+
+.storeinfomodal-img-pdf {
+  width: calc(50vw - 10px);
+  max-height: 100vh;
+  border-radius: 0;
+  padding: 0;
+}
+
+.storeinfomodal-wrap {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 800px;
+  max-width: 800px;
+  max-height: 90vh;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.storeinfomodal-wrap-pdf {
+  width: calc(50vw - 10px);
+  max-width: calc(50vw - 10px);
+  border-radius: 0;
+}
+
+.storeinfomodal-img-content {
+  width: 100%;
+  height: 350px;
+  object-fit: contain;
+}
+
+.storeinfomodal-img-pdf-viewer {
+  width: 100%;
+  height: 350px;
+  border: none;
+  border-radius: 8px;
+}
+
+.storeinfomodal-img-pdf .storeinfomodal-img-pdf-viewer {
+  height: 100%;
+}
+
+.storeinfomodal-img-name {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin: 0;
+}
+
+.storeinfomodal-img-placeholder {
+  color: #9ca3af;
+  font-size: 14px;
 }
 
 /* 헤더 */
@@ -249,10 +326,6 @@
 
 .storeinfomodal-approve-btn:hover {
   background-color: #059669;
-}
-
-.storeinfomodal-cancel-approval-btn:hover {
-  background-color: #dc2626;
 }
 
 /* 푸터 */
@@ -558,6 +631,12 @@
   font-weight: 500;
 }
 
+.storeinfomodal-manager-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .storeinfomodal-manager-password-btn {
   flex-shrink: 0;
   white-space: nowrap;
@@ -575,6 +654,25 @@
 .storeinfomodal-manager-password-btn:hover {
   background-color: #4338ca;
   box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+.storeinfomodal-manager-delete-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 8px 12px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.storeinfomodal-manager-delete-btn:hover {
+  background-color: #dc2626;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .storeinfomodal-no-manager {
@@ -728,3 +826,74 @@
   background-color: #f3f4f6;
   border-color: #9ca3af;
 }
+
+/* 파일 정보 섹션 */
+.storeinfomodal-files-group {
+  margin-bottom: 32px;
+}
+
+.storeinfomodal-files-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.storeinfomodal-files-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.storeinfomodal-file-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+}
+
+.storeinfomodal-file-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+}
+
+.storeinfomodal-file-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.storeinfomodal-file-pdf-icon {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.storeinfomodal-file-pdf-text {
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.storeinfomodal-file-name {
+  padding: 12px;
+  font-size: 12px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  background-color: #f9fafb;
+}
+
