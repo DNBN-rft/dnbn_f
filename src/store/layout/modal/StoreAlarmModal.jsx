@@ -88,7 +88,7 @@ const StoreAlarmModal = ({ onClose, buttonRef }) => {
 
       case "상품신고":
         // 상품관리 페이지로 이동하고 productCode 전달
-        navigate("/store/productmanage", {
+        navigate("/store/product", {
           state: {
             openModal: true,
             productCode: alarm.alarmLink,
