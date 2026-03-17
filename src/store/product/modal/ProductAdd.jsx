@@ -39,12 +39,12 @@ const ProductAdd = ({ onClose }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     // 상품가격과 재고량은 10자리로 제한
     if ((name === 'productPrice' || name === 'productAmount') && value.length > 10) {
       return;
     }
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
@@ -53,7 +53,7 @@ const ProductAdd = ({ onClose }) => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    
+
     // 파일 크기 체크 (10MB 제한)
     const maxSize = 10 * 1024 * 1024;
     const oversizedFiles = files.filter(file => file.size > maxSize);
@@ -61,7 +61,7 @@ const ProductAdd = ({ onClose }) => {
       alert('이미지 파일 크기는 10MB를 초과할 수 없습니다.');
       return;
     }
-    
+
     setFormData(prev => ({
       ...prev,
       productImgs: files
@@ -107,7 +107,7 @@ const ProductAdd = ({ onClose }) => {
       formDataObj.append("isStock", formData.isStock);
       formDataObj.append("productAmount", formData.isStock ? parseInt(formData.productAmount) : 0);
       formDataObj.append("productDetailDescription", formData.productDetailDescription);
-      
+
       formData.productImgs.forEach(file => {
         formDataObj.append("productImgs", file);
       });
@@ -190,7 +190,7 @@ const ProductAdd = ({ onClose }) => {
               <div className="productadd-expose-content-body">
                 <div className="productadd-content-title">상품분류</div>
                 <div className="productadd-content-body">
-                  {/* 성인
+                  성인
                   <input
                     type="radio"
                     name="isAdult"
@@ -198,7 +198,7 @@ const ProductAdd = ({ onClose }) => {
                     checked={formData.isAdult === true}
                     onChange={(e) => setFormData(prev => ({ ...prev, isAdult: true }))}
                     className="productadd-radio"
-                  />{" "} */}
+                  />{" "}
                   일반
                   <input
                     type="radio"
@@ -219,6 +219,7 @@ const ProductAdd = ({ onClose }) => {
               <div className="productadd-stock-info-content-head">
                 <div className="productadd-content-title">재고 구분</div>
                 <div className="productadd-content-body">
+                  {/* 
                   서비스
                   <input
                     type="radio"
@@ -227,7 +228,7 @@ const ProductAdd = ({ onClose }) => {
                     checked={formData.isStock === false}
                     onChange={(e) => setFormData(prev => ({ ...prev, isStock: false }))}
                     className="productadd-radio"
-                  />{" "}
+                  />{" "} */}
                   일반
                   <input
                     type="radio"
@@ -263,8 +264,8 @@ const ProductAdd = ({ onClose }) => {
               <div className="productadd-detail-info-content-head">
                 <div className="productadd-content-title-text">상품 설명</div>
                 <div className="productadd-content-body-text">
-                  <textarea 
-                    name="productDetailDescription" 
+                  <textarea
+                    name="productDetailDescription"
                     value={formData.productDetailDescription}
                     onChange={handleChange}
                     placeholder="상품 설명 입력"

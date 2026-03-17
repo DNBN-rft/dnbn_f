@@ -26,6 +26,11 @@
     font-size: 18px;
     font-weight: bold;
 }
+.helperText{
+    margin-top: 6px;
+    font-size: 14px;
+    color: white;
+}
 
 .product-nego-body {
     padding: 24px;
