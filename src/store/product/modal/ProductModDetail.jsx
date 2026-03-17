@@ -37,6 +37,9 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
   const [allImages, setAllImages] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+  
+  // 판매 제재 상태 확인
+  const isEditable = formData.productState !== "판매 제재";
 
   const handleDrag = (e, type) => {
     e.preventDefault();
@@ -105,18 +108,13 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
 
     if (product) {
       // productState 한글 -> Enum 매핑
-      let stateEnum = "PENDING";
-      if (product.productState === "판매 중") stateEnum = "ON_SALE";
-      else if (product.productState === "판매 종료") stateEnum = "ENDED";
-      else if (product.productState === "대기") stateEnum = "PENDING";
-      else if (product.productState === "판매 제재") stateEnum = "PRODUCT_RESTRICT";
 
       setFormData({
         productNm: product.productNm || "",
         categoryIdx: "",
         productPrice: product.productPrice || "",
         productAmount: product.productAmount || "",
-        productState: stateEnum,
+        productState: product.productState,
         isAdult: product.isAdult || false,
         isStock: product.isStock !== undefined ? product.isStock : true,
         productDetailDescription: product.productDetailDescription || ""
@@ -393,6 +391,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 onChange={handleChange}
                 className="productmod-input"
                 placeholder="상품명"
+                disabled={!isEditable}
               />
             </div>
 
@@ -403,6 +402,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.categoryIdx}
                 onChange={handleChange}
                 className="productmod-select"
+                disabled={!isEditable}
               >
                 <option value="">선택하세요</option>
                 {categories.map((cat) => (
@@ -421,6 +421,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.productPrice}
                 onChange={handleChange}
                 className="productmod-input"
+                disabled={!isEditable}
               />
             </div>
 
@@ -432,7 +433,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.productAmount}
                 onChange={handleChange}
                 className="productmod-input"
-                disabled={!formData.isStock}
+                disabled={!isEditable || !formData.isStock}
               />
             </div>
 
@@ -443,6 +444,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.productState}
                 onChange={handleChange}
                 className="productmod-select"
+                disabled={!isEditable}
               >
                 <option value="PENDING">대기</option>
                 <option value="ON_SALE">판매 중</option>
@@ -476,6 +478,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.isAdult}
                 onChange={handleChange}
                 className="productmod-select"
+                disabled={!isEditable}
               >
                 <option value={false}>일반</option>
                 {/* <option value={true}>성인</option> */}
@@ -491,6 +494,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
                 value={formData.isStock}
                 onChange={handleChange}
                 className="productmod-select"
+                disabled={!isEditable}
               >
                 <option value={true}>일반</option>
                 <option value={false}>서비스</option>
@@ -508,6 +512,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
               onChange={handleChange}
               className="productmod-textarea"
               rows="5"
+              disabled={!isEditable}
             />
           </div>
         </div>
@@ -521,7 +526,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
             accept=".jpg,.jpeg,.png"
             className="fileinfo-middle-file-input-hidden"
             onChange={handleProductImageChange}
-            disabled={allImages.length >= 3}
+            disabled={allImages.length >= 3 || !isEditable}
           />
           <label
             htmlFor="productImage"
@@ -575,10 +580,15 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
         </div>
 
         <div className="productdetail-btn-area">
+          {!isEditable && (
+            <div className="productdetail-restricted-message">
+              제재 상품입니다. 고객센터에 문의하세요.
+            </div>
+          )}
           <button
             className="productdetail-btn productdetail-btn-edit"
             onClick={handleSave}
-            disabled={loading}
+            disabled={loading || !isEditable}
           >
             {loading ? "저장 중..." : "수정 완료"}
           </button>
