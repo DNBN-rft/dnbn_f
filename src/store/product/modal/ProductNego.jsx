@@ -60,7 +60,7 @@ const ProductNego = ({ onClose, productCode, onRefresh }) => {
         // 네고 시작 시간이 현재 시간보다 이전인지 확인
         const selectedStartDateTime = new Date(`${startDate}T${startTime}:00`);
         const currentDateTime = new Date();
-        
+
         if (selectedStartDateTime < currentDateTime) {
             alert("시작 시간은 현재 시간보다 이전일 수 없습니다.");
             return;
@@ -94,7 +94,9 @@ const ProductNego = ({ onClose, productCode, onRefresh }) => {
     return (
         <div className="product-nego-backdrop">
             <div className="product-nego-wrap">
-                <div className="product-nego-header">상품 네고 등록</div>
+                <div className="product-nego-header">상품 네고 등록
+                    <div className="helperText">고객이 흥정(에누리) 요청하면, 수락 여부를 직접 결정할 수 있습니다.</div>
+                </div>
 
                 <div className="product-nego-body">
                     <form className="product-nego-form" onSubmit={handleSubmit}>
