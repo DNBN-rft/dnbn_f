@@ -47,7 +47,7 @@ const EmployeeRegisterModal = ({ onClose, refreshData }) => {
             if (status === "success") {
                 setPasswordCheckMessage("");
             } else if (restrictedValue) {
-                setPasswordCheckMessage("양식이 올바르지 않습니다.");
+                setPasswordCheckMessage("비밀번호를 확인해주세요.");
             } else {
                 setPasswordCheckMessage("");
             }

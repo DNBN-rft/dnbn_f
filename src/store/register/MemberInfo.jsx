@@ -1,8 +1,8 @@
 import "./css/memberinfo.css";
 import StepButton from "../register/component/StepButton";
 import { useState, useEffect } from "react";
-import { 
-  validateMemberInfo, 
+import {
+  validateMemberInfo,
   getPasswordCheckMessage,
   restrictLoginId,
   restrictPassword,
@@ -45,13 +45,13 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
   const handleInputChange = (field, value) => {
     let restrictedValue = value;
-    
+
     if (field === 'loginId') {
       restrictedValue = restrictLoginId(value);
     } else if (field === 'password') {
       restrictedValue = restrictPassword(value);
     }
-    
+
     setFormData({
       ...formData,
       [field]: restrictedValue
@@ -62,7 +62,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
       if (status === 'success') {
         setPasswordCheckMessage("");
       } else if (restrictedValue) {
-        setPasswordCheckMessage("양식이 올바르지 않습니다.");
+        setPasswordCheckMessage("비밀번호를 확인해주세요.");
       } else {
         setPasswordCheckMessage("");
       }
@@ -71,7 +71,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
   const handlePasswordConfirmChange = (value) => {
     setPasswordConfirm(value);
-    
+
     if (value) {
       if (formData.password === value) {
         setPasswordConfirmMessage("");
@@ -85,7 +85,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
   const handleEmailChange = (type, value) => {
     const restrictedValue = restrictEmail(value);
-    
+
     if (type === 'id') {
       const emailDomain = formData.email.split('@')[1] || '';
       const newEmail = emailDomain ? `${restrictedValue}@${emailDomain}` : restrictedValue;
@@ -112,7 +112,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
     try {
       const response = await apiGet(`/store/check-loginId/${formData.loginId}`);
-      
+
       if (response.ok) {
         const data = await response.text();
         if (data.includes("사용가능")) {
@@ -145,7 +145,7 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
 
   const handleNext = () => {
     const validation = validateMemberInfo(formData, idCheckStatus, passwordConfirm);
-    
+
     if (!validation.isValid) {
       alert(validation.message);
       return;
@@ -156,116 +156,137 @@ const MemberInfo = ({ formData, setFormData, next, prev }) => {
   return (
     <div className="memberinfo-container">
       <div className="memberinfo-wrap">
-            <div className="memberinfo-header">
-                <div className="memberinfo-header-title">회원가입</div>
-                <div className="memberinfo-header-text">1/4</div>
-                <progress className="memberinfo-progress" value="1" max="4">25%</progress>
+        <div className="memberinfo-header">
+          <div className="memberinfo-header-title">회원가입</div>
+          <div className="memberinfo-header-text">1/4</div>
+          <progress className="memberinfo-progress" value="1" max="4">25%</progress>
+        </div>
+
+        <div className="memberinfo-middle-title">회원 정보 입력</div>
+        <div className="memberinfo-middle-content">
+          <div className="memberinfo-middle-subtitle">아이디
+            <span style={{ fontSize: "11px", color: "#999", marginLeft: "8px" }}>
+              6자리 이상의 영문 또는 영문, 숫자 혼합
+            </span>
+          </div>
+          <div className="memberinfo-middle-id-div">
+            <input
+              type="text"
+              name="userid"
+              className="memberinfo-middle-id-input"
+              placeholder="로그인 아이디"
+              value={formData.loginId}
+              onChange={(e) => handleInputChange('loginId', e.target.value)}
+            />
+            <div 
+              className="memberinfo-middle-confirmid" 
+              onClick={() => {
+                const isValid = formData.loginId && formData.loginId.length >= 6 && /[a-zA-Z]/.test(formData.loginId) && formData.loginId.length <= 15;
+                if (isValid) handleIdCheck();
+              }}
+              style={{
+                opacity: (formData.loginId && formData.loginId.length >= 6 && /[a-zA-Z]/.test(formData.loginId) && formData.loginId.length <= 15) ? 1 : 0.5,
+                cursor: (formData.loginId && formData.loginId.length >= 6 && /[a-zA-Z]/.test(formData.loginId) && formData.loginId.length <= 15) ? 'pointer' : 'not-allowed',
+              }}
+            >
+              중복체크
             </div>
-
-            <div className="memberinfo-middle-title">회원 정보 입력</div>
-            <div className="memberinfo-middle-content">
-                <div className="memberinfo-middle-subtitle">아이디</div>
-                <div className="memberinfo-middle-id-div">
-                    <input 
-                      type="text" 
-                      name="userid" 
-                      className="memberinfo-middle-id-input" 
-                      placeholder="로그인 아이디"
-                      value={formData.loginId}
-                      onChange={(e) => handleInputChange('loginId', e.target.value)}
-                    />
-                    <div className="memberinfo-middle-confirmid" onClick={handleIdCheck}>중복체크</div>
-                </div>
-                {idCheckMessage && (
-                  <div style={{ color: idCheckStatus === "success" ? "green" : "red", fontSize: "12px", marginTop: "5px" }}>
-                    {idCheckMessage}
-                  </div>
-                )}
-                <div className="memberinfo-middle-subtitle">
-                  비밀번호
-                  <span style={{ fontSize: "11px", color: "#999", marginLeft: "8px" }}>
-                    영문 · 숫자 · 특수문자 포함 8~16자
-                  </span>
-                </div>
-                <div>
-                  <input 
-                    type="password" 
-                    name="password" 
-                    className="memberinfo-middle-pw-input" 
-                    placeholder="비밀번호 입력"
-                    value={formData.password}
-                    onChange={(e) => handleInputChange('password', e.target.value)}
-                  />
-                </div>
-                {passwordCheckMessage && (
-                  <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-                    {passwordCheckMessage}
-                  </div>
-                )}
-                <div className="memberinfo-middle-subtitle">비밀번호 확인</div>
-                <div>
-                  <input 
-                    type="password" 
-                    name="password-confirm" 
-                    className="memberinfo-middle-pw-input" 
-                    placeholder="비밀번호 확인"
-                    value={passwordConfirm}
-                    onChange={(e) => handlePasswordConfirmChange(e.target.value)}
-                  />
-                </div>
-                {passwordConfirmMessage && (
-                  <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-                    {passwordConfirmMessage}
-                  </div>
-                )}
-
-                <div className="memberinfo-middle-subtitle">이메일</div>
-                <div className="memberinfo-middle-email-div">
-
-                  <input 
-                    type="text" 
-                    name="email-username" 
-                    className="memberinfo-middle-email-input" 
-                    placeholder="이메일 아이디"
-                    value={formData.email.split("@")[0] || ""}
-                    onChange={(e) => handleEmailChange('id', e.target.value)}
-                    autoComplete="off"
-                  />
-                  <div className="memberinfo-middle-email-icon">@</div>
-                  <input 
-                    type="text" 
-                    name="email-domain" 
-                    className="memberinfo-middle-email-detail-input" 
-                    placeholder="이메일 주소"
-                    value={formData.email.split("@")[1] || ""}
-                    onChange={(e) => handleEmailChange('domain', e.target.value)}
-                    disabled={isEmailDisabled}
-                    autoComplete="off"
-                  />
-                </div>
-                <div>
-                    <select 
-                      name="email-select" 
-                      id="email" 
-                      className="memberinfo-middle-email-select"
-                      onChange={(e) => {
-                        if (e.target.value !== "self") {
-                          handleEmailChange('domain', e.target.value);
-                          setIsEmailDisabled(true);
-                        } else {
-                          setIsEmailDisabled(false);
-                        }
-                      }}
-                    >
-                      <option value="self">직접입력</option>
-                      <option value="naver.com">네이버</option>
-                      <option value="daum.net">다음</option>
-                      <option value="gmail.com">구글</option>
-                      <option value="nate.com">네이트</option>
-                    </select>
-                </div>
-                <StepButton prev={prev} next={handleNext} />
+          </div>
+          {formData.loginId && (formData.loginId.length < 6 || !/[a-zA-Z]/.test(formData.loginId) || formData.loginId.length > 15) && (
+            <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+              아이디를 확인해주세요.
             </div>
+          )}
+          {idCheckMessage && (
+            <div style={{ color: idCheckStatus === "success" ? "green" : "red", fontSize: "12px", marginTop: "5px" }}>
+              {idCheckMessage}
+            </div>
+          )}
+          <div className="memberinfo-middle-subtitle">
+            비밀번호
+            <span style={{ fontSize: "11px", color: "#999", marginLeft: "8px" }}>
+              영문 · 숫자 · 특수문자 포함 8~16자
+            </span>
+          </div>
+          <div>
+            <input
+              type="password"
+              name="password"
+              className="memberinfo-middle-pw-input"
+              placeholder="비밀번호 입력"
+              value={formData.password}
+              onChange={(e) => handleInputChange('password', e.target.value)}
+            />
+          </div>
+          {passwordCheckMessage && (
+            <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+              {passwordCheckMessage}
+            </div>
+          )}
+          <div className="memberinfo-middle-subtitle">비밀번호 확인</div>
+          <div>
+            <input
+              type="password"
+              name="password-confirm"
+              className="memberinfo-middle-pw-input"
+              placeholder="비밀번호 확인"
+              value={passwordConfirm}
+              onChange={(e) => handlePasswordConfirmChange(e.target.value)}
+            />
+          </div>
+          {passwordConfirmMessage && (
+            <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+              {passwordConfirmMessage}
+            </div>
+          )}
+
+          <div className="memberinfo-middle-subtitle">이메일</div>
+          <div className="memberinfo-middle-email-div">
+
+            <input
+              type="text"
+              name="email-username"
+              className="memberinfo-middle-email-input"
+              placeholder="이메일 아이디"
+              value={formData.email.split("@")[0] || ""}
+              onChange={(e) => handleEmailChange('id', e.target.value)}
+              autoComplete="off"
+            />
+            <div className="memberinfo-middle-email-icon">@</div>
+            <input
+              type="text"
+              name="email-domain"
+              className="memberinfo-middle-email-detail-input"
+              placeholder="이메일 주소"
+              value={formData.email.split("@")[1] || ""}
+              onChange={(e) => handleEmailChange('domain', e.target.value)}
+              disabled={isEmailDisabled}
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <select
+              name="email-select"
+              id="email"
+              className="memberinfo-middle-email-select"
+              onChange={(e) => {
+                if (e.target.value !== "self") {
+                  handleEmailChange('domain', e.target.value);
+                  setIsEmailDisabled(true);
+                } else {
+                  setIsEmailDisabled(false);
+                }
+              }}
+            >
+              <option value="self">직접입력</option>
+              <option value="naver.com">네이버</option>
+              <option value="daum.net">다음</option>
+              <option value="gmail.com">구글</option>
+              <option value="nate.com">네이트</option>
+            </select>
+          </div>
+          <StepButton prev={prev} next={handleNext} />
+        </div>
       </div>
     </div>
   );
