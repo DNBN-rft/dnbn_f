@@ -2,6 +2,22 @@ import { useState, useEffect } from "react";
 import "./css/productmoddetail.css";
 import { apiGet, apiPutFormData } from "../../../utils/apiClient";
 
+const STATE_MAP = {
+  "대기": "PENDING",
+  "판매 중": "ON_SALE",
+  "판매 종료": "ENDED",
+  "품절": "SOLDOUT",
+  "판매 제재": "REJECTED",
+};
+
+const ENUM_STATE_MAP = {
+  "PENDING": "대기",
+  "ON_SALE": "판매 중",
+  "ENDED": "판매 종료",
+  "SOLDOUT": "품절",
+  "REJECTED": "판매 제재",
+};
+
 const ProductModDetail = ({ product, onClose, onSave }) => {
 
   const [dragActive, setDragActive] = useState({
@@ -39,7 +55,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
   const [loading, setLoading] = useState(false);
   
   // 판매 제재 상태 확인
-  const isEditable = formData.productState !== "판매 제재";
+  const isEditable = formData.productState !== "REJECTED";
 
   const handleDrag = (e, type) => {
     e.preventDefault();
@@ -114,7 +130,7 @@ const ProductModDetail = ({ product, onClose, onSave }) => {
         categoryIdx: "",
         productPrice: product.productPrice || "",
         productAmount: product.productAmount || "",
-        productState: product.productState,
+        productState: STATE_MAP[product.productState] || product.productState,
         isAdult: product.isAdult || false,
         isStock: product.isStock !== undefined ? product.isStock : true,
         productDetailDescription: product.productDetailDescription || ""
