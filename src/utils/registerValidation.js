@@ -100,8 +100,9 @@ export const getLoginIdCheckMessage = (loginId) => {
   if (!hasMaxLength) {
     return { message: "아이디는 최대 15자까지 가능합니다.", status: "error" };
   }
-  if (!hasLetter || !hasNumber) {
-    return { message: "아이디는 영문과 숫자를 모두 포함해야 합니다.", status: "error" };
+  // 영문만 있거나 영문+숫자 조합 허용 (영문이 필수)
+  if (!hasLetter) {
+    return { message: "아이디는 영문을 포함해야 합니다.", status: "error" };
   }
 
   return { message: "올바른 형식의 아이디입니다.", status: "success" };

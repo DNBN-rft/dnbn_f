@@ -12,6 +12,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const loadProduct = useCallback(async () => {
     setLoading(true);
@@ -23,6 +24,7 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
       if (response.ok) {
         const data = await response.json();
         setProduct(data);
+        setSelectedImageIndex(0);
       } else {
         setError("상품 정보를 불러오는데 실패했습니다.");
       }
@@ -77,15 +79,64 @@ const ProductDetail = ({ productCode, onClose, onRefresh }) => {
             <div className="productdetail-header">상품 상세 정보</div>
 
             <div className="productdetail-top-content">
-              <div className="productdetail-top-content-img-wrapper">
-                {product.imgs?.files?.length > 0 ? (
-                  <img
-                    src={product.imgs.files[0].fileUrl}
-                    alt={product.productNm}
-                    className="productdetail-top-content-img"
-                  />
-                ) : (
-                  <div className="productdetail-no-image">이미지 없음</div>
+              <div className="productdetail-gallery-container">
+                {/* 메인 이미지 */}
+                <div className="productdetail-main-image-wrapper">
+                  {product.imgs?.files?.length > 0 ? (
+                    <img
+                      src={product.imgs.files[selectedImageIndex].fileUrl}
+                      alt={product.productNm}
+                      className="productdetail-main-image"
+                    />
+                  ) : (
+                    <div className="productdetail-image-placeholder">이미지 없음</div>
+                  )}
+                </div>
+
+                {/* 서브 이미지 썸네일 갤러리 */}
+                {product.imgs?.files?.length > 0 && (
+                  <div className="productdetail-thumbnail-container">
+                    {/* 왼쪽 화살표 */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : product.imgs.files.length - 1)}
+                      className="productdetail-arrow-btn"
+                    >
+                      ◀
+                    </button>
+
+                    {/* 썸네일 이미지들 - 고정 영역 (항상 3개 박스 표시) */}
+                    <div className="productdetail-thumbnail-list">
+                      {[0, 1, 2].map((slotIndex) => (
+                        <div
+                          key={slotIndex}
+                          className={`productdetail-thumbnail-slot ${
+                            product.imgs.files[slotIndex] && selectedImageIndex === slotIndex ? 'active' : ''
+                          } ${
+                            product.imgs.files[slotIndex] ? 'has-image' : 'empty'
+                          }`}
+                          onClick={() => product.imgs.files[slotIndex] && setSelectedImageIndex(slotIndex)}
+                        >
+                          {product.imgs.files[slotIndex] ? (
+                            <img
+                              src={product.imgs.files[slotIndex].fileUrl}
+                              alt={`썸네일 ${slotIndex + 1}`}
+                              className="productdetail-thumbnail-image"
+                            />
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* 오른쪽 화살표 */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedImageIndex(prev => prev < product.imgs.files.length - 1 ? prev + 1 : 0)}
+                      className="productdetail-arrow-btn"
+                    >
+                      ▶
+                    </button>
+                  </div>
                 )}
               </div>
               <div className="productdetail-top-content-info">
